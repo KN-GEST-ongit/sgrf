@@ -1,1 +1,2 @@
 bdgs~=0.1.0
+opencv-python~=4.11.0.86
