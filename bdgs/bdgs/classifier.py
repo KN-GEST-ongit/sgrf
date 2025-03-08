@@ -1,8 +1,8 @@
 from enum import StrEnum
 
-from bdgs.algorithms.alg_1.alg_1 import alg_1
-from bdgs.algorithms.alg_2.alg_2 import alg_2
-from bdgs.gesture import Gesture
+from bdgs.algorithms.alg_1.alg_1 import Alg1
+from bdgs.algorithms.alg_2.alg_2 import Alg2
+from bdgs.gesture import GESTURE
 
 
 class ALGORITHM(StrEnum):
@@ -11,13 +11,13 @@ class ALGORITHM(StrEnum):
 
 
 ALGORITHM_FUNCTIONS = {
-    ALGORITHM.ALG_1: alg_1,
-    ALGORITHM.ALG_2: alg_2,
+    ALGORITHM.ALG_1: Alg1(),
+    ALGORITHM.ALG_2: Alg2(),
 }
 
 
-def recognize(image, algorithm: ALGORITHM) -> Gesture:
+def recognize(image, algorithm: ALGORITHM) -> GESTURE:
     classifier = ALGORITHM_FUNCTIONS[algorithm]
-    prediction = classifier(image)
+    prediction = classifier.classify(image)
 
     return prediction

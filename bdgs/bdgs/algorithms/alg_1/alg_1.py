@@ -1,5 +1,7 @@
-from bdgs.gesture import Gesture
+from bdgs.algorithms.bdgs_algorithm import BaseAlgorithm
+from bdgs.gesture import GESTURE
 
 
-def alg_1(image) -> Gesture:
-    return Gesture.OK
+class Alg1(BaseAlgorithm):
+    def classify(self, image) -> GESTURE:
+        return GESTURE.OK

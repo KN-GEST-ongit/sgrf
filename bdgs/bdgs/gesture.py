@@ -1,7 +1,7 @@
 from enum import StrEnum
 
 
-class Gesture(StrEnum):
+class GESTURE(StrEnum):
     OK = "OK"
     HELLO = "HELLO"
     GOODBYE = "GOODBYE"
