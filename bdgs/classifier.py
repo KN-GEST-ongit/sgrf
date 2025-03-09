@@ -11,12 +11,12 @@ from bdgs.gesture import GESTURE
 
 class ALGORITHM(StrEnum):
     ALG_1 = "ALG_1"
-    ALG_2 = "ALG_2" #added
+    ALG_2 = "ALG_2"  # added
 
 
 ALGORITHM_FUNCTIONS = {
     ALGORITHM.ALG_1: Alg1(),
-    ALGORITHM.ALG_2: Alg2(), #added
+    ALGORITHM.ALG_2: Alg2(),  # added
 }
 
 
