@@ -1,0 +1,37 @@
+import cv2
+import numpy as np
+
+from bdgs.algorithms.bdgs_algorithm import BaseAlgorithm
+from bdgs.gesture import GESTURE
+
+
+class MurthyJadon(BaseAlgorithm):
+    def process_image(self, image: np.ndarray) -> np.ndarray:
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+        _, binary_image = cv2.threshold(blurred, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+
+        contours, _ = cv2.findContours(binary_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        if not contours:
+            print("No hand contours.")
+            return cv2.resize(binary_image, (30, 30))
+
+        largest_contour = max(contours, key=cv2.contourArea)
+        x, y, w, h = cv2.boundingRect(largest_contour)
+        hand_crop = binary_image[y:y + h, x:x + w]
+        hand_resized = cv2.resize(hand_crop, (30, 30), interpolation=cv2.INTER_AREA)
+
+        return hand_resized
+
+    def classify(self, image) -> GESTURE:
+        cv2.imshow("Before", image)
+        cv2.waitKey(0)
+
+        processed_image = self.process_image(image)
+
+        cv2.imshow("After", processed_image)
+        cv2.waitKey(0)
+
+        cv2.destroyAllWindows()
+
+        return GESTURE.OK

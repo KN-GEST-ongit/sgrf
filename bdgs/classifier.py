@@ -4,19 +4,19 @@ from typing import Any
 from cv2 import Mat
 from numpy import ndarray, dtype
 
-from bdgs.algorithms.alg_1.alg_1 import Alg1
 from bdgs.algorithms.alg_2.alg_2 import Alg2
+from bdgs.algorithms.murthy_jadon.murthy_jadon import MurthyJadon
 from bdgs.gesture import GESTURE
 
 
 class ALGORITHM(StrEnum):
-    ALG_1 = "ALG_1"
-    ALG_2 = "ALG_2"  # added
+    MURTHY_JADON = "MURTHY_JADON"
+    ALG_2 = "ALG_2"
 
 
 ALGORITHM_FUNCTIONS = {
-    ALGORITHM.ALG_1: Alg1(),
-    ALGORITHM.ALG_2: Alg2(),  # added
+    ALGORITHM.MURTHY_JADON: MurthyJadon(),
+    ALGORITHM.ALG_2: Alg2(),
 }
 
 
