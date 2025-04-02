@@ -4,6 +4,7 @@ import cv2
 
 from bdgs import recognize
 from bdgs.algorithms.murthy_jadon.murthy_jadon import MurthyJadon
+from bdgs.algorithms.murthy_jadon.murthy_jadon_payload import MurthyJadonPayload
 from bdgs.classifier import ALGORITHM
 from scripts.common.get_learning_files import get_learning_files
 
@@ -23,7 +24,8 @@ def test_process_image():
             cv2.waitKey(0)
 
             alg = MurthyJadon()
-            processed_image = alg.process_image(image)
+            alg_payload = MurthyJadonPayload(image, image)
+            processed_image = alg.process_image(alg_payload)
 
             cv2.imshow("After", processed_image)
             cv2.waitKey(0)

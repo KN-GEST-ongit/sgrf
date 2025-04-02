@@ -1,6 +1,7 @@
 import os
+import random
 
-folder_path = os.path.abspath("../../../photos_test")
+folder_path = os.path.abspath("../../../bdgs_photos")
 
 
 def get_learning_files():
@@ -21,4 +22,6 @@ def get_learning_files():
         for index in range(len(files) - 1):
             if files[index].lower().endswith(('.png', '.jpg', '.jpeg')) and classify_table[index] != "0":
                 image_files.append((os.path.join(root, files[index]), classify_table[index]))
+
+    random.shuffle(image_files)
     return image_files
