@@ -45,4 +45,4 @@ To create a new algorithm, follow these steps:
        ALGORITHM.ALG_1: Alg1(),
        ALGORITHM.ALG_2: Alg2(), # added
    }
-   ```
+   ``` 
