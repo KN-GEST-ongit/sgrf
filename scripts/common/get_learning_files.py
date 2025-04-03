@@ -24,5 +24,4 @@ def get_learning_files():
                 image_files.append((os.path.join(root, files[index]), classify_row[index]))
 
     random.shuffle(image_files)
-    print(classify_row)
     return image_files

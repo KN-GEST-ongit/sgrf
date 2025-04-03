@@ -19,6 +19,12 @@ def test_process_image():
         print(image_path)
         image = cv2.imread(image_path)
 
+        coords = image_file[1].split(" ", 1)[1]
+        x1, y1 = map(int, coords.split(") (")[0].strip("()").split())
+        x2, y2 = map(int, coords.split(") (")[1].strip("()").split())
+
+        image = image[y1:y2, x1:x2]
+
         if image is not None:
             cv2.imshow("Before", image)
             cv2.waitKey(0)
