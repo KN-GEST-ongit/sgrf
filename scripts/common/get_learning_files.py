@@ -18,6 +18,8 @@ def get_learning_files(skip_empty=True, shuffle=True, limit=None, offset=0):
         files.pop(0)
         bg_image = files[0]
 
+        files = sorted(files)
+
         for index in range(len(files) - 1):
             if files[index].lower().endswith(('.png', '.jpg', '.jpeg')):
                 if skip_empty:
