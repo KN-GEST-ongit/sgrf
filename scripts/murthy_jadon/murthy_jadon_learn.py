@@ -12,8 +12,8 @@ from scripts.common.vars import training_images_path, trained_models_path
 
 
 def learn():
-    train_images_amount = 1000
-    epochs = 80
+    train_images_amount = 5000
+    epochs = 40
 
     images = get_learning_files(limit=train_images_amount, shuffle=True)
     processed_images = []

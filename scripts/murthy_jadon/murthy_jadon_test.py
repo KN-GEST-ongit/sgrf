@@ -5,6 +5,7 @@ import cv2
 from bdgs import classify
 from bdgs.algorithms.murthy_jadon.murthy_jadon_payload import MurthyJadonPayload
 from bdgs.classifier import ALGORITHM, process_image
+from scripts.common.camera_test import camera_test
 from scripts.common.get_learning_files import get_learning_files
 from scripts.common.vars import training_images_path
 
@@ -45,6 +46,11 @@ def classify_test():
         cv2.destroyAllWindows()
 
 
+def cam_test():
+    camera_test(algorithm=ALGORITHM.MURTHY_JADON)
+
+
 if __name__ == "__main__":
     # process_image_test()
-    classify_test()
+    # classify_test()
+    cam_test()

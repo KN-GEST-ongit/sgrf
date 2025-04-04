@@ -53,7 +53,10 @@ class MurthyJadon(BaseAlgorithm):
         subtracted = subtract_background(background, image)
         gray = cv2.cvtColor(subtracted, cv2.COLOR_BGR2GRAY)
         hand_only = extract_hand_region(gray)
-        resized = cv2.resize(hand_only, (30, 30))
+        try:
+            resized = cv2.resize(hand_only, (30, 30))
+        except:
+            return cv2.resize(gray, (30, 30))
 
         return resized
 
