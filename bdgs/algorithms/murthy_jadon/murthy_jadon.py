@@ -7,6 +7,7 @@ import numpy as np
 from bdgs.algorithms.bdgs_algorithm import BaseAlgorithm
 from bdgs.algorithms.murthy_jadon.murthy_jadon_payload import MurthyJadonPayload
 from bdgs.gesture import GESTURE
+from scripts.common.vars import trained_models_path
 
 
 def subtract_background(background, image):
@@ -58,11 +59,9 @@ class MurthyJadon(BaseAlgorithm):
 
     def classify(self, payload: MurthyJadonPayload) -> GESTURE:
         predicted_class = 1
-        model = keras.models.load_model(os.path.join('../../trained_models', 'murthy_jadon.keras'))
+        model = keras.models.load_model(os.path.join(trained_models_path, 'murthy_jadon.keras'))
         processed_image = (self.process_image(payload=payload).flatten()) / 255
         processed_image = np.expand_dims(processed_image, axis=0)  #
-
-        print(processed_image.shape)
 
         predictions = model.predict(processed_image)
 

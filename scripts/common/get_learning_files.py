@@ -1,13 +1,13 @@
 import os
 import random
 
-folder_path = os.path.abspath("../../../bdgs_photos")
+from scripts.common.vars import training_images_path
 
 
 def get_learning_files(skip_empty=True, shuffle=True, limit=None, offset=0):
     image_files = []
     classify_file = None
-    for root, _, files in os.walk(folder_path):
+    for root, _, files in os.walk(training_images_path):
         for file in files:
             if file.lower().endswith(".txt"):
                 classify_file = os.path.join(root, file)

@@ -1,1 +1,1 @@
-from .classifier import recognize
+from .classifier import classify
