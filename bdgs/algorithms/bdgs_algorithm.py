@@ -1,8 +1,6 @@
 from abc import abstractmethod, ABC
-from typing import Any
 
-from cv2 import Mat
-from numpy import dtype, ndarray
+from numpy import ndarray
 
 from bdgs.gesture import GESTURE
 from bdgs.models.image_payload import ImagePayload
@@ -15,6 +13,6 @@ class BaseAlgorithm(ABC):
         raise NotImplementedError("Method process_image not implemented")
 
     @abstractmethod
-    def classify(self, image: Mat | ndarray[Any, dtype]) -> GESTURE:
+    def classify(self, payload: ImagePayload) -> GESTURE:
         """Classify gesture based on static image"""
         raise NotImplementedError("Method classify not implemented")

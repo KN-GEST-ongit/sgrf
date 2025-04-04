@@ -1,4 +1,7 @@
+import os.path
+
 import cv2
+import keras
 import numpy as np
 
 from bdgs.algorithms.bdgs_algorithm import BaseAlgorithm
@@ -50,8 +53,21 @@ class MurthyJadon(BaseAlgorithm):
         gray = cv2.cvtColor(subtracted, cv2.COLOR_BGR2GRAY)
         hand_only = extract_hand_region(gray)
         resized = cv2.resize(hand_only, (30, 30))
+        result = resized.flatten()
 
-        return resized
+        return result / 255
 
-    def classify(self, image) -> GESTURE:
-        return GESTURE.OK
+    def classify(self, payload: MurthyJadonPayload) -> GESTURE:
+        predicted_class = 1
+        model = keras.models.load_model(os.path.join('../../trained_models', 'murthy_jadon.keras'))
+        processed_image = self.process_image(payload=payload)
+        processed_image = np.expand_dims(processed_image, axis=0)  #
+
+        print(processed_image.shape)
+
+        predictions = model.predict(processed_image)
+
+        for i, prediction in enumerate(predictions):
+            predicted_class = np.argmax(prediction) + 1
+
+        return GESTURE(predicted_class)

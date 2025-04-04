@@ -15,7 +15,7 @@ folder_path = os.path.abspath("../../../bdgs_photos")
 def test_process_image():
     images = get_learning_files()
 
-    for img, coords in images:
+    for img, coords, bg in images:
         image_path = os.path.join(folder_path, img)
         print(image_path)
         image = cv2.imread(image_path)
