@@ -10,19 +10,24 @@ class Maung(BaseAlgorithm):
     def process_image(self, payload: ImagePayload) -> np.ndarray:
         gray = cv2.cvtColor(payload.image, cv2.COLOR_BGR2GRAY)
 
-        # ujednolicenie tła - rozmycie medianowe
-        blurred = cv2.medianBlur(gray, 5)
+        blurred = cv2.medianBlur(gray, 15)
 
         resized = cv2.resize(blurred, (140, 150))
 
-        # detekcja krawędzi - operatora różnicowego
-        dx = cv2.Sobel(resized, cv2.CV_64F, 1, 0, ksize=3)
-        dy = cv2.Sobel(resized, cv2.CV_64F, 0, 1, ksize=3)
+        roberts_x = np.array([[1, 0], [0, -1]])
 
-        # obliczanie orientacji gradientu
+        roberts_y = np.array([[0, 1], [-1, 0]])
+
+        dx = cv2.filter2D(resized, cv2.CV_64F, roberts_x)
+        dy = cv2.filter2D(resized, cv2.CV_64F, roberts_y)
+
         gradient_orientation = np.arctan2(dy, dx)
 
-        return gradient_orientation
+        gradient_orientation_degrees = np.degrees(gradient_orientation) % 90
+
+        hist, _ = np.histogram(gradient_orientation_degrees, bins=3, range=(0, 90))
+
+        return gradient_orientation_degrees
 
     def classify(self, image) -> GESTURE:
         return GESTURE.OK

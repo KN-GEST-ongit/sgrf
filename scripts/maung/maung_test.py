@@ -6,6 +6,7 @@ from bdgs import recognize
 from bdgs.algorithms.maung.maung import Maung
 from bdgs.classifier import ALGORITHM
 from bdgs.models.image_payload import ImagePayload
+from scripts.common.crop_image import crop_image
 from scripts.common.get_learning_files import get_learning_files
 
 folder_path = os.path.abspath("../../../bdgs_photos")
@@ -14,10 +15,12 @@ folder_path = os.path.abspath("../../../bdgs_photos")
 def test_process_image():
     images = get_learning_files()
 
-    for image_file in images:
-        image_path = os.path.join(folder_path, image_file[0])
+    for img, coords, bg in images:
+        image_path = os.path.join(folder_path, img)
         print(image_path)
         image = cv2.imread(image_path)
+
+        image = crop_image(image, coords)
 
         if image is not None:
             cv2.imshow("Before", image)
@@ -33,9 +36,9 @@ def test_process_image():
             cv2.destroyAllWindows()
 
             result = recognize(image, algorithm=ALGORITHM.MAUNG)
-            print(f"Result for {image_file}: {result}")
+            print(f"Result for {img}: {result}")
         else:
-            print(f"Failed to load image: {image_file}")
+            print(f"Failed to load image: {img}")
 
 
 # def test_classify():
