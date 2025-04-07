@@ -9,7 +9,7 @@ from bdgs.algorithms.murthy_jadon.murthy_jadon_payload import MurthyJadonPayload
 from bdgs.classifier import process_image
 from bdgs.data.algorithm import ALGORITHM
 from scripts.common.get_learning_files import get_learning_files
-from scripts.common.vars import training_images_path, trained_models_path
+from scripts.common.vars import TRAINING_IMAGES_PATH, TRAINED_MODELS_PATH
 
 
 def learn():
@@ -20,8 +20,8 @@ def learn():
     processed_images = []
     etiquettes = []
     for image_file in images:
-        image_path = str(os.path.join(training_images_path, image_file[0]))
-        bg_image_path = str(os.path.join(training_images_path, image_file[2]))
+        image_path = str(os.path.join(TRAINING_IMAGES_PATH, image_file[0]))
+        bg_image_path = str(os.path.join(TRAINING_IMAGES_PATH, image_file[2]))
 
         hand_image = cv2.imread(image_path)
         background_image = cv2.imread(bg_image_path)
@@ -47,7 +47,7 @@ def learn():
         metrics=['accuracy']
     )
     model.fit(X_train, y_train, epochs=epochs, validation_data=(X_val, y_val))
-    keras.models.save_model(model, os.path.join(trained_models_path, 'murthy_jadon.keras'))
+    keras.models.save_model(model, os.path.join(TRAINED_MODELS_PATH, 'murthy_jadon.keras'))
 
 
 if __name__ == '__main__':
