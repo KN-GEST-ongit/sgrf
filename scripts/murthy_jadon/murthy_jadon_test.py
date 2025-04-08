@@ -54,6 +54,6 @@ def cam_test():
 
 
 if __name__ == "__main__":
-    process_image_test()
+    # process_image_test()
     # classify_test()
-    # cam_test()
+    cam_test()

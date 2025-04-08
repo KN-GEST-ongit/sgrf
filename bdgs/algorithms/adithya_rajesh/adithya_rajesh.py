@@ -1,8 +1,8 @@
 import os
 
 import cv2
+import keras
 import numpy as np
-from tensorflow.keras.models import load_model
 
 from bdgs.algorithms.bdgs_algorithm import BaseAlgorithm
 from bdgs.data.gesture import GESTURE
@@ -20,18 +20,18 @@ class AdithyaRajesh(BaseAlgorithm):
         # expand to get shape (1, 100, 100, 3)
         image = np.expand_dims(image, axis=0)
 
-
         return image
 
-    def classify(self, payload: ImagePayload, processing_method: PROCESSING_METHOD = PROCESSING_METHOD.DEFAULT) -> (GESTURE, int):
-        model = load_model(os.path.join(TRAINED_MODELS_PATH, "adithya_rajesh.keras"))
+    def classify(self, payload: ImagePayload, processing_method: PROCESSING_METHOD = PROCESSING_METHOD.DEFAULT) -> (
+    GESTURE, int):
+        model = keras.models.load_model(os.path.join(TRAINED_MODELS_PATH, "adithya_rajesh.keras"))
         processed_image = self.process_image(payload=payload)
         predictions = model.predict(processed_image)
 
-
+        predicted_class = 1
+        certainty = 0
         for prediction in predictions:
             predicted_class = np.argmax(prediction) + 1
             certainty = int(np.max(prediction) * 100)
-
 
         return GESTURE(predicted_class), certainty

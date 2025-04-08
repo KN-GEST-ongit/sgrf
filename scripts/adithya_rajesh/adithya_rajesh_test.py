@@ -4,11 +4,13 @@ import cv2
 import numpy as np
 
 from bdgs.algorithms.adithya_rajesh.adithya_rajesh import AdithyaRajesh
-from bdgs.models.image_payload import ImagePayload
+from bdgs.data.algorithm import ALGORITHM
 from bdgs.data.gesture import GESTURE
-from scripts.common.get_learning_files import get_learning_files
+from bdgs.models.image_payload import ImagePayload
+from scripts.common.camera_test import camera_test
 from scripts.common.crop_image import crop_image
-from scripts.common.vars import TRAINING_IMAGES_PATH, TRAINED_MODELS_PATH
+from scripts.common.get_learning_files import get_learning_files
+from scripts.common.vars import TRAINING_IMAGES_PATH
 
 
 def test_process_image():
@@ -16,7 +18,7 @@ def test_process_image():
 
     for image_file in image_files:
         image_path = os.path.join(TRAINING_IMAGES_PATH, image_file[0])
-        image = cv2.imread(image_path)
+        image = cv2.imread(str(image_path))
 
         if image is not None:
             image_label = int(image_file[1].split(" ")[0])
@@ -28,7 +30,6 @@ def test_process_image():
             image_without_batch_dim = np.squeeze(processed_image)
             # set array datatype back to uint8
             image_without_batch_dim = np.astype(image_without_batch_dim, np.uint8)
-
 
             print(f"Image label: {image_label}")
             cv2.imshow("image", image_without_batch_dim)
@@ -42,7 +43,7 @@ def classify_test():
 
     for image_file in image_files:
         image_path = os.path.join(TRAINING_IMAGES_PATH, image_file[0])
-        image = cv2.imread(image_path)
+        image = cv2.imread(str(image_path))
 
         if image is not None:
             image_label = int(image_file[1].split(" ")[0])
@@ -59,5 +60,11 @@ def classify_test():
             print(f"Failed to load image: {image_file}")
 
 
-classify_test()
-#test_process_image()
+def cam_test():
+    camera_test(algorithm=ALGORITHM.ADITHYA_RAJESH, show_prediction_tresh=70)
+
+
+if __name__ == "__main__":
+    # test_process_image()
+    classify_test()
+    # cam_test()
