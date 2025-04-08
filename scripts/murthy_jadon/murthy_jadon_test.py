@@ -27,6 +27,7 @@ def process_image_test():
             processing_method=PROCESSING_METHOD.DEFAULT
         )
 
+        cv2.imshow("Before Image", hand_image)
         cv2.imshow("Processed Image", processed_image)
 
         cv2.waitKey(0)
