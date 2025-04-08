@@ -5,54 +5,59 @@ import numpy as np
 
 from bdgs.algorithms.adithya_rajesh.adithya_rajesh import AdithyaRajesh
 from bdgs.models.image_payload import ImagePayload
+from bdgs.data.gesture import GESTURE
 from scripts.common.get_learning_files import get_learning_files
-
-folder_path = os.path.abspath("../bdgs_photos")
-
-print(folder_path)
+from scripts.common.crop_image import crop_image
+from scripts.common.vars import TRAINING_IMAGES_PATH, TRAINED_MODELS_PATH
 
 
 def test_process_image():
     image_files = get_learning_files()
 
     for image_file in image_files:
-        image_path = os.path.join(folder_path, image_file[0])
+        image_path = os.path.join(TRAINING_IMAGES_PATH, image_file[0])
         image = cv2.imread(image_path)
 
         if image is not None:
-            # extract hand
-            image_details = image_file[1]
-            image_details = image_details.replace("(", "").replace(")", "")
-            hand_details = list(map(int, image_details.split(" ")))
-
-            image_label = hand_details[0]
-            corner1 = (hand_details[1], hand_details[2])
-            corner2 = (hand_details[3], hand_details[4])
-
-            # crop the hand
-            image = image[corner1[1]:corner2[1], corner1[0]:corner2[0]]
-
+            image_label = int(image_file[1].split(" ")[0])
+            image = crop_image(image, image_file[1])
             alg = AdithyaRajesh()
-            payload = ImagePayload(image)
-
+            payload = ImagePayload(image=image)
             processed_image = alg.process_image(payload)
-            print("Processed image shape for model: ", processed_image.shape)
-
             # remove batch dimension (1, 100, 100, 3) -> (100, 100, 3)
-            image_without_batch = np.squeeze(processed_image)
-            # go back to BGR from RGB
-            image_without_batch = cv2.cvtColor(image_without_batch, cv2.COLOR_RGB2BGR)
+            image_without_batch_dim = np.squeeze(processed_image)
             # set array datatype back to uint8
-            image_without_batch = np.astype(image_without_batch, np.uint8)
+            image_without_batch_dim = np.astype(image_without_batch_dim, np.uint8)
 
-            print("Processed image shape for opencv: ", image_without_batch.shape)
 
             print(f"Image label: {image_label}")
-            cv2.imshow("image", image_without_batch)
+            cv2.imshow("image", image_without_batch_dim)
             cv2.waitKey(2000)
-
         else:
             print(f"Failed to load image: {image_file}")
 
 
-test_process_image()
+def classify_test():
+    image_files = get_learning_files()
+
+    for image_file in image_files:
+        image_path = os.path.join(TRAINING_IMAGES_PATH, image_file[0])
+        image = cv2.imread(image_path)
+
+        if image is not None:
+            image_label = int(image_file[1].split(" ")[0])
+            image = crop_image(image, image_file[1])
+
+            alg = AdithyaRajesh()
+            payload = ImagePayload(image)
+            predicted_class, certainty = alg.classify(payload=payload)
+            print(f"Correct class: {GESTURE(image_label).name}")
+            print(f"Predicted class: {predicted_class}, certainty: {certainty}%")
+            cv2.imshow("image", image)
+            cv2.waitKey(2000)
+        else:
+            print(f"Failed to load image: {image_file}")
+
+
+classify_test()
+#test_process_image()
