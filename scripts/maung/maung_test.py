@@ -9,6 +9,7 @@ from bdgs.models.image_payload import ImagePayload
 from scripts.common.crop_image import crop_image
 from scripts.common.get_learning_files import get_learning_files
 from scripts.common.vars import TRAINING_IMAGES_PATH
+from bdgs.data.processing_method import PROCESSING_METHOD
 
 
 def test_process_image():
@@ -28,8 +29,10 @@ def test_process_image():
             alg = Maung()
             alg_payload = ImagePayload(image)
             processed_image = alg.process_image(alg_payload)
-
             cv2.imshow("After", processed_image)
+
+            # processed_image = alg.process_image(alg_payload, processing_method=PROCESSING_METHOD.ADITHYA_RAJESH)
+            # cv2.imshow("After", processed_image[0])
             cv2.waitKey(0)
 
             cv2.destroyAllWindows()

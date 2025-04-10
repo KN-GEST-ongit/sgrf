@@ -8,8 +8,9 @@ from bdgs.models.image_payload import ImagePayload
 
 
 class BaseAlgorithm(ABC):
+    @staticmethod
     @abstractmethod
-    def process_image(self, payload: ImagePayload,
+    def process_image(payload: ImagePayload,
                       processing_method: PROCESSING_METHOD = PROCESSING_METHOD.DEFAULT) -> ndarray:
         """Process image"""
         raise NotImplementedError("Method process_image not implemented")
