@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="murthy_jadon_test" type="PythonConfigurationType" factoryName="Python" folderName="murthy_jadon">
+  <configuration default="false" name="eid_schwenker_test" type="PythonConfigurationType" factoryName="Python" folderName="eid_schwenker">
     <module name="bdgs" />
     <option name="ENV_FILES" value="" />
     <option name="INTERPRETER_OPTIONS" value="" />
@@ -9,12 +9,12 @@
     </envs>
     <option name="SDK_HOME" value="" />
     <option name="SDK_NAME" value="Python 3.11 (bdgs)" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/scripts/murthy_jadon" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/scripts/eid_schwenker" />
     <option name="IS_MODULE_SDK" value="false" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
     <option name="ADD_SOURCE_ROOTS" value="true" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-    <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scripts/murthy_jadon/murthy_jadon_test.py" />
+    <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scripts/eid_schwenker/eid_schwenker_test.py" />
     <option name="PARAMETERS" value="" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="false" />

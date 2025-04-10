@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="murthy_jadon_learn" type="PythonConfigurationType" factoryName="Python">
+  <configuration default="false" name="murthy_jadon_learn" type="PythonConfigurationType" factoryName="Python" folderName="murthy_jadon">
     <module name="bdgs" />
     <option name="ENV_FILES" value="" />
     <option name="INTERPRETER_OPTIONS" value="" />

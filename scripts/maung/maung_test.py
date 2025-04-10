@@ -9,7 +9,6 @@ from bdgs.models.image_payload import ImagePayload
 from scripts.common.crop_image import crop_image
 from scripts.common.get_learning_files import get_learning_files
 from scripts.common.vars import TRAINING_IMAGES_PATH
-from bdgs.data.processing_method import PROCESSING_METHOD
 
 
 def test_process_image():

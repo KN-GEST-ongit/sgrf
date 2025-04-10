@@ -23,7 +23,7 @@ class AdithyaRajesh(BaseAlgorithm):
         return image
 
     def classify(self, payload: ImagePayload, processing_method: PROCESSING_METHOD = PROCESSING_METHOD.DEFAULT) -> (
-    GESTURE, int):
+            GESTURE, int):
         model = keras.models.load_model(os.path.join(TRAINED_MODELS_PATH, "adithya_rajesh.keras"))
         processed_image = self.process_image(payload=payload)
         predictions = model.predict(processed_image)
