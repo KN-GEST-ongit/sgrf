@@ -32,14 +32,25 @@ class IslamHossainAndersson(BaseAlgorithm):
             erosion = cv2.erode(grayscale, kernel)
             # median filter
             median_filter = cv2.medianBlur(erosion, 5)
-            #resize
+            # resize
             resized = cv2.resize(median_filter, (50, 50))
 
-            return resized
+            expanded_dims = np.expand_dims(resized, axis=0)
+
+            return expanded_dims
         else:
             raise Exception("Invalid processing method")
 
     def classify(self, payload: IslamHossainAnderssonPayload, processing_method: PROCESSING_METHOD = PROCESSING_METHOD.DEFAULT) -> (
             GESTURE, int):
-        
-        return GESTURE.LIKE, 100
+        model = keras.models.load_model(os.path.join(TRAINED_MODELS_PATH, "islam_hossain_andersson.keras"))
+        processed_image = self.process_image(payload=payload)
+        predictions = model.predict(processed_image)
+
+        predicted_class = 1
+        certainty = 0
+        for prediction in predictions:
+            predicted_class = np.argmax(prediction) + 1
+            certainty = int(np.max(prediction) * 100)
+
+        return GESTURE(predicted_class), certainty

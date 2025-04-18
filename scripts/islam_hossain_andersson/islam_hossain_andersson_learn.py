@@ -36,6 +36,7 @@ def get_training_data():
         cropped_bg = crop_image(bg_image, image_file[1])
         payload = IslamHossainAnderssonPayload(image=cropped_image, bg_image=cropped_bg)
         image = alg.process_image(payload)
+        image = np.squeeze(image)
 
         labels.append(label - 1)
         processed_images.append(image)
@@ -62,7 +63,7 @@ def train():
     history = model.fit(x_train, y_train_one_hot,
                         validation_data=(x_val, y_val_one_hot),
                         batch_size=32,
-                        epochs=120,
+                        epochs=60,
                         verbose="auto")
 
     keras.models.save_model(
@@ -73,13 +74,14 @@ def train():
 def create_model(num_classes, enable_augmentation = True):
     model = Sequential()
     
+    # augmentation parameter values were not specified, so they were found with experiments.
     if enable_augmentation:
         # augmentation layer
         model.add(keras.Sequential([
         layers.Rescaling(1.0 / 255, input_shape=(50, 50, 1)),
         layers.RandomRotation(0.10),
         layers.RandomZoom(0.1),
-        #layers.RandomTranslation(0.2, 0.2),
+        layers.RandomTranslation(0.1, 0.1),
         layers.RandomShear(0.1),
         layers.RandomFlip("horizontal")
         ]))
