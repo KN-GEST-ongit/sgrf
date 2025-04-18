@@ -17,9 +17,11 @@ class IslamHossainAndersson(BaseAlgorithm):
         if processing_method == PROCESSING_METHOD.DEFAULT or processing_method == PROCESSING_METHOD.ISLAM_HOSSAIN_ANDERSSON:
             image = payload.image
             background = payload.bg_image
+            # The paper did not specify exact parameters for preprocessing methods, so
+            # values used here were selected based on experiments to achieve best results
 
             # Zoran Zivkovic method to subtract the background. 
-            bg_subtractor = cv2.createBackgroundSubtractorMOG2(history=2, varThreshold=50, detectShadows=False)
+            bg_subtractor = cv2.createBackgroundSubtractorMOG2(history=2, varThreshold=16)
             bg_subtractor.apply(background)
             fg_mask = bg_subtractor.apply(image)
             fg_color = cv2.bitwise_and(image, image, mask=fg_mask)
