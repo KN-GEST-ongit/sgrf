@@ -38,7 +38,7 @@ class Maung(BaseAlgorithm):
 
         hist, _ = np.histogram(gradient_orientation_degrees, bins=3, range=(0, 90))
 
-        return gradient_orientation_degrees
+        return np.float32(gradient_orientation_degrees)  # default without float32 conversion (only for cam_test)
         # return hist.astype(np.float32)
 
     def classify(self, payload: ImagePayload,

@@ -9,6 +9,7 @@ from bdgs.models.image_payload import ImagePayload
 from scripts.common.crop_image import crop_image
 from scripts.common.get_learning_files import get_learning_files
 from scripts.common.vars import TRAINING_IMAGES_PATH
+from scripts.common.camera_test import camera_test
 
 
 def test_process_image():
@@ -56,5 +57,10 @@ def classify_test():
         cv2.destroyAllWindows()
 
 
-test_process_image()
-# classify_test()
+def cam_test():
+    camera_test(algorithm=ALGORITHM.MAUNG, show_prediction_tresh=60)
+
+
+# test_process_image()
+classify_test()
+# cam_test()
