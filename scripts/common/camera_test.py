@@ -3,6 +3,7 @@ from tensorflow.python.data.experimental.ops.testing import sleep
 
 from bdgs import classify
 from bdgs.algorithms.murthy_jadon.murthy_jadon_payload import MurthyJadonPayload
+from bdgs.algorithms.islam_hossain_andersson.islam_hossain_andersson_payload import IslamHossainAnderssonPayload
 from bdgs.classifier import process_image
 from bdgs.data.algorithm import ALGORITHM
 from bdgs.models.image_payload import ImagePayload
@@ -35,6 +36,8 @@ def camera_test(algorithm: ALGORITHM, show_prediction_tresh=70):
 
         if algorithm == ALGORITHM.MURTHY_JADON:
             payload = MurthyJadonPayload(image=image, bg_image=background)
+        elif algorithm == ALGORITHM.ISLAM_HOSSAIN_ANDERSSON:
+            payload = IslamHossainAnderssonPayload(image=image, bg_image=background)
         # other algs
         else:
             payload = ImagePayload(image=image)
@@ -64,6 +67,10 @@ def show_processed(image, processed):
         thumbnail_height = 150
         thumbnail_width = int(processed.shape[1] * (thumbnail_height / processed.shape[0]))
         thumbnail = cv2.resize(processed, (thumbnail_width, thumbnail_height))
+
+        if len(thumbnail.shape) == 2:
+            thumbnail = cv2.cvtColor(thumbnail, cv2.COLOR_GRAY2BGR)
+
         image[0:thumbnail.shape[0], 0:thumbnail.shape[1]] = thumbnail
 
 

@@ -30,10 +30,10 @@ def get_learning_files(skip_empty=True, shuffle=True, limit=None, offset=0,
 
         with open(classify_file, "r") as f:
             classify_row = [line.split("\n")[0] for line in f]
+        files = sorted(files)
         files.pop(0)
         bg_image = files[0]
-
-        files = sorted(files)
+        
         added = 0
         for index in range(len(files) - 1):
             if files[index].lower().endswith(('.png', '.jpg', '.jpeg')):

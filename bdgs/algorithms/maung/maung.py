@@ -1,10 +1,14 @@
 import cv2
 import numpy as np
+import keras
+import os
+import pickle
 
 from bdgs.algorithms.bdgs_algorithm import BaseAlgorithm
 from bdgs.data.gesture import GESTURE
 from bdgs.data.processing_method import PROCESSING_METHOD
 from bdgs.models.image_payload import ImagePayload
+from scripts.common.vars import TRAINED_MODELS_PATH
 
 
 class Maung(BaseAlgorithm):
@@ -34,7 +38,16 @@ class Maung(BaseAlgorithm):
 
         hist, _ = np.histogram(gradient_orientation_degrees, bins=3, range=(0, 90))
 
-        return gradient_orientation_degrees
+        return np.float32(gradient_orientation_degrees)  # default without float32 conversion (only for cam_test)
+        # return hist.astype(np.float32)
 
-    def classify(self, image, processing_method: PROCESSING_METHOD = PROCESSING_METHOD.DEFAULT) -> (GESTURE, int):
-        return GESTURE.TEN, 100
+    def classify(self, payload: ImagePayload,
+                 processing_method: PROCESSING_METHOD = PROCESSING_METHOD.DEFAULT) -> (GESTURE, int):
+        predicted_class = 1
+        certainty = 0
+        with open(os.path.join(TRAINED_MODELS_PATH, 'maung.pkl'), 'rb') as f:
+            model = pickle.load(f)
+        processed_image = (self.process_image(payload=payload, processing_method=processing_method)).flatten()
+        processed_image = np.expand_dims(processed_image, axis=0)  #
+        predictions = model.predict(processed_image)
+        return GESTURE(predictions[0]+1), 100
