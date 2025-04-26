@@ -3,6 +3,7 @@ from bdgs.algorithms.eid_schwenker.eid_schwenker import EidSchwenker
 from bdgs.algorithms.maung.maung import Maung
 from bdgs.algorithms.murthy_jadon.murthy_jadon import MurthyJadon
 from bdgs.algorithms.islam_hossain_andersson.islam_hossain_andersson import IslamHossainAndersson
+from bdgs.algorithms.pinto_borges.pinto_borges import PintoBorges
 from bdgs.data.algorithm import ALGORITHM
 
 ALGORITHM_FUNCTIONS = {
@@ -11,4 +12,5 @@ ALGORITHM_FUNCTIONS = {
     ALGORITHM.ADITHYA_RAJESH: AdithyaRajesh(),
     ALGORITHM.EID_SCHWENKER: EidSchwenker(),
     ALGORITHM.ISLAM_HOSSAIN_ANDERSSON: IslamHossainAndersson(), 
+    ALGORITHM.PINTO_BORGES: PintoBorges()
 }
