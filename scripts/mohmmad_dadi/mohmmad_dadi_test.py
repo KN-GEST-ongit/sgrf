@@ -6,7 +6,6 @@ from bdgs import classify
 from bdgs.algorithms.mohmmad_dadi.mohmmad_dadi import MohmmadDadi
 from bdgs.data.algorithm import ALGORITHM
 from bdgs.models.image_payload import ImagePayload
-from scripts.common.crop_image import crop_image
 from scripts.common.get_learning_files import get_learning_files
 from scripts.common.vars import TRAINING_IMAGES_PATH
 from scripts.common.camera_test import camera_test
@@ -19,8 +18,6 @@ def test_process_image():
         image_path = str(os.path.join(TRAINING_IMAGES_PATH, img))
         print(image_path)
         image = cv2.imread(image_path)
-
-        image = crop_image(image, coords)
 
         if image is not None:
             cv2.imshow("Before", image)
