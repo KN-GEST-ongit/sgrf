@@ -49,9 +49,8 @@ def classify_test():
     for image, hand_recognition_data, _ in images:
         image_path = str(os.path.join(TRAINING_IMAGES_PATH, image))
         hand_image = cv2.imread(image_path)
-        hand_image_resized = cv2.resize(hand_image, (100, 100))  # to change!!!
         result, certainty = classify(algorithm=ALGORITHM.MOHMMAD_DADI,
-                                     payload=ImagePayload(image=hand_image_resized))
+                                     payload=ImagePayload(image=hand_image))
 
         cv2.imshow(f"Gesture: {result} ({certainty}%)", hand_image)
         cv2.waitKey(0)

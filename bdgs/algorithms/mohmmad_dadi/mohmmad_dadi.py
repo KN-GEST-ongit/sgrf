@@ -20,7 +20,8 @@ class MohmmadDadi(BaseAlgorithm):
             return ALGORITHM_FUNCTIONS[processing_method].process_image(payload)
 
         gray = cv2.cvtColor(payload.image, cv2.COLOR_BGR2GRAY)
-        _, binary = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
+        resized = cv2.resize(gray, (100, 100))  # added
+        _, binary = cv2.threshold(resized, 127, 255, cv2.THRESH_BINARY)
         kernel = np.ones((3, 3), np.uint8)
         eroded = cv2.erode(binary, kernel, iterations=2)
         dilated = cv2.dilate(eroded, kernel, iterations=1)
@@ -30,8 +31,12 @@ class MohmmadDadi(BaseAlgorithm):
 
     def classify(self, payload: ImagePayload,
                  processing_method: PROCESSING_METHOD = PROCESSING_METHOD.DEFAULT) -> (GESTURE, int):
+
         with open(os.path.join(TRAINED_MODELS_PATH, 'mohmmad_dadi_svm.pkl'), 'rb') as f:
             model = pickle.load(f)
+
+        # with open(os.path.join(TRAINED_MODELS_PATH, 'mohmmad_dadi_knn.pkl'), 'rb') as f:
+        #     model = pickle.load(f)
 
         with open(os.path.join(TRAINED_MODELS_PATH, 'mohmmad_dadi_pca.pkl'), 'rb') as f:
             pca = pickle.load(f)
