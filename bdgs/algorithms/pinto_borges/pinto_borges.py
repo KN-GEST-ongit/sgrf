@@ -55,7 +55,7 @@ class PintoBorges(BaseAlgorithm):
                       processing_method: PROCESSING_METHOD = PROCESSING_METHOD.DEFAULT) -> np.ndarray:
         cropped_image = crop_image(payload.image, payload.coords)
 
-        cropped_image = cv2.resize(cropped_image, (400, 400))
+        cropped_image = cv2.resize(cropped_image, (100, 100))
 
         skin_mask = skin_segmentation(cropped_image)
         skin_mask = morphological_processing(skin_mask)

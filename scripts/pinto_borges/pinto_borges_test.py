@@ -7,6 +7,7 @@ from bdgs.classifier import process_image, classify
 from bdgs.data.algorithm import ALGORITHM
 from bdgs.data.processing_method import PROCESSING_METHOD
 from scripts.common.camera_test import camera_test
+from scripts.common.crop_image import parse_file_coords
 from scripts.common.get_learning_files import get_learning_files
 from scripts.common.vars import TRAINING_IMAGES_PATH
 
@@ -21,7 +22,7 @@ def process_image_test():
         hand_image = cv2.imread(image_path)
         processed_image = process_image(
             algorithm=ALGORITHM.PINTO_BORGES,
-            payload=PintoBorgesPayload(image=hand_image, coords=image_file[1]),
+            payload=PintoBorgesPayload(image=hand_image, coords=parse_file_coords(image_file[1])),
             processing_method=PROCESSING_METHOD.DEFAULT
         )
 
@@ -38,7 +39,7 @@ def classify_test():
     for image_file in images:
         image_path = str(os.path.join(TRAINING_IMAGES_PATH, image_file[0]))
         image = cv2.imread(image_path)
-        coords = image_file[1]
+        coords = parse_file_coords(image_file[1])
 
         result, certainty = classify(algorithm=ALGORITHM.PINTO_BORGES,
                                      payload=PintoBorgesPayload(image=image, coords=coords))
@@ -48,6 +49,11 @@ def classify_test():
         cv2.destroyAllWindows()
 
 
+def cam_test():
+    camera_test(algorithm=ALGORITHM.PINTO_BORGES, show_prediction_tresh=60)
+
+
 if __name__ == "__main__":
     # process_image_test()
-    classify_test()
+    # classify_test()
+    cam_test()

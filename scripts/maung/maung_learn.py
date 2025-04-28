@@ -1,18 +1,17 @@
 import os
-import cv2
-import numpy as np
-import tensorflow as tf
-import keras
 import pickle
 
+import cv2
+import numpy as np
+from sklearn.linear_model import Perceptron
+from sklearn.model_selection import train_test_split
+
+from bdgs.classifier import process_image
+from bdgs.data.algorithm import ALGORITHM
+from bdgs.models.image_payload import ImagePayload
+from scripts.common.crop_image import crop_image, parse_file_coords
 from scripts.common.get_learning_files import get_learning_files
 from scripts.common.vars import TRAINING_IMAGES_PATH, TRAINED_MODELS_PATH
-from bdgs.classifier import process_image
-from scripts.common.crop_image import crop_image
-from bdgs.models.image_payload import ImagePayload
-from bdgs.data.algorithm import ALGORITHM
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import Perceptron
 
 
 def learn():
@@ -21,7 +20,7 @@ def learn():
     images = get_learning_files(limit=1000, shuffle=True)
     for image, hand_recognition_data, _ in images:
         image_path = str(os.path.join(TRAINING_IMAGES_PATH, image))
-        hand_image = crop_image(cv2.imread(image_path), hand_recognition_data)
+        hand_image = crop_image(cv2.imread(image_path), parse_file_coords(hand_recognition_data))
         processed_image = (process_image(
             algorithm=ALGORITHM.MAUNG,
             payload=ImagePayload(image=hand_image)

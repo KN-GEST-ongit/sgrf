@@ -8,7 +8,7 @@ from bdgs.data.algorithm import ALGORITHM
 from bdgs.data.gesture import GESTURE
 from bdgs.models.image_payload import ImagePayload
 from scripts.common.camera_test import camera_test
-from scripts.common.crop_image import crop_image
+from scripts.common.crop_image import crop_image, parse_file_coords
 from scripts.common.get_learning_files import get_learning_files
 from scripts.common.vars import TRAINING_IMAGES_PATH
 
@@ -22,7 +22,7 @@ def test_process_image():
 
         if image is not None:
             image_label = int(image_file[1].split(" ")[0])
-            image = crop_image(image, image_file[1])
+            image = crop_image(image, parse_file_coords(image_file[1]))
             alg = AdithyaRajesh()
             payload = ImagePayload(image=image)
             processed_image = alg.process_image(payload)
@@ -47,7 +47,7 @@ def classify_test():
 
         if image is not None:
             image_label = int(image_file[1].split(" ")[0])
-            image = crop_image(image, image_file[1])
+            image = crop_image(image, parse_file_coords(image_file[1]))
 
             alg = AdithyaRajesh()
             payload = ImagePayload(image)

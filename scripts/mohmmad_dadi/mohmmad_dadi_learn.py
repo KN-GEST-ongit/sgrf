@@ -1,18 +1,18 @@
 import os
-import cv2
-import numpy as np
 import pickle
 
-from scripts.common.get_learning_files import get_learning_files
-from scripts.common.vars import TRAINING_IMAGES_PATH, TRAINED_MODELS_PATH
-from bdgs.classifier import process_image
-from scripts.common.crop_image import crop_image
-from bdgs.models.image_payload import ImagePayload
-from bdgs.data.algorithm import ALGORITHM
-from sklearn.model_selection import train_test_split
+import cv2
+import numpy as np
 from sklearn.decomposition import PCA
+from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
+
+from bdgs.classifier import process_image
+from bdgs.data.algorithm import ALGORITHM
+from bdgs.models.image_payload import ImagePayload
+from scripts.common.get_learning_files import get_learning_files
+from scripts.common.vars import TRAINING_IMAGES_PATH, TRAINED_MODELS_PATH
 
 
 def learn():
@@ -57,6 +57,7 @@ def learn():
     model_path = os.path.join(TRAINED_MODELS_PATH, 'mohmmad_dadi_svm.pkl')
     with open(model_path, 'wb') as f:
         pickle.dump(svm, f)
+
 
 if __name__ == "__main__":
     learn()

@@ -6,9 +6,9 @@ from bdgs import classify
 from bdgs.algorithms.mohmmad_dadi.mohmmad_dadi import MohmmadDadi
 from bdgs.data.algorithm import ALGORITHM
 from bdgs.models.image_payload import ImagePayload
+from scripts.common.camera_test import camera_test
 from scripts.common.get_learning_files import get_learning_files
 from scripts.common.vars import TRAINING_IMAGES_PATH
-from scripts.common.camera_test import camera_test
 
 
 def test_process_image():

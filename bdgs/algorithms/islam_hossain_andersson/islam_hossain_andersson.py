@@ -5,9 +5,9 @@ import keras
 import numpy as np
 
 from bdgs.algorithms.bdgs_algorithm import BaseAlgorithm
+from bdgs.algorithms.islam_hossain_andersson.islam_hossain_andersson_payload import IslamHossainAnderssonPayload
 from bdgs.data.gesture import GESTURE
 from bdgs.data.processing_method import PROCESSING_METHOD
-from bdgs.algorithms.islam_hossain_andersson.islam_hossain_andersson_payload import IslamHossainAnderssonPayload
 from scripts.common.vars import TRAINED_MODELS_PATH
 
 
@@ -28,7 +28,7 @@ class IslamHossainAndersson(BaseAlgorithm):
             # grayscale
             grayscale = cv2.cvtColor(fg_color, cv2.COLOR_BGR2GRAY)
             # morphological erosion
-            kernel = np.ones((5,5),np.uint8)
+            kernel = np.ones((5, 5), np.uint8)
             erosion = cv2.erode(grayscale, kernel)
             # median filter
             median_filter = cv2.medianBlur(erosion, 5)
@@ -41,7 +41,8 @@ class IslamHossainAndersson(BaseAlgorithm):
         else:
             raise Exception("Invalid processing method")
 
-    def classify(self, payload: IslamHossainAnderssonPayload, processing_method: PROCESSING_METHOD = PROCESSING_METHOD.DEFAULT) -> (
+    def classify(self, payload: IslamHossainAnderssonPayload,
+                 processing_method: PROCESSING_METHOD = PROCESSING_METHOD.DEFAULT) -> (
             GESTURE, int):
         model = keras.models.load_model(os.path.join(TRAINED_MODELS_PATH, "islam_hossain_andersson.keras"))
         processed_image = self.process_image(payload=payload)

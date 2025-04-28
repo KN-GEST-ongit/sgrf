@@ -6,10 +6,10 @@ from bdgs import classify
 from bdgs.algorithms.maung.maung import Maung
 from bdgs.data.algorithm import ALGORITHM
 from bdgs.models.image_payload import ImagePayload
-from scripts.common.crop_image import crop_image
+from scripts.common.camera_test import camera_test
+from scripts.common.crop_image import crop_image, parse_file_coords
 from scripts.common.get_learning_files import get_learning_files
 from scripts.common.vars import TRAINING_IMAGES_PATH
-from scripts.common.camera_test import camera_test
 
 
 def test_process_image():
@@ -20,7 +20,7 @@ def test_process_image():
         print(image_path)
         image = cv2.imread(image_path)
 
-        image = crop_image(image, coords)
+        image = crop_image(image, parse_file_coords(coords))
 
         if image is not None:
             cv2.imshow("Before", image)
@@ -48,7 +48,7 @@ def classify_test():
 
     for image, hand_recognition_data, _ in images:
         image_path = str(os.path.join(TRAINING_IMAGES_PATH, image))
-        hand_image = crop_image(cv2.imread(image_path), hand_recognition_data)
+        hand_image = crop_image(cv2.imread(image_path), parse_file_coords(hand_recognition_data))
         result, certainty = classify(algorithm=ALGORITHM.MAUNG,
                                      payload=ImagePayload(image=hand_image))
 

@@ -1,9 +1,11 @@
 import cv2
+import numpy as np
 from tensorflow.python.data.experimental.ops.testing import sleep
 
 from bdgs import classify
-from bdgs.algorithms.murthy_jadon.murthy_jadon_payload import MurthyJadonPayload
 from bdgs.algorithms.islam_hossain_andersson.islam_hossain_andersson_payload import IslamHossainAnderssonPayload
+from bdgs.algorithms.murthy_jadon.murthy_jadon_payload import MurthyJadonPayload
+from bdgs.algorithms.pinto_borges.pinto_borges_payload import PintoBorgesPayload
 from bdgs.classifier import process_image
 from bdgs.data.algorithm import ALGORITHM
 from bdgs.models.image_payload import ImagePayload
@@ -34,11 +36,14 @@ def camera_test(algorithm: ALGORITHM, show_prediction_tresh=70):
         if frame_count % 2 == 0:
             image = frame
 
+        coords = detect_hand(image)
+
         if algorithm == ALGORITHM.MURTHY_JADON:
             payload = MurthyJadonPayload(image=image, bg_image=background)
         elif algorithm == ALGORITHM.ISLAM_HOSSAIN_ANDERSSON:
             payload = IslamHossainAnderssonPayload(image=image, bg_image=background)
-        # other algs
+        elif algorithm == ALGORITHM.PINTO_BORGES:
+            payload = PintoBorgesPayload(image=image, coords=coords)
         else:
             payload = ImagePayload(image=image)
 
@@ -84,3 +89,26 @@ def show_prediction_text(certainty, image, prediction):
     x = image.shape[1] - text_width - 10
     y = image.shape[0] - 10
     cv2.putText(image, text, (x, y), font, font_scale, color, thickness)
+
+
+def detect_hand(frame):
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+
+    lower_skin = np.array([0, 30, 60], dtype=np.uint8)
+    upper_skin = np.array([20, 150, 255], dtype=np.uint8)
+
+    mask = cv2.inRange(hsv, lower_skin, upper_skin)
+    mask = cv2.GaussianBlur(mask, (5, 5), 0)
+    mask = cv2.erode(mask, None, iterations=2)
+    mask = cv2.dilate(mask, None, iterations=2)
+
+    contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    if contours:
+        largest_contour = max(contours, key=cv2.contourArea)
+
+        if cv2.contourArea(largest_contour) > 5000:
+            x, y, w, h = cv2.boundingRect(largest_contour)
+            return [(x, y), (x + w, y + h)]
+
+    return None

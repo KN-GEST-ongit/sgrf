@@ -1,8 +1,8 @@
-import cv2
-import numpy as np
-import keras
 import os
 import pickle
+
+import cv2
+import numpy as np
 
 from bdgs.algorithms.bdgs_algorithm import BaseAlgorithm
 from bdgs.data.gesture import GESTURE
@@ -50,4 +50,4 @@ class Maung(BaseAlgorithm):
         processed_image = (self.process_image(payload=payload, processing_method=processing_method)).flatten()
         processed_image = np.expand_dims(processed_image, axis=0)  #
         predictions = model.predict(processed_image)
-        return GESTURE(predictions[0]+1), 100
+        return GESTURE(predictions[0] + 1), 100
