@@ -27,7 +27,7 @@ def classification_test(algorithm: ALGORITHM):
         if algorithm == ALGORITHM.MURTHY_JADON:
             payload = MurthyJadonPayload(image=image, bg_image=background)
         elif algorithm == ALGORITHM.ISLAM_HOSSAIN_ANDERSSON:
-            payload = IslamHossainAnderssonPayload(image=image, bg_image=background)
+            payload = IslamHossainAnderssonPayload(image=image, bg_image=background, coords=coords)
         elif algorithm == ALGORITHM.PINTO_BORGES:
             payload = PintoBorgesPayload(image=image, coords=coords)
         else:

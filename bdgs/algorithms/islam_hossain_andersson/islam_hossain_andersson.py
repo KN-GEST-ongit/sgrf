@@ -9,6 +9,7 @@ from bdgs.algorithms.islam_hossain_andersson.islam_hossain_andersson_payload imp
 from bdgs.data.gesture import GESTURE
 from bdgs.data.processing_method import PROCESSING_METHOD
 from scripts.common.vars import TRAINED_MODELS_PATH
+from scripts.common.crop_image import crop_image
 
 
 class IslamHossainAndersson(BaseAlgorithm):
@@ -17,6 +18,9 @@ class IslamHossainAndersson(BaseAlgorithm):
         if processing_method == PROCESSING_METHOD.DEFAULT or processing_method == PROCESSING_METHOD.ISLAM_HOSSAIN_ANDERSSON:
             image = payload.image
             background = payload.bg_image
+            if payload.coords is not None:
+                image = crop_image(image, payload.coords)
+                background = crop_image(background, payload.coords)
             # The paper did not specify exact parameters for preprocessing methods, so
             # values used here were selected based on experiments to achieve best results
 
@@ -35,9 +39,7 @@ class IslamHossainAndersson(BaseAlgorithm):
             # resize
             resized = cv2.resize(median_filter, (50, 50))
 
-            expanded_dims = np.expand_dims(resized, axis=0)
-
-            return expanded_dims
+            return resized
         else:
             raise Exception("Invalid processing method")
 
@@ -46,7 +48,8 @@ class IslamHossainAndersson(BaseAlgorithm):
             GESTURE, int):
         model = keras.models.load_model(os.path.join(TRAINED_MODELS_PATH, "islam_hossain_andersson.keras"))
         processed_image = self.process_image(payload=payload)
-        predictions = model.predict(processed_image)
+        expanded_dims = np.expand_dims(processed_image, axis=0)
+        predictions = model.predict(expanded_dims)
 
         predicted_class = 1
         certainty = 0
