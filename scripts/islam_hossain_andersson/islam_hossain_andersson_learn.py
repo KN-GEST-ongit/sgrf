@@ -12,7 +12,7 @@ from sklearn.model_selection import train_test_split
 from bdgs.algorithms.islam_hossain_andersson.islam_hossain_andersson import IslamHossainAndersson
 from bdgs.algorithms.islam_hossain_andersson.islam_hossain_andersson_payload import IslamHossainAnderssonPayload
 from bdgs.data.gesture import GESTURE
-from scripts.common.crop_image import crop_image, parse_file_coords
+from scripts.common.crop_image import parse_file_coords
 from scripts.common.get_learning_files import get_learning_files
 from scripts.common.vars import TRAINING_IMAGES_PATH, TRAINED_MODELS_PATH
 
@@ -30,12 +30,10 @@ def get_training_data():
         image_path = os.path.join(TRAINING_IMAGES_PATH, image_file[0])
         image = cv2.imread(str(image_path))
         label = int(image_file[1].split(" ")[0])
-        cropped_image = crop_image(image, parse_file_coords(image_file[1]))
+        coords = parse_file_coords(image_file[1])
         bg_image = cv2.imread(str(os.path.join(TRAINING_IMAGES_PATH, image_file[2])))
-        cropped_bg = crop_image(bg_image, parse_file_coords(image_file[1]))
-        payload = IslamHossainAnderssonPayload(image=cropped_image, bg_image=cropped_bg)
+        payload = IslamHossainAnderssonPayload(image=image, bg_image=bg_image, coords=coords)
         image = alg.process_image(payload)
-        image = np.squeeze(image)
 
         labels.append(label - 1)
         processed_images.append(image)
