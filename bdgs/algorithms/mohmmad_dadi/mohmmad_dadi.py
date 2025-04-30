@@ -8,7 +8,7 @@ from bdgs.algorithms.bdgs_algorithm import BaseAlgorithm
 from bdgs.data.gesture import GESTURE
 from bdgs.data.processing_method import PROCESSING_METHOD
 from bdgs.models.image_payload import ImagePayload
-from scripts.common.vars import TRAINED_MODELS_PATH
+from definitions import ROOT_DIR
 
 
 class MohmmadDadi(BaseAlgorithm):
@@ -31,13 +31,13 @@ class MohmmadDadi(BaseAlgorithm):
 
     def classify(self, payload: ImagePayload,
                  processing_method: PROCESSING_METHOD = PROCESSING_METHOD.DEFAULT) -> (GESTURE, int):
-        with open(os.path.join(TRAINED_MODELS_PATH, 'mohmmad_dadi_svm.pkl'), 'rb') as f:
+        with open(os.path.join(ROOT_DIR, "trained_models", 'mohmmad_dadi_svm.pkl'), 'rb') as f:
             model = pickle.load(f)
 
         # with open(os.path.join(TRAINED_MODELS_PATH, 'mohmmad_dadi_knn.pkl'), 'rb') as f:
         #     model = pickle.load(f)
 
-        with open(os.path.join(TRAINED_MODELS_PATH, 'mohmmad_dadi_pca.pkl'), 'rb') as f:
+        with open(os.path.join(ROOT_DIR, "trained_models", 'mohmmad_dadi_pca.pkl'), 'rb') as f:
             pca = pickle.load(f)
 
         processed_image = self.process_image(payload=payload, processing_method=processing_method).flatten()

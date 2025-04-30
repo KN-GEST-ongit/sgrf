@@ -1,0 +1,43 @@
+{
+  "timestamp": "30/04/2025T22:31:46",
+  "images": 10,
+  "repeat_amount": 2,
+  "max_people_amount": 5,
+  "algorithms": {
+    "EID_SCHWENKER": {
+      "algorithm": "EID_SCHWENKER",
+      "corrent_percent": 45.0,
+      "average_certainty": 89.3
+    },
+    "MOHMMAD_DADI": {
+      "algorithm": "MOHMMAD_DADI",
+      "corrent_percent": 30.0,
+      "average_certainty": 100.0
+    },
+    "MURTHY_JADON": {
+      "algorithm": "MURTHY_JADON",
+      "corrent_percent": 50.0,
+      "average_certainty": 89.7
+    },
+    "ISLAM_HOSSAIN_ANDERSSON": {
+      "algorithm": "ISLAM_HOSSAIN_ANDERSSON",
+      "corrent_percent": 50.0,
+      "average_certainty": 99.1
+    },
+    "MAUNG": {
+      "algorithm": "MAUNG",
+      "corrent_percent": 10.0,
+      "average_certainty": 100.0
+    },
+    "PINTO_BORGES": {
+      "algorithm": "PINTO_BORGES",
+      "corrent_percent": 45.0,
+      "average_certainty": 100.0
+    },
+    "ADITHYA_RAJESH": {
+      "algorithm": "ADITHYA_RAJESH",
+      "corrent_percent": 50.0,
+      "average_certainty": 99.3
+    }
+  }
+}

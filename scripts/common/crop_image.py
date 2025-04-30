@@ -20,3 +20,7 @@ def parse_file_coords(coord_string: str) -> list[tuple[int, int]]:
         result.append((x, y))
 
     return result
+
+
+def parse_etiquette(etiquette: str) -> int:
+    return int(etiquette.split(" ")[0]) - 1

@@ -6,13 +6,15 @@ from scripts.common.vars import TRAINING_IMAGES_PATH
 
 def get_learning_files(skip_empty=True, shuffle=True, limit=None, offset=0,
                        limit_recordings_of_single_person_single_gesture=None,
-                       limit_images_in_single_person_single_recording=None):
+                       limit_images_in_single_person_single_recording=None,
+                       limit_people=None, base_path=TRAINING_IMAGES_PATH):
     image_files = []
     classify_file = None
 
     visited_paths = {}
+    visited_people = {}
 
-    for root, _, files in os.walk(TRAINING_IMAGES_PATH):
+    for root, _, files in os.walk(base_path):
         if ".git" in root:
             continue
         for file in files:
@@ -22,11 +24,15 @@ def get_learning_files(skip_empty=True, shuffle=True, limit=None, offset=0,
         if classify_file is None or len(files) == 0: continue
 
         parent_path = "/".join(root.rstrip("/").split("/")[:-1])
+        people_path = parent_path.split("/")[-3]
         visited_paths[parent_path] = visited_paths.get(parent_path, 0) + 1
+        visited_people[people_path] = visited_people.get(people_path, 0) + 1
 
         if limit_recordings_of_single_person_single_gesture is not None and visited_paths.get(parent_path,
                                                                                               0) > limit_recordings_of_single_person_single_gesture:
             continue
+        if limit_people is not None and len(visited_people) > limit_people:
+            break
 
         with open(classify_file, "r") as f:
             classify_row = [line.split("\n")[0] for line in f]

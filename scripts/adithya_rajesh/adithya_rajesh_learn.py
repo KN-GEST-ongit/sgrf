@@ -10,8 +10,8 @@ from keras.src.optimizers import SGD
 from sklearn.model_selection import KFold, train_test_split
 
 from bdgs.algorithms.adithya_rajesh.adithya_rajesh import AdithyaRajesh
-from bdgs.data.gesture import GESTURE
 from bdgs.algorithms.adithya_rajesh.adithya_rajesh_payload import AdithyaRajeshPayload
+from bdgs.data.gesture import GESTURE
 from scripts.common.crop_image import parse_file_coords
 from scripts.common.get_learning_files import get_learning_files
 from scripts.common.vars import TRAINING_IMAGES_PATH, TRAINED_MODELS_PATH
