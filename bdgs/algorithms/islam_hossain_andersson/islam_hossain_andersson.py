@@ -3,13 +3,56 @@ import os
 import cv2
 import keras
 import numpy as np
+from keras import Sequential
+from keras.src import layers
+from keras.src.losses import CategoricalCrossentropy
+from keras.src.optimizers import SGD
+from sklearn.model_selection import train_test_split
 
 from bdgs.algorithms.bdgs_algorithm import BaseAlgorithm
+from bdgs.algorithms.islam_hossain_andersson.islam_hossain_andersson_learning_data import \
+    IslamHossainAnderssonLearningData
 from bdgs.algorithms.islam_hossain_andersson.islam_hossain_andersson_payload import IslamHossainAnderssonPayload
+from bdgs.common.crop_image import crop_image
 from bdgs.data.gesture import GESTURE
 from bdgs.data.processing_method import PROCESSING_METHOD
-from scripts.common.vars import TRAINED_MODELS_PATH
-from scripts.common.crop_image import crop_image
+from definitions import ROOT_DIR
+
+
+def create_model(num_classes, enable_augmentation=True):
+    model = Sequential()
+
+    # augmentation parameter values were not specified, so they were found with experiments.
+    if enable_augmentation:
+        # augmentation layer
+        model.add(keras.Sequential([
+            layers.Rescaling(1.0 / 255, input_shape=(50, 50, 1)),
+            layers.RandomRotation(0.10),
+            layers.RandomZoom(0.1),
+            layers.RandomTranslation(0.1, 0.1),
+            layers.RandomShear(0.1),
+            layers.RandomFlip("horizontal")
+        ]))
+    else:
+        model.add(layers.Rescaling(1.0 / 255, input_shape=(50, 50, 1)))
+
+    model.add(layers.Conv2D(filters=64, kernel_size=(3, 3), activation="relu"))
+    model.add(layers.MaxPooling2D(pool_size=(2, 2)))
+    model.add(layers.Conv2D(filters=64, kernel_size=(3, 3), activation="relu"))
+    model.add(layers.MaxPooling2D(pool_size=(2, 2)))
+    model.add(layers.Dropout(0.25))
+    model.add(layers.Flatten())
+    model.add(layers.Dense(256, activation='relu'))
+    model.add(layers.Dropout(0.25))
+    model.add(layers.Dense(256, activation='relu'))
+    model.add(layers.Dropout(0.25))
+    model.add(layers.Dense(num_classes, activation='softmax'))
+    model.compile(
+        optimizer=SGD(learning_rate=0.001),
+        loss=CategoricalCrossentropy(),
+        metrics=['accuracy']
+    )
+    return model
 
 
 class IslamHossainAndersson(BaseAlgorithm):
@@ -46,10 +89,10 @@ class IslamHossainAndersson(BaseAlgorithm):
     def classify(self, payload: IslamHossainAnderssonPayload,
                  processing_method: PROCESSING_METHOD = PROCESSING_METHOD.DEFAULT) -> (
             GESTURE, int):
-        model = keras.models.load_model(os.path.join(TRAINED_MODELS_PATH, "islam_hossain_andersson.keras"))
+        model = keras.models.load_model(os.path.join(ROOT_DIR, "trained_models", "islam_hossain_andersson.keras"))
         processed_image = self.process_image(payload=payload)
         expanded_dims = np.expand_dims(processed_image, axis=0)
-        predictions = model.predict(expanded_dims)
+        predictions = model.predict(expanded_dims, verbose=0)
 
         predicted_class = 1
         certainty = 0
@@ -58,3 +101,40 @@ class IslamHossainAndersson(BaseAlgorithm):
             certainty = int(np.max(prediction) * 100)
 
         return GESTURE(predicted_class), certainty
+
+    def learn(self, learning_data: list[IslamHossainAnderssonLearningData], target_model_path: str) -> (float, float):
+        processed_images = []
+        labels = []
+        for data in learning_data:
+            hand_image = cv2.imread(data.image_path)
+            background_image = cv2.imread(data.bg_image_path)
+            processed_image = self.process_image(
+                payload=IslamHossainAnderssonPayload(image=hand_image, coords=data.coords, bg_image=background_image))
+
+            processed_images.append(processed_image)
+            labels.append(data.label.value - 1)
+
+        processed_images = np.array(processed_images)
+        labels = np.array(labels)
+        num_classes = len(GESTURE)
+
+        model = create_model(num_classes, enable_augmentation=False)
+
+        x_train, x_val, y_train, y_val = train_test_split(processed_images, labels, test_size=0.2,
+                                                          random_state=42)
+        y_train_one_hot = keras.utils.to_categorical(y_train, num_classes=num_classes)
+        y_val_one_hot = keras.utils.to_categorical(y_val, num_classes=num_classes)
+
+        history = model.fit(x_train, y_train_one_hot,
+                            validation_data=(x_val, y_val_one_hot),
+                            batch_size=32,
+                            epochs=60,
+                            verbose="auto")
+
+        keras.models.save_model(
+            model=model,
+            filepath=os.path.join(target_model_path, "islam_hossain_andersson.keras")
+        )
+
+        test_loss, test_acc = model.evaluate(x_val, y_val_one_hot, verbose=0)
+        return test_acc, test_loss

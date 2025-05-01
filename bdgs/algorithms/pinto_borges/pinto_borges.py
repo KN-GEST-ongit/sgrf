@@ -3,13 +3,16 @@ import os
 import cv2
 import keras
 import numpy as np
+from keras.api import models, layers
+from sklearn.model_selection import train_test_split
 
 from bdgs.algorithms.bdgs_algorithm import BaseAlgorithm
+from bdgs.algorithms.pinto_borges.pinto_borges_learning_data import PintoBorgesLearningData
 from bdgs.algorithms.pinto_borges.pinto_borges_payload import PintoBorgesPayload
+from bdgs.common.crop_image import crop_image
 from bdgs.data.gesture import GESTURE
 from bdgs.data.processing_method import PROCESSING_METHOD
-from scripts.common.crop_image import crop_image
-from scripts.common.vars import TRAINED_MODELS_PATH
+from definitions import ROOT_DIR
 
 
 def skin_segmentation(image: np.ndarray) -> np.ndarray:
@@ -68,14 +71,53 @@ class PintoBorges(BaseAlgorithm):
                  processing_method: PROCESSING_METHOD = PROCESSING_METHOD.DEFAULT) -> (GESTURE, int):
         predicted_class = 1
         certainty = 0
-        model = keras.models.load_model(os.path.join(TRAINED_MODELS_PATH, 'pinto_borges.keras'))
+        model = keras.models.load_model(os.path.join(ROOT_DIR, "trained_models", 'pinto_borges.keras'))
         processed_image = self.process_image(payload=payload, processing_method=processing_method)
         processed_image = np.expand_dims(processed_image, axis=0)  #
 
-        predictions = model.predict(processed_image)
+        predictions = model.predict(processed_image, verbose=0)
 
         for i, prediction in enumerate(predictions):
             predicted_class = np.argmax(prediction) + 1
             certainty = int(np.max(prediction) * 100)
 
         return GESTURE(predicted_class), certainty
+
+    def learn(self, learning_data: list[PintoBorgesLearningData], target_model_path: str) -> (float, float):
+        epochs = 10
+        processed_images = []
+        etiquettes = []
+        for data in learning_data:
+            hand_image = cv2.imread(data.image_path)
+            image = self.process_image(
+                payload=PintoBorgesPayload(image=hand_image, coords=data.coords)
+            )
+
+            processed_images.append(image)
+            etiquettes.append(data.label.value - 1)
+
+        X = np.array(processed_images).reshape(-1, 100, 100, 1) / 255.0
+        y = np.array(etiquettes)
+
+        X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
+
+        model = models.Sequential([
+            layers.Conv2D(32, (3, 3), activation='relu', input_shape=(100, 100, 1)),
+            layers.MaxPooling2D((2, 2)),
+            layers.Conv2D(64, (3, 3), activation='relu'),
+            layers.MaxPooling2D((2, 2)),
+            layers.Conv2D(128, (3, 3), activation='relu'),
+            layers.MaxPooling2D((2, 2)),
+            layers.Flatten(),
+            layers.Dense(400, activation='relu'),
+            layers.Dense(800, activation='relu'),
+            layers.Dense(10, activation='softmax')
+        ])
+
+        model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+        model.fit(X_train, y_train, epochs=epochs, validation_data=(X_val, y_val), verbose=0, batch_size=8)
+
+        keras.models.save_model(model, os.path.join(target_model_path, 'pinto_borges.keras'))
+        test_loss, test_acc = model.evaluate(X_val, y_val, verbose=0)
+
+        return test_acc, test_loss

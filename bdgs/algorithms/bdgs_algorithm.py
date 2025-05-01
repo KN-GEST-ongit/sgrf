@@ -5,6 +5,7 @@ from numpy import ndarray
 from bdgs.data.gesture import GESTURE
 from bdgs.data.processing_method import PROCESSING_METHOD
 from bdgs.models.image_payload import ImagePayload
+from bdgs.models.learning_data import LearningData
 
 
 class BaseAlgorithm(ABC):
@@ -20,3 +21,8 @@ class BaseAlgorithm(ABC):
                  processing_method: PROCESSING_METHOD = PROCESSING_METHOD.DEFAULT) -> GESTURE:
         """Classify gesture based on static image"""
         raise NotImplementedError("Method classify not implemented")
+
+    # @abstractmethod
+    def learn(self, learning_data: list[LearningData], target_model_path: str) -> (float, float):
+        """Learn from static images"""
+        raise NotImplementedError("Method learn not implemented")

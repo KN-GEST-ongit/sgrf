@@ -1,0 +1,20 @@
+from bdgs.algorithms.adithya_rajesh.adithya_rajesh_payload import AdithyaRajeshPayload
+from bdgs.algorithms.islam_hossain_andersson.islam_hossain_andersson_payload import IslamHossainAnderssonPayload
+from bdgs.algorithms.murthy_jadon.murthy_jadon_payload import MurthyJadonPayload
+from bdgs.algorithms.pinto_borges.pinto_borges_payload import PintoBorgesPayload
+from bdgs.data.algorithm import ALGORITHM
+from bdgs.models.image_payload import ImagePayload
+
+
+def choose_payload(algorithm, background, coords, image):
+    if algorithm == ALGORITHM.MURTHY_JADON:
+        payload = MurthyJadonPayload(image=image, bg_image=background)
+    elif algorithm == ALGORITHM.ISLAM_HOSSAIN_ANDERSSON:
+        payload = IslamHossainAnderssonPayload(image=image, bg_image=background, coords=coords)
+    elif algorithm == ALGORITHM.PINTO_BORGES:
+        payload = PintoBorgesPayload(image=image, coords=coords)
+    elif algorithm == ALGORITHM.ADITHYA_RAJESH:
+        payload = AdithyaRajeshPayload(image=image, coords=coords)
+    else:
+        payload = ImagePayload(image=image)
+    return payload

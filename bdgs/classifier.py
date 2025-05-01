@@ -5,6 +5,7 @@ from bdgs.data.algorithm_functions import ALGORITHM_FUNCTIONS
 from bdgs.data.gesture import GESTURE
 from bdgs.data.processing_method import PROCESSING_METHOD
 from bdgs.models.image_payload import ImagePayload
+from bdgs.models.learning_data import LearningData
 
 
 def process_image(algorithm: ALGORITHM, payload: ImagePayload,
@@ -21,3 +22,10 @@ def classify(algorithm: ALGORITHM, payload: ImagePayload,
     prediction, certainty = classifier.classify(payload, processing_method)
 
     return prediction, certainty
+
+
+def learn(algorithm: ALGORITHM, learning_data: list[LearningData], target_model_path: str):
+    classifier = ALGORITHM_FUNCTIONS[algorithm]
+    acc, loss = classifier.learn(learning_data, target_model_path)
+
+    return acc, loss
