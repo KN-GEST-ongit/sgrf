@@ -5,22 +5,26 @@ import cv2
 import numpy as np
 from sklearn.decomposition import PCA
 from sklearn.model_selection import train_test_split
-from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
-
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 from bdgs.algorithms.bdgs_algorithm import BaseAlgorithm
 from bdgs.data.gesture import GESTURE
 from bdgs.data.processing_method import PROCESSING_METHOD
 from bdgs.algorithms.gupta_jaafar.gupta_jaafar_payload import GuptaJaafarPayload
 from bdgs.algorithms.gupta_jaafar.gupta_jaafar_learning_data import GuptaJaafarLearningData
-from bdgs.models.learning_data import LearningData
 from skimage.filters import gabor
 from bdgs.common.crop_image import crop_image
+from sklearn.pipeline import Pipeline
+from sklearn.metrics import accuracy_score
+from definitions import ROOT_DIR
 
 
 class GuptaJaafar(BaseAlgorithm):
     GABOR_SCALES = [1, 2, 3]
     GABOR_ORIENTATIONS = [0, np.deg2rad(36), np.deg2rad(72), np.deg2rad(108), np.deg2rad(144)]
+
+    def __init__(self):
+        self.feature_vector = None
 
     def process_image(self, payload: GuptaJaafarPayload,
                       processing_method: PROCESSING_METHOD = PROCESSING_METHOD.DEFAULT) -> np.ndarray:
@@ -41,7 +45,7 @@ class GuptaJaafar(BaseAlgorithm):
                 preview_accumulator += real.astype(np.float32)
                 features.append(real.flatten())
 
-        feature_vector = np.concatenate(features)
+        self.feature_vector = np.concatenate(features)
         preview_image = preview_accumulator / len(features)
         preview_image = cv2.normalize(preview_image, None, 0, 255, cv2.NORM_MINMAX)
         preview_image = preview_image.astype(np.uint8)
@@ -49,22 +53,38 @@ class GuptaJaafar(BaseAlgorithm):
 
     def classify(self, payload: GuptaJaafarPayload,
                  processing_method: PROCESSING_METHOD = PROCESSING_METHOD.DEFAULT) -> (GESTURE, int):
-        return 1, 100
+
+        with open(os.path.join(ROOT_DIR, "trained_models", 'gupta_jaafar.pkl'), 'rb') as f:
+            model = pickle.load(f)
+
+        self.process_image(payload=payload, processing_method=processing_method)
+        predictions = model.predict(self.feature_vector)
+        return GESTURE(predictions[0] + 1), 100
 
     def learn(self, learning_data: list[GuptaJaafarLearningData], target_model_path: str) -> (float, float):
-        processed_images = []
+        processed_features = []
         etiquettes = []
         for data in learning_data:
             hand_image = cv2.imread(data.image_path)
-            processed_image = (self.process_image(
-                payload=GuptaJaafarPayload(image=hand_image, coords=data.coords)
-            )).flatten()
-            processed_images.append(processed_image)
+            self.process_image(payload=GuptaJaafarPayload(image=hand_image, coords=data.coords))
+            processed_features.append(self.feature_vector)
             etiquettes.append(data.label.value - 1)
-
-        X = np.array(processed_images)
+        X = np.array(processed_features)
         y = np.array(etiquettes)
-
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        pca = PCA(n_components=50)
+        lda = LDA(n_components=5)
+        svm = SVC(kernel='rbf', decision_function_shape='ovo')
+        model = Pipeline([
+            ('pca', pca),
+            ('lda', lda),
+            ('svm', svm)
+        ])
+        model.fit(X_train, y_train)
+        train_accuracy = accuracy_score(y_train, model.predict(X_train))
+        test_accuracy = accuracy_score(y_test, model.predict(X_test))
+        model_path = os.path.join(target_model_path, 'gupta_jaafar_pca.pkl')
+        with open(model_path, 'wb') as f:
+            pickle.dump(model, f)
 
-        return 0, 0
+        return train_accuracy * 100, test_accuracy * 100
