@@ -19,8 +19,12 @@ from bdgs.common.crop_image import crop_image
 
 
 class GuptaJaafar(BaseAlgorithm):
+    GABOR_SCALES = [1, 2, 3]
+    GABOR_ORIENTATIONS = [0, np.deg2rad(36), np.deg2rad(72), np.deg2rad(108), np.deg2rad(144)]
+
     def process_image(self, payload: GuptaJaafarPayload,
                       processing_method: PROCESSING_METHOD = PROCESSING_METHOD.DEFAULT) -> np.ndarray:
+
         # Experimental
         if processing_method != PROCESSING_METHOD.DEFAULT:
             from bdgs.data.algorithm_functions import ALGORITHM_FUNCTIONS
@@ -29,14 +33,19 @@ class GuptaJaafar(BaseAlgorithm):
         cropped_image = crop_image(payload.image, payload.coords)
         gray = cv2.cvtColor(cropped_image, cv2.COLOR_BGR2GRAY)
         resized = cv2.resize(gray, (64, 64))
-        gabor_scales = [1, 2, 3]
-        gabor_orientations = [0, np.pi / 4, np.pi / 2, 3 * np.pi / 4, np.pi]
         features = []
-        for sigma in gabor_scales:
-            for theta in gabor_orientations:
-                real, _ = gabor(resized, frequency=0.2, theta=theta, sigma_x=sigma, sigma_y=sigma)
+        preview_accumulator = np.zeros_like(resized, dtype=np.float32)
+        for sigma in self.GABOR_SCALES:
+            for theta in self.GABOR_ORIENTATIONS:
+                real, _ = gabor(resized, frequency=0.5, theta=theta, sigma_x=sigma, sigma_y=sigma)
+                preview_accumulator += real.astype(np.float32)
                 features.append(real.flatten())
-        return real
+
+        feature_vector = np.concatenate(features)
+        preview_image = preview_accumulator / len(features)
+        preview_image = cv2.normalize(preview_image, None, 0, 255, cv2.NORM_MINMAX)
+        preview_image = preview_image.astype(np.uint8)
+        return preview_image
 
     def classify(self, payload: GuptaJaafarPayload,
                  processing_method: PROCESSING_METHOD = PROCESSING_METHOD.DEFAULT) -> (GESTURE, int):
