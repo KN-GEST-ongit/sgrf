@@ -50,5 +50,5 @@ def classification_visual_test(algorithm: ALGORITHM, images_amount: int):
 
 
 if __name__ == "__main__":
-    image_processing_visual_test(ALGORITHM.MOHMMAD_DADI, 2)
-    classification_visual_test(ALGORITHM.MOHMMAD_DADI, 2)
+    image_processing_visual_test(ALGORITHM.MAUNG, 2)
+    classification_visual_test(ALGORITHM.MAUNG, 2)

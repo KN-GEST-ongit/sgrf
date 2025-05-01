@@ -1,5 +1,6 @@
 import os
 import random
+from pathlib import Path
 
 from scripts.vars import TRAINING_IMAGES_PATH
 
@@ -23,8 +24,9 @@ def get_learning_files(skip_empty=True, shuffle=True, limit=None, offset=0,
                 break
         if classify_file is None or len(files) == 0: continue
 
-        parent_path = "/".join(root.rstrip("/").split("/")[:-1])
-        people_path = parent_path.split("/")[-3]
+        root = Path(root).resolve()
+        parent_path = root.parent
+        people_path = parent_path.parents[2].name
         visited_paths[parent_path] = visited_paths.get(parent_path, 0) + 1
         visited_people[people_path] = visited_people.get(people_path, 0) + 1
 
