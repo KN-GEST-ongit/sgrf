@@ -19,4 +19,3 @@ def learn_test(algorithm: ALGORITHM, images_amount: int, people_amount: int):
 
 if __name__ == "__main__":
     learn_test(ALGORITHM.EID_SCHWENKER, 1000, 5)
-    

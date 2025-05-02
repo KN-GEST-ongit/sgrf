@@ -31,13 +31,11 @@ def classify_validation(algorithms: set[ALGORITHM], images_amount: int, repeat_a
         for i in range(repeat_amount):
             for image_file in files:
                 images_amount += 1
-                image_path = image_file[0]
+
                 coords = parse_file_coords(image_file[1])
                 correct_gesture = parse_etiquette(image_file[1])
-                bg_image_path = image_file[2]
-
-                image = cv2.imread(image_path)
-                background = cv2.imread(bg_image_path)
+                image = cv2.imread(image_file[0])
+                background = cv2.imread(image_file[2])
 
                 prediction, certainty = classify(algorithm=algorithm,
                                                  payload=choose_payload(algorithm, background, coords, image))

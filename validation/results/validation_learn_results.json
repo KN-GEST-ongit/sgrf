@@ -1,43 +1,48 @@
 {
   "type": "learn_test",
-  "timestamp": "01/05/2025T21:01:38",
+  "timestamp": "02/05/2025T21:22:17",
   "images": 1000,
   "max_people_amount": 5,
   "algorithms": {
-    "ADITHYA_RAJESH": {
-      "algorithm": "ADITHYA_RAJESH",
-      "accuracy": 0.07500000298023224,
-      "loss": 2.5512192249298096
-    },
-    "MURTHY_JADON": {
-      "algorithm": "MURTHY_JADON",
-      "accuracy": 0.6499999761581421,
-      "loss": 1.26655912399292
-    },
-    "ISLAM_HOSSAIN_ANDERSSON": {
-      "algorithm": "ISLAM_HOSSAIN_ANDERSSON",
-      "accuracy": 0.07500000298023224,
-      "loss": 2.3066701889038086
-    },
-    "MAUNG": {
-      "algorithm": "MAUNG",
-      "accuracy": 0.35,
-      "loss": 0.0
-    },
-    "PINTO_BORGES": {
-      "algorithm": "PINTO_BORGES",
-      "accuracy": 0.625,
-      "loss": 1.7665189504623413
-    },
     "MOHMMAD_DADI": {
       "algorithm": "MOHMMAD_DADI",
-      "accuracy": 0.575,
+      "accuracy": 0.675,
       "loss": 0
     },
     "EID_SCHWENKER": {
       "algorithm": "EID_SCHWENKER",
-      "accuracy": 0.5249999761581421,
-      "loss": 2.46826171875
+      "accuracy": 0.75,
+      "loss": 0.9999330639839172
+    },
+    "ADITHYA_RAJESH": {
+      "algorithm": "ADITHYA_RAJESH",
+      "accuracy": 0.30000001192092896,
+      "loss": 2.2583422660827637
+    },
+    "MAUNG": {
+      "algorithm": "MAUNG",
+      "accuracy": 0.375,
+      "loss": 0.0
+    },
+    "ISLAM_HOSSAIN_ANDERSSON": {
+      "algorithm": "ISLAM_HOSSAIN_ANDERSSON",
+      "accuracy": 0.22499999403953552,
+      "loss": 2.2691810131073
+    },
+    "PINTO_BORGES": {
+      "algorithm": "PINTO_BORGES",
+      "accuracy": 0.8500000238418579,
+      "loss": 0.9156160354614258
+    },
+    "GUPTA_JAAFAR": {
+      "algorithm": "GUPTA_JAAFAR",
+      "accuracy": 97.5,
+      "loss": 62.5
+    },
+    "MURTHY_JADON": {
+      "algorithm": "MURTHY_JADON",
+      "accuracy": 0.6499999761581421,
+      "loss": 1.3908109664916992
     }
   }
 }

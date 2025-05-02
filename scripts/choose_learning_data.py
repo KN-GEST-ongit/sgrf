@@ -1,9 +1,9 @@
 from bdgs.algorithms.adithya_rajesh.adithya_rajesh_learning_data import AdithyaRajeshLearningData
+from bdgs.algorithms.gupta_jaafar.gupta_jaafar_learning_data import GuptaJaafarLearningData
 from bdgs.algorithms.islam_hossain_andersson.islam_hossain_andersson_learning_data import \
     IslamHossainAnderssonLearningData
 from bdgs.algorithms.murthy_jadon.murthy_jadon_learning_data import MurthyJadonLearningData
 from bdgs.algorithms.pinto_borges.pinto_borges_learning_data import PintoBorgesLearningData
-from bdgs.algorithms.gupta_jaafar.gupta_jaafar_learning_data import GuptaJaafarLearningData
 from bdgs.data.algorithm import ALGORITHM
 from bdgs.data.gesture import GESTURE
 from bdgs.models.learning_data import LearningData

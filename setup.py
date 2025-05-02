@@ -2,9 +2,22 @@ from setuptools import setup, find_packages
 
 setup(
     name="bdgs",
-    version="0.1.0",
+    version="1.0.0",
     packages=find_packages(),
-    install_requires=[],
+    install_requires=[
+        'opencv-python',
+        'numpy',
+        'tensorflow-cpu',
+        'scikit-learn',
+        'keras',
+        'scikit-image',
+        'silence-tensorflow'
+    ],
+    include_package_data=True,
+    package_data={
+        'trained_models': ['*'],
+    },
+    py_modules=['definitions'],
     author="GEST science club, Rzeszów University of Technology",
     author_email="rut-ai@kia.prz.edu.pl",
     description="Static gestures recognition tool",

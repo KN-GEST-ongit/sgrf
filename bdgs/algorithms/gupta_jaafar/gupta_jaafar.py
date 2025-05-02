@@ -3,19 +3,18 @@ import pickle
 
 import cv2
 import numpy as np
+from skimage.filters import gabor
 from sklearn.decomposition import PCA
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
+
 from bdgs.algorithms.bdgs_algorithm import BaseAlgorithm
+from bdgs.algorithms.gupta_jaafar.gupta_jaafar_learning_data import GuptaJaafarLearningData
+from bdgs.algorithms.gupta_jaafar.gupta_jaafar_payload import GuptaJaafarPayload
+from bdgs.common.crop_image import crop_image
 from bdgs.data.gesture import GESTURE
 from bdgs.data.processing_method import PROCESSING_METHOD
-from bdgs.algorithms.gupta_jaafar.gupta_jaafar_payload import GuptaJaafarPayload
-from bdgs.algorithms.gupta_jaafar.gupta_jaafar_learning_data import GuptaJaafarLearningData
-from skimage.filters import gabor
-from bdgs.common.crop_image import crop_image
-from sklearn.pipeline import Pipeline
-from sklearn.metrics import accuracy_score
 from definitions import ROOT_DIR
 
 
