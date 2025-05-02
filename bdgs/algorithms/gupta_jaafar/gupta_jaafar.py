@@ -36,7 +36,7 @@ class GuptaJaafar(BaseAlgorithm):
 
         cropped_image = crop_image(payload.image, payload.coords)
         gray = cv2.cvtColor(cropped_image, cv2.COLOR_BGR2GRAY)
-        resized = cv2.resize(gray, (64, 64))
+        resized = cv2.resize(gray, (16, 16))
         features = []
         preview_accumulator = np.zeros_like(resized, dtype=np.float32)
         for sigma in self.GABOR_SCALES:
