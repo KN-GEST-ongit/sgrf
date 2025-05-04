@@ -16,7 +16,7 @@ def process_image(algorithm: ALGORITHM, payload: ImagePayload,
     return processed
 
 
-def classify(algorithm: ALGORITHM, payload: ImagePayload, custom_model_path = None,
+def classify(algorithm: ALGORITHM, payload: ImagePayload, custom_model_path=None,
              processing_method: PROCESSING_METHOD = PROCESSING_METHOD.DEFAULT) -> (GESTURE, int):
     classifier = ALGORITHM_FUNCTIONS[algorithm]
     prediction, certainty = classifier.classify(payload, custom_model_path, processing_method)
