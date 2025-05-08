@@ -34,7 +34,7 @@ def image_processing_visual_test(algorithm: ALGORITHM, images_amount: int):
 
 
 def classification_visual_test(algorithm: ALGORITHM, images_amount: int):
-    files = get_learning_files(shuffle=True, limit=images_amount, limit_images_in_single_person_single_recording=1,
+    files = get_learning_files(shuffle=True, limit=images_amount, 
                                base_path=os.path.abspath("../../bdgs_photos"))
     for image_file in files:
         image = cv2.imread(image_file[0])
@@ -51,4 +51,4 @@ def classification_visual_test(algorithm: ALGORITHM, images_amount: int):
 
 if __name__ == "__main__":
     # image_processing_visual_test(ALGORITHM.MAUNG, 2)
-    classification_visual_test(ALGORITHM.MURTHY_JADON, 2)
+    classification_visual_test(ALGORITHM.MURTHY_JADON, None)

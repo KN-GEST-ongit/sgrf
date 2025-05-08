@@ -99,4 +99,4 @@ class GuptaJaafar(BaseAlgorithm):
         with open(model_path, 'wb') as f:
             pickle.dump(svm, f)
 
-        return train_accuracy * 100, test_accuracy * 100
+        return train_accuracy, test_accuracy
