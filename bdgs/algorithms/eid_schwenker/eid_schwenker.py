@@ -30,7 +30,7 @@ class EidSchwenker(BaseAlgorithm):
 
             processed = segment_skin(image)
             processed = cv2.cvtColor(processed, cv2.COLOR_BGR2GRAY)
-            processed = cv2.resize(processed, (30, 30))
+            processed = cv2.resize(processed, (32, 32))
             return processed
         else:
             raise Exception("Invalid processing method")
@@ -67,15 +67,15 @@ class EidSchwenker(BaseAlgorithm):
             processed_images.append(processed_image)
             etiquettes.append(data.label.value - 1)
 
-        X = np.array(processed_images).reshape(-1, 30, 30, 1)
+        X = np.array(processed_images).reshape(-1, 32, 32, 1)
         y = np.array(etiquettes)
 
         X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
 
         model = models.Sequential([
-            layers.Conv2D(15, (6, 6), activation='relu', input_shape=(30, 30, 1)),
+            layers.Conv2D(15, (6, 6), activation='relu', input_shape=(32, 32, 1)),
             layers.MaxPooling2D((2, 2)),
-            layers.Conv2D(30, (3, 3), activation='relu'),
+            layers.Conv2D(32, (3, 3), activation='relu'),
             layers.MaxPooling2D((2, 2)),
             layers.Flatten(),
             layers.Dropout(0.5),
