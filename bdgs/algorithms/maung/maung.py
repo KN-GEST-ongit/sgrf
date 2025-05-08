@@ -9,20 +9,23 @@ from sklearn.model_selection import train_test_split
 from bdgs.algorithms.bdgs_algorithm import BaseAlgorithm
 from bdgs.data.gesture import GESTURE
 from bdgs.data.processing_method import PROCESSING_METHOD
-from bdgs.models.image_payload import ImagePayload
-from bdgs.models.learning_data import LearningData
 from definitions import ROOT_DIR
+from bdgs.algorithms.maung.maung_payload import MaungPayload
+from bdgs.algorithms.maung.maung_learning_data import MaungLearningData
+from bdgs.common.crop_image import crop_image
 
 
 class Maung(BaseAlgorithm):
-    def process_image(self, payload: ImagePayload,
+    def process_image(self, payload: MaungPayload,
                       processing_method: PROCESSING_METHOD = PROCESSING_METHOD.DEFAULT) -> np.ndarray:
         # Experimental
         if processing_method != PROCESSING_METHOD.DEFAULT:
             from bdgs.data.algorithm_functions import ALGORITHM_FUNCTIONS
             return ALGORITHM_FUNCTIONS[processing_method].process_image(payload)
 
-        gray = cv2.cvtColor(payload.image, cv2.COLOR_BGR2GRAY)
+        cropped_image = crop_image(payload.image, payload.coords)
+
+        gray = cv2.cvtColor(cropped_image, cv2.COLOR_BGR2GRAY)
 
         blurred = cv2.medianBlur(gray, 15)
 
@@ -44,7 +47,7 @@ class Maung(BaseAlgorithm):
         return np.float32(gradient_orientation_degrees)  # default without float32 conversion (only for cam_test)
         # return hist.astype(np.float32)
 
-    def classify(self, payload: ImagePayload, custom_model_path=None,
+    def classify(self, payload: MaungPayload, custom_model_path=None,
                  processing_method: PROCESSING_METHOD = PROCESSING_METHOD.DEFAULT) -> (GESTURE, int):
         predicted_class = 1
         certainty = 0
@@ -57,14 +60,14 @@ class Maung(BaseAlgorithm):
         predictions = model.predict(processed_image)
         return GESTURE(predictions[0] + 1), 100
 
-    def learn(self, learning_data: list[LearningData], target_model_path: str) -> (float, float):
+    def learn(self, learning_data: list[MaungLearningData], target_model_path: str) -> (float, float):
         processed_images = []
         etiquettes = []
 
         for data in learning_data:
             hand_image = cv2.imread(data.image_path)
             processed_image = (self.process_image(
-                payload=ImagePayload(image=hand_image)
+                payload=MaungPayload(image=hand_image, coords=data.coords)
             )).flatten()
             processed_images.append(processed_image)
             etiquettes.append(data.label.value - 1)
