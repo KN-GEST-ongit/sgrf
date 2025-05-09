@@ -3,6 +3,7 @@ from bdgs.algorithms.gupta_jaafar.gupta_jaafar_payload import GuptaJaafarPayload
 from bdgs.algorithms.islam_hossain_andersson.islam_hossain_andersson_payload import IslamHossainAnderssonPayload
 from bdgs.algorithms.murthy_jadon.murthy_jadon_payload import MurthyJadonPayload
 from bdgs.algorithms.pinto_borges.pinto_borges_payload import PintoBorgesPayload
+from bdgs.algorithms.maung.maung_payload import MaungPayload
 from bdgs.data.algorithm import ALGORITHM
 from bdgs.models.image_payload import ImagePayload
 
@@ -18,6 +19,8 @@ def choose_payload(algorithm, background, coords, image):
         payload = AdithyaRajeshPayload(image=image, coords=coords)
     elif algorithm == ALGORITHM.GUPTA_JAAFAR:
         payload = GuptaJaafarPayload(image=image, coords=coords)
+    elif algorithm == ALGORITHM.MAUNG:
+        payload = MaungPayload(image=image, coords=coords)
     else:
         payload = ImagePayload(image=image)
     return payload

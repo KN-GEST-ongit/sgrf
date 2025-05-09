@@ -67,11 +67,13 @@ class PintoBorges(BaseAlgorithm):
 
         return masked_image
 
-    def classify(self, payload: PintoBorgesPayload,
+    def classify(self, payload: PintoBorgesPayload, custom_model_path=None,
                  processing_method: PROCESSING_METHOD = PROCESSING_METHOD.DEFAULT) -> (GESTURE, int):
         predicted_class = 1
         certainty = 0
-        model = keras.models.load_model(os.path.join(ROOT_DIR, "trained_models", 'pinto_borges.keras'))
+        model_path = custom_model_path if custom_model_path is not None else os.path.join(ROOT_DIR, "trained_models",
+                                                                                          'pinto_borges.keras')
+        model = keras.models.load_model(model_path)
         processed_image = self.process_image(payload=payload, processing_method=processing_method)
         processed_image = np.expand_dims(processed_image, axis=0)  #
 

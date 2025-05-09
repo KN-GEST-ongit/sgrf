@@ -12,10 +12,10 @@ def learn_test(algorithm: ALGORITHM, images_amount: int, people_amount: int):
 
     acc, loss = learn(algorithm=algorithm, learning_data=list(map(lambda file: choose_learning_data(
         algorithm=algorithm, image_path=file[0], bg_image_path=file[2], etiquette=file[1]
-    ), files)), target_model_path=str(os.path.abspath("../trained_models")))
+    ), files)), target_model_path=str(os.path.abspath(".")))
 
     return acc, loss
 
 
 if __name__ == "__main__":
-    learn_test(ALGORITHM.EID_SCHWENKER, 1000, 5)
+    learn_test(ALGORITHM.MURTHY_JADON, 100, 5)

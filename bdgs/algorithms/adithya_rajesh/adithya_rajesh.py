@@ -80,9 +80,11 @@ class AdithyaRajesh(BaseAlgorithm):
 
         return image
 
-    def classify(self, payload: AdithyaRajeshPayload,
+    def classify(self, payload: AdithyaRajeshPayload, custom_model_path=None,
                  processing_method: PROCESSING_METHOD = PROCESSING_METHOD.DEFAULT) -> (GESTURE, int):
-        model = keras.models.load_model(os.path.join(ROOT_DIR, "trained_models", "adithya_rajesh.keras"))
+        model_path = custom_model_path if custom_model_path is not None else os.path.join(ROOT_DIR, "trained_models",
+                                                                                          'adithya_rajesh.keras')
+        model = keras.models.load_model(model_path)
         processed_image = self.process_image(payload=payload)
         expanded_dims = np.expand_dims(processed_image, axis=0)
         predictions = model.predict(expanded_dims, verbose=0)

@@ -26,7 +26,7 @@ def get_learning_files(skip_empty=True, shuffle=True, limit=None, offset=0,
 
         root = Path(root).resolve()
         parent_path = root.parent
-        people_path = parent_path.parents[2].name
+        people_path = parent_path.parents[1].name
         visited_paths[parent_path] = visited_paths.get(parent_path, 0) + 1
         visited_people[people_path] = visited_people.get(people_path, 0) + 1
 

@@ -30,16 +30,18 @@ class EidSchwenker(BaseAlgorithm):
 
             processed = segment_skin(image)
             processed = cv2.cvtColor(processed, cv2.COLOR_BGR2GRAY)
-            processed = cv2.resize(processed, (30, 30))
+            processed = cv2.resize(processed, (32, 32))
             return processed
         else:
             raise Exception("Invalid processing method")
 
-    def classify(self, payload: ImagePayload,
+    def classify(self, payload: ImagePayload, custom_model_path=None,
                  processing_method: PROCESSING_METHOD = PROCESSING_METHOD.DEFAULT) -> (GESTURE, int):
         predicted_class = 1
         certainty = 0
-        model = keras.models.load_model(os.path.join(ROOT_DIR, "trained_models", 'eid_schwenker.keras'))
+        model_path = custom_model_path if custom_model_path is not None else os.path.join(ROOT_DIR, "trained_models",
+                                                                                          'eid_schwenker.keras')
+        model = keras.models.load_model(model_path)
         processed_image = self.process_image(payload=payload, processing_method=processing_method)
         processed_image = np.expand_dims(processed_image, axis=0)  #
 
@@ -65,15 +67,15 @@ class EidSchwenker(BaseAlgorithm):
             processed_images.append(processed_image)
             etiquettes.append(data.label.value - 1)
 
-        X = np.array(processed_images).reshape(-1, 30, 30, 1)
+        X = np.array(processed_images).reshape(-1, 32, 32, 1)
         y = np.array(etiquettes)
 
         X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
 
         model = models.Sequential([
-            layers.Conv2D(15, (6, 6), activation='relu', input_shape=(30, 30, 1)),
+            layers.Conv2D(15, (6, 6), activation='relu', input_shape=(32, 32, 1)),
             layers.MaxPooling2D((2, 2)),
-            layers.Conv2D(30, (3, 3), activation='relu'),
+            layers.Conv2D(32, (3, 3), activation='relu'),
             layers.MaxPooling2D((2, 2)),
             layers.Flatten(),
             layers.Dropout(0.5),

@@ -34,9 +34,11 @@ class MohmmadDadi(BaseAlgorithm):
         edges = cv2.Canny(processed, threshold1=100, threshold2=200)
         return edges
 
-    def classify(self, payload: ImagePayload,
+    def classify(self, payload: ImagePayload, custom_model_path=None,
                  processing_method: PROCESSING_METHOD = PROCESSING_METHOD.DEFAULT) -> (GESTURE, int):
-        with open(os.path.join(ROOT_DIR, "trained_models", 'mohmmad_dadi_svm.pkl'), 'rb') as f:
+        model_path = custom_model_path if custom_model_path is not None else os.path.join(ROOT_DIR, "trained_models",
+                                                                                          'mohmmad_dadi_svm.pkl')
+        with open(model_path, 'rb') as f:
             model = pickle.load(f)
         with open(os.path.join(ROOT_DIR, "trained_models", 'mohmmad_dadi_pca.pkl'), 'rb') as f:
             pca = pickle.load(f)
