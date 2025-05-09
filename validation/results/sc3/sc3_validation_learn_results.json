@@ -1,7 +1,7 @@
 {
   "type": "learn_test",
   "timestamp": "09/05/2025T11:26:56",
-  "images": null,
+  "images": 2000,
   "max_people_amount": 4,
   "algorithms": {
     "MAUNG": {

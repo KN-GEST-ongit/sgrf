@@ -21,7 +21,7 @@ def learn_validation(algorithms: set[ALGORITHM], people_amount: int, images_amou
     test_data = {
         "type": "learn_test",
         "timestamp": datetime.now().strftime("%d/%m/%YT%H:%M:%S"),
-        "images": images_amount,
+        "images": len(files),
         "max_people_amount": people_amount,
         "algorithms": {}
     }
@@ -45,5 +45,6 @@ def learn_validation(algorithms: set[ALGORITHM], people_amount: int, images_amou
 
 
 if __name__ == "__main__":
-    learn_validation(algorithms=set(ALGORITHM), limit_recordings_of_single_person_single_gesture=2, people_amount=4) #scenario 2
+    # learn_validation(algorithms=set(ALGORITHM), limit_recordings_of_single_person_single_gesture=2, people_amount=4) #scenario 2
     # learn_validation(algorithms=set(ALGORITHM), limit_images_in_single_person_single_recording=10, people_amount=4) #scenario 3
+    learn_validation(algorithms=set(ALGORITHM), people_amount=2) #scenario 4

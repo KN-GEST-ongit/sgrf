@@ -1,13 +1,13 @@
 {
   "type": "learn_test",
   "timestamp": "09/05/2025T10:51:52",
-  "images": null,
+  "images": 4881,
   "max_people_amount": 4,
   "algorithms": {
     "EID_SCHWENKER": {
       "algorithm": "EID_SCHWENKER",
       "accuracy": 1.0,
-      "loss": 3.591280983528122e-05
+      "loss": 3.591280983528122e-5
     },
     "MURTHY_JADON": {
       "algorithm": "MURTHY_JADON",
