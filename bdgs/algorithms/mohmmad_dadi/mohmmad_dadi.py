@@ -45,9 +45,19 @@ class MohmmadDadi(BaseAlgorithm):
 
         processed_image = self.process_image(payload=payload, processing_method=processing_method).flatten()
         processed_image_pca = pca.transform([processed_image])
+        try:
+            if hasattr(model, "predict_proba"):
+                proba = model.predict_proba(processed_image_pca)[0]
+                predicted_label = np.argmax(proba)
+                certainty = int(np.max(proba) * 100)
+            else:
+                raise AttributeError
+        except (AttributeError, NotImplementedError):
+            predictions = model.predict(processed_image_pca)
+            predicted_label = predictions[0]
+            certainty = 100
 
-        predictions = model.predict(processed_image_pca)
-        return GESTURE(predictions[0] + 1), 100
+        return GESTURE(predicted_label + 1), certainty
 
     def learn(self, learning_data: list[LearningData], target_model_path: str) -> (float, float):
         processed_images = []
@@ -75,7 +85,7 @@ class MohmmadDadi(BaseAlgorithm):
         # knn_accuracy = knn.score(X_test_pca, y_test)
         # print(f"KNN Accuracy: {knn_accuracy * 100:.2f}%")
 
-        svm = SVC(kernel='linear')
+        svm = SVC(kernel='linear', probability=True)
         svm.fit(X_train_pca, y_train)
         svm_accuracy = svm.score(X_test_pca, y_test)
         # print(f"SVM Accuracy: {svm_accuracy * 100:.2f}%")

@@ -65,8 +65,19 @@ class GuptaJaafar(BaseAlgorithm):
         self.process_image(payload=payload, processing_method=processing_method)
         pca_data = pca.transform([self.feature_vector])
         lda_data = lda.transform(pca_data)
-        predictions = model.predict(lda_data)
-        return GESTURE(predictions[0] + 1), 100
+        try:
+            if hasattr(model, "predict_proba"):
+                proba = model.predict_proba(lda_data)[0]
+                predicted_label = np.argmax(proba)
+                certainty = int(np.max(proba) * 100)
+            else:
+                raise AttributeError
+        except (AttributeError, NotImplementedError):
+            predictions = model.predict(lda_data)
+            predicted_label = predictions[0]
+            certainty = 100
+
+        return GESTURE(predicted_label + 1), certainty
 
     def learn(self, learning_data: list[GuptaJaafarLearningData], target_model_path: str) -> (float, float):
         processed_features = []
@@ -85,7 +96,7 @@ class GuptaJaafar(BaseAlgorithm):
         lda = LDA(n_components=5)
         lda_data_train = lda.fit_transform(pca_data_train, y_train)
         lda_data_test = lda.transform(pca_data_test)
-        svm = SVC(kernel='rbf', decision_function_shape='ovo')
+        svm = SVC(kernel='rbf', decision_function_shape='ovo', probability=True)
         svm.fit(lda_data_train, y_train)
         # train_accuracy = svm.score(lda_data_train, y_train)
         test_accuracy = svm.score(lda_data_test, y_test)
