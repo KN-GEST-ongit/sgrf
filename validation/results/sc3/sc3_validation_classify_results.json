@@ -33,7 +33,7 @@
     "MAUNG": {
       "algorithm": "MAUNG",
       "correct_percent": 100.0,
-      "average_certainty": 100.0
+      "average_certainty": null
     },
     "GUPTA_JAAFAR": {
       "algorithm": "GUPTA_JAAFAR",

@@ -1,7 +1,8 @@
 import json
 import os
-import pandas as pd
+
 import matplotlib.pyplot as plt
+import pandas as pd
 import seaborn as sns
 
 from bdgs.data.algorithm import ALGORITHM
@@ -11,8 +12,8 @@ def load_all_data(base_dir, algorithms=set(ALGORITHM), series=4):
     records = []
     for i in range(1, series + 1):
         series = f"SC{i}"
-        learn_path = os.path.abspath(base_dir+ f"/sc{i}/sc{i}_validation_learn_results.json")
-        classify_path = os.path.abspath(base_dir+ f"/sc{i}/sc{i}_validation_classify_results.json")
+        learn_path = os.path.abspath(base_dir + f"/sc{i}/sc{i}_validation_learn_results.json")
+        classify_path = os.path.abspath(base_dir + f"/sc{i}/sc{i}_validation_classify_results.json")
 
         if not os.path.exists(learn_path) or not os.path.exists(classify_path):
             continue
@@ -28,7 +29,7 @@ def load_all_data(base_dir, algorithms=set(ALGORITHM), series=4):
         for algo_name in learn_algos:
             if algo_name not in algorithms:
                 continue
-                
+
             learn_metrics = learn_algos[algo_name]
             classify_metrics = classify_algos.get(algo_name, {})
 
@@ -40,7 +41,7 @@ def load_all_data(base_dir, algorithms=set(ALGORITHM), series=4):
                 "Correct %": classify_metrics.get("correct_percent"),
                 "Certainty %": classify_metrics.get("average_certainty")
             })
-            
+
     return pd.DataFrame(records)
 
 
@@ -53,12 +54,12 @@ if __name__ == "__main__":
         ALGORITHM.EID_SCHWENKER,
         ALGORITHM.MOHMMAD_DADI
     })
-    
+
     sns.set_theme(style="whitegrid", context="talk")
-    
-    #learn
-    
-    #accuracy heatmap
+
+    # learn
+
+    # accuracy heatmap
     pivot_acc = df.pivot(index="Algorithm", columns="Series", values="Accuracy")
     plt.figure(figsize=(10, 6))
     sns.heatmap(pivot_acc, annot=True, fmt=".3f", cmap="YlGnBu", annot_kws={"size": 12})
@@ -70,7 +71,7 @@ if __name__ == "__main__":
     plt.tight_layout()
     plt.show()
 
-    #loss heatmap
+    # loss heatmap
     pivot_loss = df.pivot(index="Algorithm", columns="Series", values="Loss")
     plt.figure(figsize=(10, 6))
     sns.heatmap(pivot_loss, annot=True, fmt=".4f", cmap="OrRd", annot_kws={"size": 12})
@@ -82,10 +83,9 @@ if __name__ == "__main__":
     plt.tight_layout()
     plt.show()
 
+    # classify
 
-    #classify
-    
-    #accuracy heatmap
+    # accuracy heatmap
     pivot_acc = df.pivot(index="Algorithm", columns="Series", values="Correct %")
     plt.figure(figsize=(10, 6))
     sns.heatmap(pivot_acc, annot=True, fmt=".3f", cmap="YlGnBu", annot_kws={"size": 12})
@@ -96,4 +96,3 @@ if __name__ == "__main__":
     plt.ylabel("Algorithm", fontsize=12)
     plt.tight_layout()
     plt.show()
-

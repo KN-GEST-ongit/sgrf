@@ -7,12 +7,12 @@
     "GUPTA_JAAFAR": {
       "algorithm": "GUPTA_JAAFAR",
       "accuracy": 0.9345727198027938,
-      "loss": 0.924404272801972
+      "loss": null
     },
     "MOHMMAD_DADI": {
       "algorithm": "MOHMMAD_DADI",
       "accuracy": 0.9991783073130649,
-      "loss": 0
+      "loss": null
     },
     "MURTHY_JADON": {
       "algorithm": "MURTHY_JADON",
@@ -32,7 +32,7 @@
     "MAUNG": {
       "algorithm": "MAUNG",
       "accuracy": 0.9987674609695973,
-      "loss": 0.0
+      "loss": null
     },
     "ADITHYA_RAJESH": {
       "algorithm": "ADITHYA_RAJESH",

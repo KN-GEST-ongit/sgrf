@@ -1,3 +1,5 @@
+import os
+
 import cv2
 import numpy as np
 from tensorflow.python.data.experimental.ops.testing import sleep
@@ -90,7 +92,8 @@ def camera_test(algorithm: ALGORITHM, show_prediction_tresh=70):
         payload = choose_payload(algorithm=algorithm, background=background, coords=coords, image=image)
 
         processed = process_image(algorithm=algorithm, payload=payload)
-        prediction, certainty = classify(algorithm=algorithm, payload=payload)
+        prediction, certainty = classify(algorithm=algorithm, payload=payload,
+                                         custom_model_dir=os.path.abspath('../trained_models/sc3'))
 
         if certainty >= show_prediction_tresh:
             show_prediction_text(certainty, image, prediction)

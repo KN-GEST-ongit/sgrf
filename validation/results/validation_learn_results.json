@@ -1,48 +1,48 @@
 {
   "type": "learn_test",
-  "timestamp": "09/05/2025T12:49:41",
-  "images": 12170,
+  "timestamp": "12/05/2025T09:44:24",
+  "images": 100,
   "max_people_amount": null,
   "algorithms": {
-    "GUPTA_JAAFAR": {
-      "algorithm": "GUPTA_JAAFAR",
-      "accuracy": 0.9345727198027938,
-      "loss": 0.924404272801972
-    },
-    "MOHMMAD_DADI": {
-      "algorithm": "MOHMMAD_DADI",
-      "accuracy": 0.9991783073130649,
-      "loss": 0
-    },
-    "MURTHY_JADON": {
-      "algorithm": "MURTHY_JADON",
-      "accuracy": 0.9954807162284851,
-      "loss": 0.02714453637599945
-    },
-    "PINTO_BORGES": {
-      "algorithm": "PINTO_BORGES",
-      "accuracy": 1.0,
-      "loss": 0.00024001620477065444
-    },
     "EID_SCHWENKER": {
       "algorithm": "EID_SCHWENKER",
-      "accuracy": 1.0,
-      "loss": 3.998685133410618e-05
+      "accuracy": 0.550000011920929,
+      "loss": 2.9603958129882812
     },
     "MAUNG": {
       "algorithm": "MAUNG",
-      "accuracy": 0.9987674609695973,
-      "loss": 0.0
+      "accuracy": 0.7,
+      "loss": null
     },
     "ADITHYA_RAJESH": {
       "algorithm": "ADITHYA_RAJESH",
-      "accuracy": 0.9995891451835632,
-      "loss": 0.001464296830818057
+      "accuracy": 0.20000000298023224,
+      "loss": 2.4691691398620605
+    },
+    "PINTO_BORGES": {
+      "algorithm": "PINTO_BORGES",
+      "accuracy": 0.699999988079071,
+      "loss": 2.525874614715576
+    },
+    "MOHMMAD_DADI": {
+      "algorithm": "MOHMMAD_DADI",
+      "accuracy": 0.65,
+      "loss": null
+    },
+    "GUPTA_JAAFAR": {
+      "algorithm": "GUPTA_JAAFAR",
+      "accuracy": 0.65,
+      "loss": null
     },
     "ISLAM_HOSSAIN_ANDERSSON": {
       "algorithm": "ISLAM_HOSSAIN_ANDERSSON",
-      "accuracy": 0.9983566403388977,
-      "loss": 0.005151910241693258
+      "accuracy": 0.20000000298023224,
+      "loss": 2.288611650466919
+    },
+    "MURTHY_JADON": {
+      "algorithm": "MURTHY_JADON",
+      "accuracy": 0.550000011920929,
+      "loss": 1.694704294204712
     }
   }
 }

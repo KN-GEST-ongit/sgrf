@@ -50,11 +50,13 @@ class GuptaJaafar(BaseAlgorithm):
         preview_image = preview_image.astype(np.uint8)
         return preview_image
 
-    def classify(self, payload: GuptaJaafarPayload, custom_model_path=None,
+    def classify(self, payload: GuptaJaafarPayload, custom_model_dir=None,
                  processing_method: PROCESSING_METHOD = PROCESSING_METHOD.DEFAULT) -> (GESTURE, int):
 
-        model_path = custom_model_path if custom_model_path is not None else os.path.join(ROOT_DIR, "trained_models",
-                                                                                          'gupta_jaafar_svm.pkl')
+        model_filename = "gupta_jaafar_svm.pkl"
+        model_path = os.path.join(custom_model_dir, model_filename) if custom_model_dir is not None else os.path.join(
+            ROOT_DIR, "trained_models",
+            model_filename)
 
         with open(os.path.join(ROOT_DIR, "trained_models", 'gupta_jaafar_pca.pkl'), 'rb') as f:
             pca = pickle.load(f)
@@ -65,8 +67,19 @@ class GuptaJaafar(BaseAlgorithm):
         self.process_image(payload=payload, processing_method=processing_method)
         pca_data = pca.transform([self.feature_vector])
         lda_data = lda.transform(pca_data)
-        predictions = model.predict(lda_data)
-        return GESTURE(predictions[0] + 1), 100
+        try:
+            if hasattr(model, "predict_proba"):
+                proba = model.predict_proba(lda_data)[0]
+                predicted_label = np.argmax(proba)
+                certainty = int(np.max(proba) * 100)
+            else:
+                raise AttributeError
+        except (AttributeError, NotImplementedError):
+            predictions = model.predict(lda_data)
+            predicted_label = predictions[0]
+            certainty = 100
+
+        return GESTURE(predicted_label + 1), certainty
 
     def learn(self, learning_data: list[GuptaJaafarLearningData], target_model_path: str) -> (float, float):
         processed_features = []
@@ -85,9 +98,9 @@ class GuptaJaafar(BaseAlgorithm):
         lda = LDA(n_components=5)
         lda_data_train = lda.fit_transform(pca_data_train, y_train)
         lda_data_test = lda.transform(pca_data_test)
-        svm = SVC(kernel='rbf', decision_function_shape='ovo')
+        svm = SVC(kernel='rbf', decision_function_shape='ovo', probability=True)
         svm.fit(lda_data_train, y_train)
-        train_accuracy = svm.score(lda_data_train, y_train)
+        # train_accuracy = svm.score(lda_data_train, y_train)
         test_accuracy = svm.score(lda_data_test, y_test)
         model_path = os.path.join(target_model_path, 'gupta_jaafar_pca.pkl')
         with open(model_path, 'wb') as f:
@@ -99,4 +112,4 @@ class GuptaJaafar(BaseAlgorithm):
         with open(model_path, 'wb') as f:
             pickle.dump(svm, f)
 
-        return train_accuracy, test_accuracy
+        return test_accuracy, None

@@ -67,12 +67,16 @@ class MurthyJadon(BaseAlgorithm):
         else:
             raise Exception("Invalid processing method")
 
-    def classify(self, payload: MurthyJadonPayload, custom_model_path=None,
+    def classify(self, payload: MurthyJadonPayload, custom_model_dir=None,
                  processing_method: PROCESSING_METHOD = PROCESSING_METHOD.DEFAULT) -> (GESTURE, int):
         predicted_class = 1
         certainty = 0
-        model_path = custom_model_path if custom_model_path is not None else os.path.join(ROOT_DIR, "trained_models",
-                                                                                          'murthy_jadon.keras')
+
+        model_filename = "murthy_jadon.keras"
+        model_path = os.path.join(custom_model_dir, model_filename) if custom_model_dir is not None else os.path.join(
+            ROOT_DIR, "trained_models",
+            model_filename)
+
         model = keras.models.load_model(model_path)
         processed_image = (self.process_image(payload=payload, processing_method=processing_method).flatten()) / 255
         processed_image = np.expand_dims(processed_image, axis=0)  #

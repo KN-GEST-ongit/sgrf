@@ -27,12 +27,12 @@
     "MAUNG": {
       "algorithm": "MAUNG",
       "accuracy": 0.9989764585465711,
-      "loss": 0.0
+      "loss": null
     },
     "MOHMMAD_DADI": {
       "algorithm": "MOHMMAD_DADI",
       "accuracy": 1.0,
-      "loss": 0
+      "loss": null
     },
     "PINTO_BORGES": {
       "algorithm": "PINTO_BORGES",
@@ -42,7 +42,7 @@
     "GUPTA_JAAFAR": {
       "algorithm": "GUPTA_JAAFAR",
       "accuracy": 0.9679815573770492,
-      "loss": 0.9631525076765609
+      "loss": null
     }
   }
 }

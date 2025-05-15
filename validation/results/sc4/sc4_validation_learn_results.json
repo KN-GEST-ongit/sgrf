@@ -17,12 +17,12 @@
     "GUPTA_JAAFAR": {
       "algorithm": "GUPTA_JAAFAR",
       "accuracy": 0.9768645850186054,
-      "loss": 0.9767141009055628
+      "loss": null
     },
     "MOHMMAD_DADI": {
       "algorithm": "MOHMMAD_DADI",
       "accuracy": 0.999353169469599,
-      "loss": 0
+      "loss": null
     },
     "EID_SCHWENKER": {
       "algorithm": "EID_SCHWENKER",
@@ -32,7 +32,7 @@
     "MAUNG": {
       "algorithm": "MAUNG",
       "accuracy": 1.0,
-      "loss": 0.0
+      "loss": null
     },
     "MURTHY_JADON": {
       "algorithm": "MURTHY_JADON",

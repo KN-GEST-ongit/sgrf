@@ -17,7 +17,7 @@ class BaseAlgorithm(ABC):
         raise NotImplementedError("Method process_image not implemented")
 
     @abstractmethod
-    def classify(self, payload: ImagePayload, custom_model_path=None,
+    def classify(self, payload: ImagePayload, custom_model_dir=None,
                  processing_method: PROCESSING_METHOD = PROCESSING_METHOD.DEFAULT) -> GESTURE:
         """Classify gesture based on static image"""
         raise NotImplementedError("Method classify not implemented")

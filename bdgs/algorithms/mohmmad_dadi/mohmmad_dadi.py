@@ -5,7 +5,6 @@ import cv2
 import numpy as np
 from sklearn.decomposition import PCA
 from sklearn.model_selection import train_test_split
-from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 
 from bdgs.algorithms.bdgs_algorithm import BaseAlgorithm
@@ -34,10 +33,14 @@ class MohmmadDadi(BaseAlgorithm):
         edges = cv2.Canny(processed, threshold1=100, threshold2=200)
         return edges
 
-    def classify(self, payload: ImagePayload, custom_model_path=None,
+    def classify(self, payload: ImagePayload, custom_model_dir=None,
                  processing_method: PROCESSING_METHOD = PROCESSING_METHOD.DEFAULT) -> (GESTURE, int):
-        model_path = custom_model_path if custom_model_path is not None else os.path.join(ROOT_DIR, "trained_models",
-                                                                                          'mohmmad_dadi_svm.pkl')
+
+        model_filename = "mohmmad_dadi_svm.pkl"
+        model_path = os.path.join(custom_model_dir, model_filename) if custom_model_dir is not None else os.path.join(
+            ROOT_DIR, "trained_models",
+            model_filename)
+
         with open(model_path, 'rb') as f:
             model = pickle.load(f)
         with open(os.path.join(ROOT_DIR, "trained_models", 'mohmmad_dadi_pca.pkl'), 'rb') as f:
@@ -45,9 +48,19 @@ class MohmmadDadi(BaseAlgorithm):
 
         processed_image = self.process_image(payload=payload, processing_method=processing_method).flatten()
         processed_image_pca = pca.transform([processed_image])
+        try:
+            if hasattr(model, "predict_proba"):
+                proba = model.predict_proba(processed_image_pca)[0]
+                predicted_label = np.argmax(proba)
+                certainty = int(np.max(proba) * 100)
+            else:
+                raise AttributeError
+        except (AttributeError, NotImplementedError):
+            predictions = model.predict(processed_image_pca)
+            predicted_label = predictions[0]
+            certainty = 100
 
-        predictions = model.predict(processed_image_pca)
-        return GESTURE(predictions[0] + 1), 100
+        return GESTURE(predicted_label + 1), certainty
 
     def learn(self, learning_data: list[LearningData], target_model_path: str) -> (float, float):
         processed_images = []
@@ -69,24 +82,28 @@ class MohmmadDadi(BaseAlgorithm):
         X_train_pca = pca.fit_transform(X_train)
         X_test_pca = pca.transform(X_test)
 
-        knn = KNeighborsClassifier(n_neighbors=5)
-        knn.fit(X_train_pca, y_train)
-        knn_accuracy = knn.score(X_test_pca, y_test)
-        print(f"KNN Accuracy: {knn_accuracy * 100:.2f}%")
+        # # KNN is alternative for SVM
+        # knn = KNeighborsClassifier(n_neighbors=5)
+        # knn.fit(X_train_pca, y_train)
+        # knn_accuracy = knn.score(X_test_pca, y_test)
+        # print(f"KNN Accuracy: {knn_accuracy * 100:.2f}%")
 
-        svm = SVC(kernel='linear')
+        svm = SVC(kernel='linear', probability=True)
         svm.fit(X_train_pca, y_train)
         svm_accuracy = svm.score(X_test_pca, y_test)
-        print(f"SVM Accuracy: {svm_accuracy * 100:.2f}%")
+        # print(f"SVM Accuracy: {svm_accuracy * 100:.2f}%")
 
         model_path = os.path.join(target_model_path, 'mohmmad_dadi_pca.pkl')
         with open(model_path, 'wb') as f:
             pickle.dump(pca, f)
-        model_path = os.path.join(target_model_path, 'mohmmad_dadi_knn.pkl')
-        with open(model_path, 'wb') as f:
-            pickle.dump(knn, f)
+
+        # # KNN is alternative for SVM
+        # model_path = os.path.join(target_model_path, 'mohmmad_dadi_knn.pkl')
+        # with open(model_path, 'wb') as f:
+        #     pickle.dump(knn, f)
+
         model_path = os.path.join(target_model_path, 'mohmmad_dadi_svm.pkl')
         with open(model_path, 'wb') as f:
             pickle.dump(svm, f)
 
-        return knn_accuracy, 0
+        return svm_accuracy, None

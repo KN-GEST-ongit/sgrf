@@ -7,12 +7,12 @@ from sklearn.linear_model import Perceptron
 from sklearn.model_selection import train_test_split
 
 from bdgs.algorithms.bdgs_algorithm import BaseAlgorithm
+from bdgs.algorithms.maung.maung_learning_data import MaungLearningData
+from bdgs.algorithms.maung.maung_payload import MaungPayload
+from bdgs.common.crop_image import crop_image
 from bdgs.data.gesture import GESTURE
 from bdgs.data.processing_method import PROCESSING_METHOD
 from definitions import ROOT_DIR
-from bdgs.algorithms.maung.maung_payload import MaungPayload
-from bdgs.algorithms.maung.maung_learning_data import MaungLearningData
-from bdgs.common.crop_image import crop_image
 
 
 class Maung(BaseAlgorithm):
@@ -47,18 +47,20 @@ class Maung(BaseAlgorithm):
         return np.float32(gradient_orientation_degrees)  # default without float32 conversion (only for cam_test)
         # return hist.astype(np.float32)
 
-    def classify(self, payload: MaungPayload, custom_model_path=None,
+    def classify(self, payload: MaungPayload, custom_model_dir=None,
                  processing_method: PROCESSING_METHOD = PROCESSING_METHOD.DEFAULT) -> (GESTURE, int):
-        predicted_class = 1
-        certainty = 0
-        model_path = custom_model_path if custom_model_path is not None else os.path.join(ROOT_DIR, "trained_models",
-                                                                                          'maung.pkl')
+
+        model_filename = "maung.pkl"
+        model_path = os.path.join(custom_model_dir, model_filename) if custom_model_dir is not None else os.path.join(
+            ROOT_DIR, "trained_models",
+            model_filename)
+
         with open(model_path, 'rb') as f:
             model = pickle.load(f)
         processed_image = (self.process_image(payload=payload, processing_method=processing_method)).flatten()
         processed_image = np.expand_dims(processed_image, axis=0)  #
         predictions = model.predict(processed_image)
-        return GESTURE(predictions[0] + 1), 100
+        return GESTURE(predictions[0] + 1), None
 
     def learn(self, learning_data: list[MaungLearningData], target_model_path: str) -> (float, float):
         processed_images = []
@@ -78,9 +80,9 @@ class Maung(BaseAlgorithm):
         perceptron = Perceptron(max_iter=1000, tol=1e-3)
         perceptron.fit(X_train, y_train)
         accuracy = perceptron.score(X_val, y_val)
-        print(f"Accuracy on validation set: {accuracy * 100:.2f}%")
+        # print(f"Accuracy on validation set: {accuracy * 100:.2f}%")
         model_path = os.path.join(target_model_path, 'maung.pkl')
         with open(model_path, 'wb') as f:
             pickle.dump(perceptron, f)
 
-        return accuracy, 0.0
+        return accuracy, None

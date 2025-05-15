@@ -11,10 +11,11 @@ from scripts.file_coords_parser import parse_file_coords, parse_etiquette
 from scripts.get_learning_files import get_learning_files
 
 
-def classify_validation(algorithms: set[ALGORITHM], images_amount: int, repeat_amount: int = 1, people_amount: int = None):
+def classify_validation(algorithms: set[ALGORITHM], images_amount: int, repeat_amount: int = 1,
+                        people_amount: int = None):
     files = get_learning_files(shuffle=True, limit=images_amount, limit_images_in_single_person_single_recording=5,
                                limit_people=people_amount, base_path=os.path.abspath("../../bdgs_photos"))
-    
+
     print(f"Number of files: {len(files)}")
 
     test_data = {
@@ -46,15 +47,18 @@ def classify_validation(algorithms: set[ALGORITHM], images_amount: int, repeat_a
                 if prediction == correct_gesture:
                     alg_correct_amount += 1
                 certainties.append(certainty)
-        
-        result = (alg_correct_amount / images_amount) * 100 if images_amount > 0 else 0
+
+        result = (alg_correct_amount / images_amount) * 100 if images_amount > 0 else None
+        valid_certainties = [c for c in certainties if c is not None]
+        certainty = sum(valid_certainties) / len(valid_certainties) if valid_certainties else None
+
         alg_results = {
             "algorithm": algorithm.value,
             "correct_percent": result,
-            "average_certainty": sum(certainties) / len(certainties)
+            "average_certainty": certainty
         }
         test_data["algorithms"][algorithm.value] = alg_results
-        
+
         print(f"Algorithm {algorithm}: {result}%")
 
     with open('results/validation_classify_results.json', 'w') as outfile:
