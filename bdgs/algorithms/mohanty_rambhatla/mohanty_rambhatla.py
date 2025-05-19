@@ -100,7 +100,7 @@ class MohantyRambhatla(BaseAlgorithm):
         # dropout_rate = 0.5
         #
         # However, based on test these parameters seem to have better performance on BDSG dataset:
-        enable_augmentation = False
+        enable_augmentation = True
         learning_rate = 0.01
         epochs = 25
         batch_size = 10
@@ -116,7 +116,7 @@ class MohantyRambhatla(BaseAlgorithm):
                 payload=MohantyRambhatlaPayload(image=hand_image, coords=data.coords))
 
             if enable_augmentation:
-                augmented_images = augment(hand_image, 5)
+                augmented_images = augment(processed_image, 5)
                 for augmented_image in augmented_images:
                     processed_images.append(augmented_image)
                     labels.append(data.label.value - 1)
