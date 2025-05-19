@@ -16,6 +16,7 @@ from bdgs.data.processing_method import PROCESSING_METHOD
 from bdgs.algorithms.mohanty_rambhatla.mohanty_rambhatla_payload import MohantyRambhatlaPayload
 from bdgs.models.learning_data import LearningData
 from bdgs.common.crop_image import crop_image
+from definitions import ROOT_DIR
 
 def augment(image: ndarray, repeat_num: int, target_size: tuple[int, int] = (32, 32)):
     images = []
@@ -69,13 +70,39 @@ class MohantyRambhatla(BaseAlgorithm):
 
     def classify(self, payload: MohantyRambhatlaPayload, custom_model_path = None,
                  processing_method: PROCESSING_METHOD = PROCESSING_METHOD.DEFAULT) -> GESTURE:
-       pass
+            model_filename = "mohanty_rambhatla.keras"
+            model_path = os.path.join(custom_model_path, model_filename) if custom_model_path is not None else os.path.join(
+                ROOT_DIR, "trained_models",
+                model_filename)
+
+            model = keras.models.load_model(model_path)
+            processed_image = self.process_image(payload=payload)
+            expanded_dims = np.expand_dims(processed_image, axis=0)
+            predictions = model.predict(expanded_dims, verbose=0)
+
+            predicted_class = 1
+            certainty = 0
+            for prediction in predictions:
+                predicted_class = np.argmax(prediction) + 1
+                certainty = int(np.max(prediction) * 100)
+
+            return GESTURE(predicted_class), certainty
 
     def learn(self, learning_data: list[LearningData], target_model_path: str
               )-> (float, float):
+        
+        # Note: The paper mentioned these parameters to achieve the best results:
+        # enable_augmentation = False
+        # learning_rate = 5e-6
+        # epochs = 2000
+        # batch_size = 10
+        # use_relu = True
+        # dropout_rate = 0.5
+        #
+        # However, based on test these parameters seem to have better performance on BDSG dataset:
         enable_augmentation = False
         learning_rate = 0.01
-        epochs = 10
+        epochs = 25
         batch_size = 10
         use_relu = True
         dropout_rate = 0.5
@@ -116,7 +143,7 @@ class MohantyRambhatla(BaseAlgorithm):
                             validation_data=(x_val, y_val),
                             batch_size=batch_size,
                             epochs=epochs,
-                            verbose="auto")
+                            verbose=0)
 
         keras.models.save_model(
             model=model,
