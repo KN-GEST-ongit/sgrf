@@ -40,9 +40,9 @@ def add_algorithm():
         create_algorithm_skeleton(module_name, class_name)
 
         if modify_payload:
-            modify_payload_script(module_name, class_name)
+            modify_payload_script(module_name, class_name, algorithm_name)
         if modify_learning_data:
-            modify_learning_data_script(module_name, class_name)
+            modify_learning_data_script(module_name, class_name, algorithm_name)
 
         print(f"Algorithm added: {algorithm_name}")
         return
@@ -159,9 +159,9 @@ class {class_name}LearningData(LearningData):
         f.write(skeleton_code)
 
 
-def modify_payload_script(module_name, class_name):
+def modify_payload_script(module_name, class_name, algorithm_name):
     payload_import = f"from bdgs.algorithms.{module_name}.{module_name}_payload import {class_name}Payload"
-    payload_condition = f"""    elif algorithm == ALGORITHM.{class_name.upper()}:
+    payload_condition = f"""    elif algorithm == ALGORITHM.{algorithm_name.upper()}:
         payload = {class_name}Payload(image=image)"""
 
     with open(PAYLOAD_SCRIPTS_FILE, "r") as file:
@@ -182,9 +182,9 @@ def modify_payload_script(module_name, class_name):
             file.writelines(lines)
 
 
-def modify_learning_data_script(module_name, class_name):
+def modify_learning_data_script(module_name, class_name, algorithm_name):
     learning_import = f"from bdgs.algorithms.{module_name}.{module_name}_learning_data import {class_name}LearningData"
-    learning_condition = f"""    elif algorithm == ALGORITHM.{class_name.upper()}:
+    learning_condition = f"""    elif algorithm == ALGORITHM.{algorithm_name.upper()}:
             return {class_name}LearningData(image_path=image_path, label=label)"""
 
     with open(LEARNING_DATA_SCRIPTS_FILE, "r") as file:
