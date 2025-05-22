@@ -6,6 +6,7 @@ from bdgs.algorithms.maung.maung import Maung
 from bdgs.algorithms.mohmmad_dadi.mohmmad_dadi import MohmmadDadi
 from bdgs.algorithms.murthy_jadon.murthy_jadon import MurthyJadon
 from bdgs.algorithms.pinto_borges.pinto_borges import PintoBorges
+from bdgs.algorithms.zhuang_yang.zhuang_yang import ZhuangYang
 from bdgs.data.algorithm import ALGORITHM
 
 ALGORITHM_FUNCTIONS = {
@@ -17,4 +18,5 @@ ALGORITHM_FUNCTIONS = {
     ALGORITHM.PINTO_BORGES: PintoBorges(),
     ALGORITHM.MOHMMAD_DADI: MohmmadDadi(),
     ALGORITHM.GUPTA_JAAFAR: GuptaJaafar(),
+    ALGORITHM.ZHUANG_YANG: ZhuangYang(),
 }

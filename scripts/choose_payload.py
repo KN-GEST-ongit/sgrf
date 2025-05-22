@@ -4,6 +4,7 @@ from bdgs.algorithms.islam_hossain_andersson.islam_hossain_andersson_payload imp
 from bdgs.algorithms.maung.maung_payload import MaungPayload
 from bdgs.algorithms.murthy_jadon.murthy_jadon_payload import MurthyJadonPayload
 from bdgs.algorithms.pinto_borges.pinto_borges_payload import PintoBorgesPayload
+from bdgs.algorithms.zhuang_yang.zhuang_yang_payload import ZhuangYangPayload
 from bdgs.data.algorithm import ALGORITHM
 from bdgs.models.image_payload import ImagePayload
 
@@ -21,6 +22,8 @@ def choose_payload(algorithm, background, coords, image):
         payload = GuptaJaafarPayload(image=image, coords=coords)
     elif algorithm == ALGORITHM.MAUNG:
         payload = MaungPayload(image=image, coords=coords)
+    elif algorithm == ALGORITHM.ZHUANG_YANG:
+        payload = ZhuangYangPayload(image=image, coords=coords)
     else:
         payload = ImagePayload(image=image)
     return payload
