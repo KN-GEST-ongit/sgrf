@@ -61,6 +61,7 @@ class EidSchwenker(BaseAlgorithm):
         epochs = 100
         processed_images = []
         etiquettes = []
+        num_classes = len(GESTURE)
 
         for data in learning_data:
             hand_image = cv2.imread(data.image_path)
@@ -84,7 +85,7 @@ class EidSchwenker(BaseAlgorithm):
             layers.Flatten(),
             layers.Dropout(0.5),
             layers.Dense(64, activation='relu'),
-            layers.Dense(10, activation='softmax')
+            layers.Dense(num_classes, activation='softmax')
         ])
 
         model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
