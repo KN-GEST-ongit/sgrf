@@ -102,7 +102,7 @@ class MohantyRambhatla(BaseAlgorithm):
         # However, based on test these parameters seem to have better performance on BDSG dataset:
         enable_augmentation = False
         learning_rate = 0.01
-        epochs = 25
+        epochs = 120
         batch_size = 10
         use_relu = True
         dropout_rate = 0.5
