@@ -1,48 +1,58 @@
 {
   "type": "learn_test",
-  "timestamp": "09/05/2025T12:49:41",
-  "images": 12170,
+  "timestamp": "28/05/2025T18:46:40",
+  "images": 49999,
   "max_people_amount": null,
   "algorithms": {
+    "ISLAM_HOSSAIN_ANDERSSON": {
+      "algorithm": "ISLAM_HOSSAIN_ANDERSSON",
+      "accuracy": 0.9980000257492065,
+      "loss": 0.009327083826065063
+    },
+    "EID_SCHWENKER": {
+      "algorithm": "EID_SCHWENKER",
+      "accuracy": 0.9480999708175659,
+      "loss": 0.17079564929008484
+    },
+    "MOHANTY_RAMBHATLA": {
+      "algorithm": "MOHANTY_RAMBHATLA",
+      "accuracy": 0.9390000104904175,
+      "loss": 0.01567150093615055
+    },
     "GUPTA_JAAFAR": {
       "algorithm": "GUPTA_JAAFAR",
-      "accuracy": 0.9345727198027938,
+      "accuracy": 0.6289,
       "loss": null
     },
     "MOHMMAD_DADI": {
       "algorithm": "MOHMMAD_DADI",
-      "accuracy": 0.9991783073130649,
+      "accuracy": 0.9904,
       "loss": null
     },
     "MURTHY_JADON": {
       "algorithm": "MURTHY_JADON",
-      "accuracy": 0.9954807162284851,
-      "loss": 0.02714453637599945
-    },
-    "PINTO_BORGES": {
-      "algorithm": "PINTO_BORGES",
-      "accuracy": 1.0,
-      "loss": 0.00024001620477065444
-    },
-    "EID_SCHWENKER": {
-      "algorithm": "EID_SCHWENKER",
-      "accuracy": 1.0,
-      "loss": 3.998685133410618e-05
-    },
-    "MAUNG": {
-      "algorithm": "MAUNG",
-      "accuracy": 0.9987674609695973,
-      "loss": null
+      "accuracy": 0.7210999727249146,
+      "loss": 1.0252588987350464
     },
     "ADITHYA_RAJESH": {
       "algorithm": "ADITHYA_RAJESH",
-      "accuracy": 0.9995891451835632,
-      "loss": 0.001464296830818057
+      "accuracy": 0.9991000294685364,
+      "loss": 0.004953676834702492
     },
-    "ISLAM_HOSSAIN_ANDERSSON": {
-      "algorithm": "ISLAM_HOSSAIN_ANDERSSON",
-      "accuracy": 0.9983566403388977,
-      "loss": 0.005151910241693258
+    "ZHUANG_YANG": {
+      "algorithm": "ZHUANG_YANG",
+      "accuracy": 0.6503,
+      "loss": 0.3497
+    },
+    "MAUNG": {
+      "algorithm": "MAUNG",
+      "accuracy": 0.9915,
+      "loss": null
+    },
+    "PINTO_BORGES": {
+      "algorithm": "PINTO_BORGES",
+      "accuracy": 0.9909999966621399,
+      "loss": 0.04692620411515236
     }
   }
 }
