@@ -1,49 +1,59 @@
 {
   "type": "classify_test",
-  "timestamp": "09/05/2025T11:46:34",
+  "timestamp": "29/05/2025T21:54:00",
   "images": 50,
   "repeat_amount": 1,
   "max_people_amount": null,
   "algorithms": {
-    "MURTHY_JADON": {
-      "algorithm": "MURTHY_JADON",
-      "correct_percent": 100.0,
-      "average_certainty": 98.96
+    "GUPTA_JAAFAR": {
+      "algorithm": "GUPTA_JAAFAR",
+      "correct_percent": 60.0,
+      "average_certainty": 57.02
     },
     "PINTO_BORGES": {
       "algorithm": "PINTO_BORGES",
+      "correct_percent": 96.0,
+      "average_certainty": 99.94
+    },
+    "MURTHY_JADON": {
+      "algorithm": "MURTHY_JADON",
+      "correct_percent": 88.0,
+      "average_certainty": 79.54
+    },
+    "MOHANTY_RAMBHATLA": {
+      "algorithm": "MOHANTY_RAMBHATLA",
+      "correct_percent": 72.0,
+      "average_certainty": 23.6
+    },
+    "MOHMMAD_DADI": {
+      "algorithm": "MOHMMAD_DADI",
       "correct_percent": 100.0,
-      "average_certainty": 100.0
+      "average_certainty": 95.3
+    },
+    "ZHUANG_YANG": {
+      "algorithm": "ZHUANG_YANG",
+      "correct_percent": 62.0,
+      "average_certainty": 0.9836969743786534
     },
     "ADITHYA_RAJESH": {
       "algorithm": "ADITHYA_RAJESH",
       "correct_percent": 100.0,
-      "average_certainty": 97.46
-    },
-    "EID_SCHWENKER": {
-      "algorithm": "EID_SCHWENKER",
-      "correct_percent": 100.0,
-      "average_certainty": 99.9
+      "average_certainty": 97.18
     },
     "ISLAM_HOSSAIN_ANDERSSON": {
       "algorithm": "ISLAM_HOSSAIN_ANDERSSON",
-      "correct_percent": 94.0,
-      "average_certainty": 86.0
+      "correct_percent": 100.0,
+      "average_certainty": 90.18
     },
     "MAUNG": {
       "algorithm": "MAUNG",
       "correct_percent": 100.0,
       "average_certainty": null
     },
-    "GUPTA_JAAFAR": {
-      "algorithm": "GUPTA_JAAFAR",
-      "correct_percent": 92.0,
-      "average_certainty": 100.0
-    },
-    "MOHMMAD_DADI": {
-      "algorithm": "MOHMMAD_DADI",
-      "correct_percent": 100.0,
-      "average_certainty": 100.0
+    "EID_SCHWENKER": {
+      "algorithm": "EID_SCHWENKER",
+      "correct_percent": 98.0,
+      "average_certainty": 97.7
     }
   }
 }

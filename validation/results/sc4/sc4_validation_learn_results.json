@@ -1,48 +1,58 @@
 {
   "type": "learn_test",
-  "timestamp": "09/05/2025T11:50:30",
-  "images": 7727,
+  "timestamp": "29/05/2025T18:35:14",
+  "images": 21989,
   "max_people_amount": 2,
   "algorithms": {
+    "MAUNG": {
+      "algorithm": "MAUNG",
+      "accuracy": 0.9977262391996362,
+      "loss": null
+    },
     "ADITHYA_RAJESH": {
       "algorithm": "ADITHYA_RAJESH",
-      "accuracy": 0.9993531703948975,
-      "loss": 0.0025884194765239954
-    },
-    "PINTO_BORGES": {
-      "algorithm": "PINTO_BORGES",
-      "accuracy": 1.0,
-      "loss": 2.120415410900023e-5
-    },
-    "GUPTA_JAAFAR": {
-      "algorithm": "GUPTA_JAAFAR",
-      "accuracy": 0.9768645850186054,
-      "loss": null
+      "accuracy": 0.9993178844451904,
+      "loss": 0.004666533786803484
     },
     "MOHMMAD_DADI": {
       "algorithm": "MOHMMAD_DADI",
-      "accuracy": 0.999353169469599,
+      "accuracy": 1.0,
+      "loss": null
+    },
+    "MOHANTY_RAMBHATLA": {
+      "algorithm": "MOHANTY_RAMBHATLA",
+      "accuracy": 0.9104138016700745,
+      "loss": 0.019957000389695168
+    },
+    "PINTO_BORGES": {
+      "algorithm": "PINTO_BORGES",
+      "accuracy": 0.9811277985572815,
+      "loss": 0.10918671637773514
+    },
+    "ISLAM_HOSSAIN_ANDERSSON": {
+      "algorithm": "ISLAM_HOSSAIN_ANDERSSON",
+      "accuracy": 0.9984083771705627,
+      "loss": 0.004815960768610239
+    },
+    "GUPTA_JAAFAR": {
+      "algorithm": "GUPTA_JAAFAR",
+      "accuracy": 0.8835834470213734,
       "loss": null
     },
     "EID_SCHWENKER": {
       "algorithm": "EID_SCHWENKER",
-      "accuracy": 1.0,
-      "loss": 0.0
+      "accuracy": 0.9997726082801819,
+      "loss": 0.011550220660865307
     },
-    "MAUNG": {
-      "algorithm": "MAUNG",
-      "accuracy": 1.0,
-      "loss": null
+    "ZHUANG_YANG": {
+      "algorithm": "ZHUANG_YANG",
+      "accuracy": 0.9206457480673034,
+      "loss": 0.07935425193269663
     },
     "MURTHY_JADON": {
       "algorithm": "MURTHY_JADON",
-      "accuracy": 0.9967658519744873,
-      "loss": 0.022265620529651642
-    },
-    "ISLAM_HOSSAIN_ANDERSSON": {
-      "algorithm": "ISLAM_HOSSAIN_ANDERSSON",
-      "accuracy": 1.0,
-      "loss": 0.00046777265379205346
+      "accuracy": 0.9945429563522339,
+      "loss": 0.047783464193344116
     }
   }
 }

@@ -11,7 +11,7 @@ from bdgs.data.gesture import GESTURE
 from bdgs.data.processing_method import PROCESSING_METHOD
 from bdgs.models.image_payload import ImagePayload
 from bdgs.models.learning_data import LearningData
-from definitions import ROOT_DIR
+from definitions import ROOT_DIR, NUM_CLASSES
 
 
 def segment_skin(image: np.ndarray) -> np.ndarray:
@@ -84,7 +84,7 @@ class EidSchwenker(BaseAlgorithm):
             layers.Flatten(),
             layers.Dropout(0.5),
             layers.Dense(64, activation='relu'),
-            layers.Dense(10, activation='softmax')
+            layers.Dense(NUM_CLASSES, activation='softmax')
         ])
 
         model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])

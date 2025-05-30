@@ -1,49 +1,59 @@
 {
   "type": "classify_test",
-  "timestamp": "09/05/2025T12:47:05",
+  "timestamp": "29/05/2025T21:55:35",
   "images": 50,
   "repeat_amount": 1,
   "max_people_amount": null,
   "algorithms": {
-    "EID_SCHWENKER": {
-      "algorithm": "EID_SCHWENKER",
-      "correct_percent": 44.0,
-      "average_certainty": 98.4
+    "ZHUANG_YANG": {
+      "algorithm": "ZHUANG_YANG",
+      "correct_percent": 36.0,
+      "average_certainty": 0.9733313849748707
     },
     "MOHMMAD_DADI": {
       "algorithm": "MOHMMAD_DADI",
-      "correct_percent": 60.0,
-      "average_certainty": 100.0
+      "correct_percent": 24.0,
+      "average_certainty": 41.4
     },
     "MAUNG": {
       "algorithm": "MAUNG",
-      "correct_percent": 72.0,
+      "correct_percent": 38.0,
       "average_certainty": null
-    },
-    "ADITHYA_RAJESH": {
-      "algorithm": "ADITHYA_RAJESH",
-      "correct_percent": 54.0,
-      "average_certainty": 90.56
     },
     "GUPTA_JAAFAR": {
       "algorithm": "GUPTA_JAAFAR",
-      "correct_percent": 52.0,
-      "average_certainty": 100.0
-    },
-    "MURTHY_JADON": {
-      "algorithm": "MURTHY_JADON",
-      "correct_percent": 57.99999999999999,
-      "average_certainty": 96.64
+      "correct_percent": 32.0,
+      "average_certainty": 63.1
     },
     "PINTO_BORGES": {
       "algorithm": "PINTO_BORGES",
-      "correct_percent": 50.0,
-      "average_certainty": 99.94
+      "correct_percent": 40.0,
+      "average_certainty": 100.0
+    },
+    "EID_SCHWENKER": {
+      "algorithm": "EID_SCHWENKER",
+      "correct_percent": 30.0,
+      "average_certainty": 99.58
+    },
+    "MOHANTY_RAMBHATLA": {
+      "algorithm": "MOHANTY_RAMBHATLA",
+      "correct_percent": 20.0,
+      "average_certainty": 10.7
+    },
+    "MURTHY_JADON": {
+      "algorithm": "MURTHY_JADON",
+      "correct_percent": 32.0,
+      "average_certainty": 88.92
+    },
+    "ADITHYA_RAJESH": {
+      "algorithm": "ADITHYA_RAJESH",
+      "correct_percent": 30.0,
+      "average_certainty": 76.88
     },
     "ISLAM_HOSSAIN_ANDERSSON": {
       "algorithm": "ISLAM_HOSSAIN_ANDERSSON",
-      "correct_percent": 70.0,
-      "average_certainty": 81.28
+      "correct_percent": 46.0,
+      "average_certainty": 78.54
     }
   }
 }

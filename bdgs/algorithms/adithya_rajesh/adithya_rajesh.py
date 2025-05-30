@@ -15,7 +15,7 @@ from bdgs.algorithms.bdgs_algorithm import BaseAlgorithm
 from bdgs.common.crop_image import crop_image
 from bdgs.data.gesture import GESTURE
 from bdgs.data.processing_method import PROCESSING_METHOD
-from definitions import ROOT_DIR
+from definitions import ROOT_DIR, NUM_CLASSES
 
 
 def create_model(num_classes):
@@ -33,7 +33,7 @@ def create_model(num_classes):
     model.add(Flatten())
     model.add(Dense(num_classes, activation="softmax"))
     model.compile(
-        optimizer=SGD(learning_rate=0.01, momentum=0.9),
+        optimizer=SGD(learning_rate=0.001, momentum=0.9),
         loss=SparseCategoricalCrossentropy(from_logits=False),
         metrics=["accuracy"],
     )
@@ -115,9 +115,7 @@ class AdithyaRajesh(BaseAlgorithm):
         processed_images = np.array(processed_images)
         labels = np.array(labels)
 
-        num_classes = len(GESTURE)
-
-        model = create_model(num_classes)
+        model = create_model(NUM_CLASSES)
 
         x_train, x_val, y_train, y_val = train_test_split(processed_images, labels, test_size=0.2,
                                                           random_state=42)

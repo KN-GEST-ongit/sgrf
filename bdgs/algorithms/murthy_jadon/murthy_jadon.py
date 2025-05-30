@@ -10,7 +10,7 @@ from bdgs.algorithms.murthy_jadon.murthy_jadon_learning_data import MurthyJadonL
 from bdgs.algorithms.murthy_jadon.murthy_jadon_payload import MurthyJadonPayload
 from bdgs.data.gesture import GESTURE
 from bdgs.data.processing_method import PROCESSING_METHOD
-from definitions import ROOT_DIR
+from definitions import ROOT_DIR, NUM_CLASSES
 
 
 def subtract_background(background, image):
@@ -110,7 +110,7 @@ class MurthyJadon(BaseAlgorithm):
         model = keras.Sequential([
             keras.layers.InputLayer(input_shape=(900,)),
             keras.layers.Dense(14, activation='relu'),
-            keras.layers.Dense(10, activation='softmax')
+            keras.layers.Dense(NUM_CLASSES, activation='softmax')
         ])
         model.compile(
             optimizer='adam',
