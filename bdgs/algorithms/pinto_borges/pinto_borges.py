@@ -12,7 +12,7 @@ from bdgs.algorithms.pinto_borges.pinto_borges_payload import PintoBorgesPayload
 from bdgs.common.crop_image import crop_image
 from bdgs.data.gesture import GESTURE
 from bdgs.data.processing_method import PROCESSING_METHOD
-from definitions import ROOT_DIR
+from definitions import ROOT_DIR, NUM_CLASSES
 
 
 def skin_segmentation(image: np.ndarray) -> np.ndarray:
@@ -92,7 +92,6 @@ class PintoBorges(BaseAlgorithm):
         epochs = 10
         processed_images = []
         etiquettes = []
-        num_classes = len(GESTURE)
         for data in learning_data:
             hand_image = cv2.imread(data.image_path)
             image = self.process_image(
@@ -117,7 +116,7 @@ class PintoBorges(BaseAlgorithm):
             layers.Flatten(),
             layers.Dense(400, activation='relu'),
             layers.Dense(800, activation='relu'),
-            layers.Dense(num_classes, activation='softmax')
+            layers.Dense(NUM_CLASSES, activation='softmax')
         ])
 
         model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])

@@ -16,7 +16,8 @@ from bdgs.data.processing_method import PROCESSING_METHOD
 from bdgs.algorithms.mohanty_rambhatla.mohanty_rambhatla_payload import MohantyRambhatlaPayload
 from bdgs.models.learning_data import LearningData
 from bdgs.common.crop_image import crop_image
-from definitions import ROOT_DIR
+from definitions import ROOT_DIR, NUM_CLASSES
+
 
 def augment(image: ndarray, repeat_num: int, target_size: tuple[int, int] = (32, 32)):
     images = []
@@ -127,17 +128,15 @@ class MohantyRambhatla(BaseAlgorithm):
         processed_images = np.array(processed_images)
         labels = np.array(labels)
 
-        num_classes = len(GESTURE)
-
         model = create_model(learning_rate=learning_rate, 
-                             use_relu=use_relu, num_classes=num_classes,
+                             use_relu=use_relu, num_classes=NUM_CLASSES,
                              dropout_rate=dropout_rate)
 
         x_train, x_val, y_train, y_val = train_test_split(processed_images, labels, test_size=0.2,
                                                           random_state=42)
 
-        y_train = to_categorical(y_train, num_classes=num_classes)
-        y_val = to_categorical(y_val, num_classes=num_classes)
+        y_train = to_categorical(y_train, num_classes=NUM_CLASSES)
+        y_val = to_categorical(y_val, num_classes=NUM_CLASSES)
 
         history = model.fit(x_train, y_train,
                             validation_data=(x_val, y_val),

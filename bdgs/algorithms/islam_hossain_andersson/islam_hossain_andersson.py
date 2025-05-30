@@ -16,7 +16,7 @@ from bdgs.algorithms.islam_hossain_andersson.islam_hossain_andersson_payload imp
 from bdgs.common.crop_image import crop_image
 from bdgs.data.gesture import GESTURE
 from bdgs.data.processing_method import PROCESSING_METHOD
-from definitions import ROOT_DIR
+from definitions import ROOT_DIR, NUM_CLASSES
 
 
 def create_model(num_classes, enable_augmentation=True):
@@ -122,14 +122,13 @@ class IslamHossainAndersson(BaseAlgorithm):
 
         processed_images = np.array(processed_images)
         labels = np.array(labels)
-        num_classes = len(GESTURE)
 
-        model = create_model(num_classes, enable_augmentation=False)
+        model = create_model(NUM_CLASSES, enable_augmentation=False)
 
         x_train, x_val, y_train, y_val = train_test_split(processed_images, labels, test_size=0.2,
                                                           random_state=42)
-        y_train_one_hot = keras.utils.to_categorical(y_train, num_classes=num_classes)
-        y_val_one_hot = keras.utils.to_categorical(y_val, num_classes=num_classes)
+        y_train_one_hot = keras.utils.to_categorical(y_train, num_classes=NUM_CLASSES)
+        y_val_one_hot = keras.utils.to_categorical(y_val, num_classes=NUM_CLASSES)
 
         history = model.fit(x_train, y_train_one_hot,
                             validation_data=(x_val, y_val_one_hot),
