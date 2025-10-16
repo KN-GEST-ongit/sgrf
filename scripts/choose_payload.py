@@ -6,6 +6,7 @@ from bdgs.algorithms.murthy_jadon.murthy_jadon_payload import MurthyJadonPayload
 from bdgs.algorithms.pinto_borges.pinto_borges_payload import PintoBorgesPayload
 from bdgs.algorithms.mohanty_rambhatla.mohanty_rambhatla_payload import MohantyRambhatlaPayload
 from bdgs.algorithms.zhuang_yang.zhuang_yang_payload import ZhuangYangPayload
+from bdgs.algorithms.chang_chen.chang_chen_payload import ChangChenPayload
 from bdgs.data.algorithm import ALGORITHM
 from bdgs.models.image_payload import ImagePayload
 
@@ -27,6 +28,8 @@ def choose_payload(algorithm, background, coords, image):
         payload = MohantyRambhatlaPayload(image=image, coords=coords)
     elif algorithm == ALGORITHM.ZHUANG_YANG:
         payload = ZhuangYangPayload(image=image, coords=coords)
+    elif algorithm == ALGORITHM.CHANG_CHEN:
+        payload = ChangChenPayload(image=image)
     else:
         payload = ImagePayload(image=image)
     return payload

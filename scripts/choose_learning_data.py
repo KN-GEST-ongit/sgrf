@@ -7,6 +7,7 @@ from bdgs.algorithms.murthy_jadon.murthy_jadon_learning_data import MurthyJadonL
 from bdgs.algorithms.pinto_borges.pinto_borges_learning_data import PintoBorgesLearningData
 from bdgs.algorithms.mohanty_rambhatla.mohanty_rambhatla_learning_data import MohantyRambhatlaLearningData
 from bdgs.algorithms.zhuang_yang.zhuang_yang_learning_data import ZhuangYangLearningData
+from bdgs.algorithms.chang_chen.chang_chen_learning_data import ChangChenLearningData
 from bdgs.data.algorithm import ALGORITHM
 from bdgs.data.gesture import GESTURE
 from bdgs.models.learning_data import LearningData
@@ -32,5 +33,7 @@ def choose_learning_data(algorithm: ALGORITHM, image_path: str, bg_image_path: s
             return MohantyRambhatlaLearningData(image_path=image_path, coords=parse_file_coords(etiquette), label=label)
     elif algorithm == ALGORITHM.ZHUANG_YANG:
             return ZhuangYangLearningData(image_path=image_path, coords=parse_file_coords(etiquette), label=label)
+    elif algorithm == ALGORITHM.CHANG_CHEN:
+            return ChangChenLearningData(image_path=image_path, label=label)
     else:
         return LearningData(image_path=image_path, label=label)

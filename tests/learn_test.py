@@ -18,4 +18,4 @@ def learn_test(algorithm: ALGORITHM, images_amount: int, people_amount: int):
 
 
 if __name__ == "__main__":
-    learn_test(ALGORITHM.MURTHY_JADON, 100, 5)
+    learn_test(ALGORITHM.MAUNG, 100, 5)

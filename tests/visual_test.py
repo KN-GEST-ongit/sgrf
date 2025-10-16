@@ -43,7 +43,7 @@ def classification_visual_test(algorithm: ALGORITHM, images_amount: int):
         payload = choose_payload(algorithm, background, coords, image)
 
         result, certainty = classify(algorithm=algorithm, payload=payload,
-                                     custom_model_dir=os.path.abspath('../trained_models/sc1'))
+                                     custom_model_dir=os.path.abspath('../trained_models'))
 
         cv2.imshow(f"Gesture: {result} ({certainty}%)", image)
         cv2.waitKey(0)
@@ -51,5 +51,5 @@ def classification_visual_test(algorithm: ALGORITHM, images_amount: int):
 
 
 if __name__ == "__main__":
-    # image_processing_visual_test(ALGORITHM.MAUNG, 2)
-    classification_visual_test(ALGORITHM.MURTHY_JADON, 5)
+    # image_processing_visual_test(ALGORITHM.CHANG_CHEN, 2)
+    classification_visual_test(ALGORITHM.CHANG_CHEN, 5)
