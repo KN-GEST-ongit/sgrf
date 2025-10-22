@@ -51,5 +51,5 @@ def classification_visual_test(algorithm: ALGORITHM, images_amount: int):
 
 
 if __name__ == "__main__":
-    # image_processing_visual_test(ALGORITHM.CHANG_CHEN, 2)
+    # image_processing_visual_test(ALGORITHM.CHANG_CHEN, 10)
     classification_visual_test(ALGORITHM.CHANG_CHEN, 5)

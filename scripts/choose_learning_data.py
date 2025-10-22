@@ -34,6 +34,6 @@ def choose_learning_data(algorithm: ALGORITHM, image_path: str, bg_image_path: s
     elif algorithm == ALGORITHM.ZHUANG_YANG:
             return ZhuangYangLearningData(image_path=image_path, coords=parse_file_coords(etiquette), label=label)
     elif algorithm == ALGORITHM.CHANG_CHEN:
-            return ChangChenLearningData(image_path=image_path, label=label)
+            return ChangChenLearningData(image_path=image_path, coords=parse_file_coords(etiquette), label=label)
     else:
         return LearningData(image_path=image_path, label=label)

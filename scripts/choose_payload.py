@@ -29,7 +29,7 @@ def choose_payload(algorithm, background, coords, image):
     elif algorithm == ALGORITHM.ZHUANG_YANG:
         payload = ZhuangYangPayload(image=image, coords=coords)
     elif algorithm == ALGORITHM.CHANG_CHEN:
-        payload = ChangChenPayload(image=image)
+        payload = ChangChenPayload(image=image, coords=coords)
     else:
         payload = ImagePayload(image=image)
     return payload
