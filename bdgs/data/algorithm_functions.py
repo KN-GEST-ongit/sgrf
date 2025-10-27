@@ -10,6 +10,7 @@ from bdgs.algorithms.mohanty_rambhatla.mohanty_rambhatla import MohantyRambhatla
 from bdgs.algorithms.zhuang_yang.zhuang_yang import ZhuangYang
 from bdgs.algorithms.chang_chen.chang_chen import ChangChen
 from bdgs.algorithms.naidoo_omlin.naidoo_omlin import NaidooOmlin
+from bdgs.algorithms.joshi_kumar.joshi_kumar import JoshiKumar
 from bdgs.data.algorithm import ALGORITHM
 
 ALGORITHM_FUNCTIONS = {
@@ -25,4 +26,5 @@ ALGORITHM_FUNCTIONS = {
     ALGORITHM.ZHUANG_YANG: ZhuangYang(),
     ALGORITHM.CHANG_CHEN: ChangChen(),
     ALGORITHM.NAIDOO_OMLIN: NaidooOmlin(),
+    ALGORITHM.JOSHI_KUMAR: JoshiKumar(),
 }

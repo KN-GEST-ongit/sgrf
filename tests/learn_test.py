@@ -18,4 +18,4 @@ def learn_test(algorithm: ALGORITHM, images_amount: int, people_amount: int):
 
 
 if __name__ == "__main__":
-    learn_test(ALGORITHM.CHANG_CHEN, 1000, 5)
+    learn_test(ALGORITHM.JOSHI_KUMAR, 1000, 5)
