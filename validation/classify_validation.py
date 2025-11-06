@@ -11,7 +11,7 @@ from scripts.file_coords_parser import parse_file_coords, parse_etiquette
 from scripts.get_learning_files import get_learning_files
 
 
-def classify_validation(algorithms: set[ALGORITHM], images_amount: int, repeat_amount: int = 1,
+def classify_validation(scenario_name:str, algorithms: set[ALGORITHM], images_amount: int, repeat_amount: int = 1,
                         people_amount: int = None):
     files = get_learning_files(shuffle=True, limit=images_amount, limit_images_in_single_person_single_recording=5,
                                limit_people=people_amount, base_path=os.path.abspath("../../bdgs_photos"))
@@ -41,6 +41,7 @@ def classify_validation(algorithms: set[ALGORITHM], images_amount: int, repeat_a
                 background = cv2.imread(image_file[2])
 
                 prediction, certainty = classify(algorithm=algorithm,
+                                                 custom_model_dir=f"../trained_models/{scenario_name}",
                                                  payload=choose_payload(algorithm, background, coords, image))
                 prediction = prediction.value
 
@@ -50,7 +51,7 @@ def classify_validation(algorithms: set[ALGORITHM], images_amount: int, repeat_a
 
         result = (alg_correct_amount / images_amount) * 100 if images_amount > 0 else None
         valid_certainties = [c for c in certainties if c is not None]
-        certainty = sum(valid_certainties) / len(valid_certainties) if valid_certainties else None
+        certainty = float(round(sum(valid_certainties) / len(valid_certainties), 2)) if valid_certainties else None
 
         alg_results = {
             "algorithm": algorithm.value,
@@ -61,9 +62,14 @@ def classify_validation(algorithms: set[ALGORITHM], images_amount: int, repeat_a
 
         print(f"Algorithm {algorithm}: {result}%")
 
-    with open('results/validation_classify_results.json', 'w') as outfile:
+    with open(f'results/{scenario_name}/{scenario_name}_validation_classify_results.json', 'w') as outfile:
         json.dump(test_data, outfile, indent=2)
 
 
 if __name__ == "__main__":
-    classify_validation(algorithms=set(ALGORITHM), images_amount=50)
+    # algorithms = set(ALGORITHM)
+    algorithms = {ALGORITHM.CHANG_CHEN, ALGORITHM.EID_SCHWENKER, ALGORITHM.GUPTA_JAAFAR, ALGORITHM.JOSHI_KUMAR,
+                  ALGORITHM.MAUNG, ALGORITHM.MOHMMAD_DADI, ALGORITHM.MURTHY_JADON, ALGORITHM.NGUYEN_HUYNH,
+                  ALGORITHM.PINTO_BORGES}
+
+    classify_validation("sc2", algorithms=algorithms, images_amount=50)

@@ -1,3 +1,5 @@
+import os
+
 from numpy import ndarray
 
 from bdgs.data.algorithm import ALGORITHM
@@ -25,6 +27,8 @@ def classify(algorithm: ALGORITHM, payload: ImagePayload, custom_model_dir=None,
 
 
 def learn(algorithm: ALGORITHM, learning_data: list[LearningData], target_model_path: str):
+    os.makedirs(os.path.abspath(target_model_path), exist_ok=True)
+
     classifier = ALGORITHM_FUNCTIONS[algorithm]
     acc, loss = classifier.learn(learning_data, target_model_path)
 

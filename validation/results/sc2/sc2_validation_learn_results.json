@@ -1,58 +1,53 @@
 {
   "type": "learn_test",
-  "timestamp": "29/05/2025T09:32:09",
-  "images": 19867,
+  "timestamp": "06/11/2025T15:44:36",
+  "images": 13737,
   "max_people_amount": null,
   "algorithms": {
-    "MURTHY_JADON": {
-      "algorithm": "MURTHY_JADON",
-      "accuracy": 0.8578258752822876,
-      "loss": 0.6123807430267334
-    },
-    "EID_SCHWENKER": {
-      "algorithm": "EID_SCHWENKER",
-      "accuracy": 0.9947156310081482,
-      "loss": 0.019987117499113083
-    },
-    "MOHANTY_RAMBHATLA": {
-      "algorithm": "MOHANTY_RAMBHATLA",
-      "accuracy": 0.7294917106628418,
-      "loss": 0.025035368278622627
-    },
-    "ZHUANG_YANG": {
-      "algorithm": "ZHUANG_YANG",
-      "accuracy": 0.7164066431806744,
-      "loss": 0.2835933568193256
-    },
-    "MOHMMAD_DADI": {
-      "algorithm": "MOHMMAD_DADI",
-      "accuracy": 0.9972320080523402,
-      "loss": null
+    "PINTO_BORGES": {
+      "algorithm": "PINTO_BORGES",
+      "accuracy": 0.9919942021369934,
+      "loss": 0.02667120471596718
     },
     "GUPTA_JAAFAR": {
       "algorithm": "GUPTA_JAAFAR",
-      "accuracy": 0.6872169099144438,
+      "accuracy": 0.7328966521106259,
       "loss": null
     },
-    "ISLAM_HOSSAIN_ANDERSSON": {
-      "algorithm": "ISLAM_HOSSAIN_ANDERSSON",
-      "accuracy": 0.9987418055534363,
-      "loss": 0.010484579019248486
+    "CHANG_CHEN": {
+      "algorithm": "CHANG_CHEN",
+      "accuracy": 1.0,
+      "loss": null
+    },
+    "MOHMMAD_DADI": {
+      "algorithm": "MOHMMAD_DADI",
+      "accuracy": 0.9989082969432315,
+      "loss": null
+    },
+    "NGUYEN_HUYNH": {
+      "algorithm": "NGUYEN_HUYNH",
+      "accuracy": 0.9591613889495523,
+      "loss": null
+    },
+    "JOSHI_KUMAR": {
+      "algorithm": "JOSHI_KUMAR",
+      "accuracy": 0.999490427313096,
+      "loss": null
+    },
+    "EID_SCHWENKER": {
+      "algorithm": "EID_SCHWENKER",
+      "accuracy": 0.9981805086135864,
+      "loss": 0.025880565866827965
+    },
+    "MURTHY_JADON": {
+      "algorithm": "MURTHY_JADON",
+      "accuracy": 0.9472343325614929,
+      "loss": 0.30309033393859863
     },
     "MAUNG": {
       "algorithm": "MAUNG",
-      "accuracy": 0.9974836436839456,
+      "accuracy": 0.9956331877729258,
       "loss": null
-    },
-    "PINTO_BORGES": {
-      "algorithm": "PINTO_BORGES",
-      "accuracy": 0.9914444088935852,
-      "loss": 0.03309580683708191
-    },
-    "ADITHYA_RAJESH": {
-      "algorithm": "ADITHYA_RAJESH",
-      "accuracy": 0.9967287182807922,
-      "loss": 0.016157453879714012
     }
   }
 }
