@@ -8,12 +8,13 @@ import seaborn as sns
 from bdgs.data.algorithm import ALGORITHM
 
 
-def load_all_data(base_dir, algorithms=set(ALGORITHM), series=4):
+def load_all_data(base_dir, algorithms=set(ALGORITHM), series_list=None):
+    if series_list is None:
+        series_list = []
     records = []
-    for i in range(1, series + 1):
-        series = f"SC{i}"
-        learn_path = os.path.abspath(base_dir + f"/sc{i}/sc{i}_validation_learn_results.json")
-        classify_path = os.path.abspath(base_dir + f"/sc{i}/sc{i}_validation_classify_results.json")
+    for series in series_list:
+        learn_path = os.path.abspath(base_dir + f"/{series}/{series}_validation_learn_results.json")
+        classify_path = os.path.abspath(base_dir + f"/{series}/{series}_validation_classify_results.json")
 
         if not os.path.exists(learn_path) or not os.path.exists(classify_path):
             continue
@@ -46,14 +47,13 @@ def load_all_data(base_dir, algorithms=set(ALGORITHM), series=4):
 
 
 if __name__ == "__main__":
-    df = load_all_data(base_dir=os.path.join(os.path.dirname(__file__), "results"), algorithms={
-        ALGORITHM.MAUNG,
-        ALGORITHM.PINTO_BORGES,
-        ALGORITHM.MURTHY_JADON,
-        ALGORITHM.GUPTA_JAAFAR,
-        ALGORITHM.EID_SCHWENKER,
-        ALGORITHM.MOHMMAD_DADI
-    })
+    # algorithms = set(ALGORITHM)
+    algorithms = {ALGORITHM.CHANG_CHEN, ALGORITHM.EID_SCHWENKER, ALGORITHM.GUPTA_JAAFAR, ALGORITHM.JOSHI_KUMAR,
+                  ALGORITHM.MAUNG, ALGORITHM.MOHMMAD_DADI, ALGORITHM.MURTHY_JADON, ALGORITHM.NGUYEN_HUYNH,
+                  ALGORITHM.PINTO_BORGES}
+
+    df = load_all_data(base_dir=os.path.join(os.path.dirname(__file__), "results"), algorithms=algorithms,
+                       series_list=["sc1", "sc2", "sc3", "sc4"])
 
     sns.set_theme(style="whitegrid", context="talk")
 
