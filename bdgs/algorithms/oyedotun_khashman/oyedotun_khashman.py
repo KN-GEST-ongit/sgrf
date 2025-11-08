@@ -12,9 +12,6 @@ from sklearn.model_selection import train_test_split
 from keras.src.utils import to_categorical
 from keras.src.activations import activations
 
-import tensorflow as tf
-tf.config.run_functions_eagerly(True)
-
 from bdgs.algorithms.bdgs_algorithm import BaseAlgorithm
 from bdgs.data.gesture import GESTURE
 from bdgs.common.crop_image import crop_image
@@ -234,10 +231,9 @@ class OyedotunKhashman(BaseAlgorithm):
         median_filtered = cv2.medianBlur(binary_threshed, 13)
         extracted_hand = extract_hand(median_filtered)
         # For CNN1 add SDAEs  rescale to 32x32
-        
-        resized = cv2.resize(extracted_hand, (32, 32), interpolation=cv2.INTER_AREA)
+        #resized = cv2.resize(extracted_hand, (32, 32), interpolation=cv2.INTER_AREA)
         # For CNN2 and CNN3 rescale to 64x64
-        #resized = cv2.resize(extracted_hand, (64, 64), interpolation=cv2.INTER_AREA)
+        resized = cv2.resize(extracted_hand, (64, 64), interpolation=cv2.INTER_AREA)
         
         return resized
     
@@ -253,9 +249,9 @@ class OyedotunKhashman(BaseAlgorithm):
         model = keras.models.load_model(model_path)
         processed_image = self.process_image(payload=payload)
         expanded_dims = np.expand_dims(processed_image, axis=0)
-        reshaped_to_vector = expanded_dims.reshape(expanded_dims.shape[0], -1) 
-        normalized = reshaped_to_vector.astype("float32") / 255.0
-        predictions = model.predict(normalized, verbose=0)
+        #reshaped_to_vector = expanded_dims.reshape(expanded_dims.shape[0], -1) 
+        #normalized = reshaped_to_vector.astype("float32") / 255.0
+        predictions = model.predict(expanded_dims, verbose=0)
 
         predicted_class = 1
         certainty = 0
@@ -286,15 +282,19 @@ class OyedotunKhashman(BaseAlgorithm):
         x_train = np.expand_dims(x_train, axis=-1)
         x_val = np.expand_dims(x_val, axis=-1)
 
-        
-        # For CNNs training:
-        #model = create_model_cnn3(NUM_CLASSES)
-        #history = model.fit(x_train, y_train,
-        #                    validation_data=(x_val, y_val),
-        #                    batch_size=5,
-        #                    epochs=20,
-        #                    verbose="auto")
+        y_train = to_categorical(y_train, NUM_CLASSES)
+        y_val = to_categorical(y_val, NUM_CLASSES)
 
+        # For CNNs training:
+        model = create_model_cnn2(NUM_CLASSES)
+        history = model.fit(x_train, y_train,
+                            validation_data=(x_val, y_val),
+                            batch_size=5,
+                            epochs=400,
+                            verbose="auto")
+        test_loss, test_acc = model.evaluate(x_val, y_val, verbose=0)
+
+        #FOR SDAES:
 
         # reshape img to vector, for example 32x32 -> 1024 x 1
         x_train = x_train.reshape(x_train.shape[0], -1) 
@@ -304,25 +304,23 @@ class OyedotunKhashman(BaseAlgorithm):
         x_train = x_train.astype("float32") / 255.0
         x_val = x_val.astype("float32") / 255.0
 
-        y_train = to_categorical(y_train, NUM_CLASSES)
-        y_val = to_categorical(y_val, NUM_CLASSES)
+        #y_train = to_categorical(y_train, NUM_CLASSES)
+        #y_val = to_categorical(y_val, NUM_CLASSES)
 
-        # PAPER AUTHORS PROPOSED 6 DIFFERENT RECOGNITION METHODS - 3CNNs and 3SDAEs.
-        # AS SDAE3 ACHEIVES THE BEST RESULT IT'S HARDCODED HERE, BUT ALL OF THE MODELS IMELEMENTATIONS ARE IN THIS SOURCE.
-        model = sdae_fine_tuning(
-            x_train=x_train,
-            y_train=y_train,
-            x_val=x_val,
-            y_val=y_val,
-            layers=[32*32, 120, 90, 50, 40],
-            fine_tune_epochs=50
-        )
+        #model = sdae_fine_tuning(
+        #    x_train=x_train,
+        #    y_train=y_train,
+        #    x_val=x_val,
+        #    y_val=y_val,
+        #    layers=[32*32, 120, 90, 50, 40],
+        #    fine_tune_epochs=300
+        #)
 
         keras.models.save_model(
             model=model,
             filepath=os.path.join(target_model_path, "oyedotun_khashman.keras")
         )
-        test_loss, test_acc = model.evaluate(x_val, y_val, verbose=0)
+        #test_loss, test_acc = model.evaluate(x_val, y_val, verbose=0)
 
         return test_acc, test_loss
         
