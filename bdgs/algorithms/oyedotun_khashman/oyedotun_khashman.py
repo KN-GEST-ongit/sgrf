@@ -241,7 +241,7 @@ class OyedotunKhashman(BaseAlgorithm):
         return resized
     
 
-    def classify(self, payload: ImagePayload, custom_model_dir = None,
+    def classify(self, payload: OyedotunKhashmanPayload, custom_model_dir = None,
                  processing_method: PROCESSING_METHOD = PROCESSING_METHOD.DEFAULT) -> GESTURE:
         
         model_filename = "oyedotun_khashman.keras"

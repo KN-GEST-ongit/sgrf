@@ -9,6 +9,7 @@ from bdgs.algorithms.zhuang_yang.zhuang_yang_payload import ZhuangYangPayload
 from bdgs.algorithms.chang_chen.chang_chen_payload import ChangChenPayload
 from bdgs.algorithms.joshi_kumar.joshi_kumar_payload import JoshiKumarPayload
 from bdgs.algorithms.nguyen_huynh.nguyen_huynh_payload import NguyenHuynhPayload
+from bdgs.algorithms.oyedotun_khashman.oyedotun_khashman_payload import OyedotunKhashmanPayload
 from bdgs.data.algorithm import ALGORITHM
 from bdgs.models.image_payload import ImagePayload
 
@@ -36,6 +37,8 @@ def choose_payload(algorithm, background, coords, image):
         payload = JoshiKumarPayload(image=image, coords=coords)
     elif algorithm == ALGORITHM.NGUYEN_HUYNH:
         payload = NguyenHuynhPayload(image=image, coords=coords)
+    elif algorithm == ALGORITHM.OYEDOTUN_KHASHMAN:
+        payload = OyedotunKhashmanPayload(image=image, coords=coords)
     else:
         payload = ImagePayload(image=image)
     return payload
