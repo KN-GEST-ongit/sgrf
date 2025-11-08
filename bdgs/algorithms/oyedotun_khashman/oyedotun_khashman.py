@@ -29,11 +29,11 @@ def extract_hand(image: ndarray):
 
     ys, xs = np.where(binary_image > 0)
     if len(xs) == 0 or len(ys) == 0:
-        return None
+        return image
 
     x_min, x_max = np.min(xs), np.max(xs)
     y_min, y_max = np.min(ys), np.max(ys)
-
+    
     return image[y_min:y_max + 1, x_min:x_max + 1]
 
 def create_model_cnn1(num_classes):
@@ -173,7 +173,7 @@ def create_dae(x_train, input_dims, output_dims, num_epoch):
     model.compile(loss = MeanSquaredError(), optimizer=SGD(learning_rate=0.8))
     model.fit(x_train, x_train, epochs = num_epoch, batch_size = 5)
     
-    model.summary()
+    #model.summary()
 
     return model
 
@@ -211,7 +211,7 @@ def sdae_fine_tuning(x_train, y_train, x_val, y_val, layers, fine_tune_epochs=20
         weights = next(l for l in dae.layers if isinstance(l, Dense)).get_weights()
         model.add(Dense(layers[i+1], activation=activations.sigmoid))
         model.layers[-1].set_weights(weights)
-    model.summary()
+    #model.summary()
     
     model.add(Dense(NUM_CLASSES, activation=activations.softmax))
 
@@ -234,6 +234,7 @@ class OyedotunKhashman(BaseAlgorithm):
         median_filtered = cv2.medianBlur(binary_threshed, 13)
         extracted_hand = extract_hand(median_filtered)
         # For CNN1 add SDAEs  rescale to 32x32
+        
         resized = cv2.resize(extracted_hand, (32, 32), interpolation=cv2.INTER_AREA)
         # For CNN2 and CNN3 rescale to 64x64
         #resized = cv2.resize(extracted_hand, (64, 64), interpolation=cv2.INTER_AREA)
@@ -254,7 +255,7 @@ class OyedotunKhashman(BaseAlgorithm):
         expanded_dims = np.expand_dims(processed_image, axis=0)
         reshaped_to_vector = expanded_dims.reshape(expanded_dims.shape[0], -1) 
         normalized = reshaped_to_vector.astype("float32") / 255.0
-        predictions = model.predict(reshaped_to_vector, verbose=0)
+        predictions = model.predict(normalized, verbose=0)
 
         predicted_class = 1
         certainty = 0
@@ -314,7 +315,7 @@ class OyedotunKhashman(BaseAlgorithm):
             x_val=x_val,
             y_val=y_val,
             layers=[32*32, 120, 90, 50, 40],
-            fine_tune_epochs=20
+            fine_tune_epochs=50
         )
 
         keras.models.save_model(
