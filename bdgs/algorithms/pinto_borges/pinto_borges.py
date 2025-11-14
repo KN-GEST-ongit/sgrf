@@ -3,7 +3,7 @@ import os
 import cv2
 import keras
 import numpy as np
-from keras.api import models, layers
+from keras import models, layers
 from sklearn.model_selection import train_test_split
 
 from bdgs.algorithms.bdgs_algorithm import BaseAlgorithm
@@ -13,7 +13,7 @@ from bdgs.common.crop_image import crop_image
 from bdgs.data.gesture import GESTURE
 from bdgs.data.processing_method import PROCESSING_METHOD
 from definitions import ROOT_DIR, NUM_CLASSES
-
+from bdgs.common.set_options import set_options
 
 def skin_segmentation(image: np.ndarray) -> np.ndarray:
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
@@ -88,8 +88,12 @@ class PintoBorges(BaseAlgorithm):
 
         return GESTURE(predicted_class), certainty
 
-    def learn(self, learning_data: list[PintoBorgesLearningData], target_model_path: str) -> (float, float):
-        epochs = 10
+    def learn(self, learning_data: list[PintoBorgesLearningData], target_model_path: str, custom_options: dict = None) -> (float, float):
+        default_options = {
+            "batch_size": 8,    
+            "epochs": 10
+        }
+        options = set_options(default_options, custom_options)
         processed_images = []
         etiquettes = []
         for data in learning_data:
@@ -120,7 +124,7 @@ class PintoBorges(BaseAlgorithm):
         ])
 
         model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
-        model.fit(X_train, y_train, epochs=epochs, validation_data=(X_val, y_val), verbose=0, batch_size=8)
+        model.fit(X_train, y_train, epochs=options["epochs"], validation_data=(X_val, y_val), verbose=0, batch_size=options["batch_size"])
 
         keras.models.save_model(model, os.path.join(target_model_path, 'pinto_borges.keras'))
         test_loss, test_acc = model.evaluate(X_val, y_val, verbose=0)

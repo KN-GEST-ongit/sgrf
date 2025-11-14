@@ -12,7 +12,7 @@ from bdgs.common.crop_image import crop_image
 from bdgs.data.gesture import GESTURE
 from bdgs.data.processing_method import PROCESSING_METHOD
 from definitions import ROOT_DIR
-
+from bdgs.common.set_options import set_options
 
 class ZhuangYang(BaseAlgorithm):
     def process_image(self, payload: ZhuangYangPayload,
@@ -53,7 +53,14 @@ class ZhuangYang(BaseAlgorithm):
 
         return GESTURE(pred_label), certainty
 
-    def learn(self, learning_data: list[ZhuangYangLearningData], target_model_path: str) -> (float, float):
+    def learn(self, learning_data: list[ZhuangYangLearningData], target_model_path: str, custom_options: dict = None) -> (float, float):
+        default_options = {
+            "r": 60,
+            "max_iter": 100,
+            "d": 50
+        }
+        options = set_options(default_options, custom_options)
+        
         processed_images = []
         labels = []
         for data in learning_data:
@@ -77,8 +84,8 @@ class ZhuangYang(BaseAlgorithm):
         V_train = x_train.T
         V_test = x_test.T  # x training images
 
-        r = 60
-        max_iter = 100
+        r = options["r"]
+        max_iter = options["max_iter"]
 
         W = np.random.rand(6400, r)
         H = np.random.rand(r, len(x_train))
@@ -90,7 +97,7 @@ class ZhuangYang(BaseAlgorithm):
         Y_train = W_pinv @ V_train
         Y_test = W_pinv @ V_test
 
-        d = 50
+        d = options["d"]
         phi = np.random.randn(d, r)
 
         sparsity_level = 10

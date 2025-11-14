@@ -11,7 +11,7 @@ from bdgs.algorithms.murthy_jadon.murthy_jadon_payload import MurthyJadonPayload
 from bdgs.data.gesture import GESTURE
 from bdgs.data.processing_method import PROCESSING_METHOD
 from definitions import ROOT_DIR, NUM_CLASSES
-
+from bdgs.common.set_options import set_options
 
 def subtract_background(background, image):
     bg_subtractor = cv2.createBackgroundSubtractorMOG2(history=2, varThreshold=50, detectShadows=False)
@@ -89,8 +89,11 @@ class MurthyJadon(BaseAlgorithm):
 
         return GESTURE(predicted_class), certainty
 
-    def learn(self, learning_data: list[MurthyJadonLearningData], target_model_path: str) -> (float, float):
-        epochs = 80
+    def learn(self, learning_data: list[MurthyJadonLearningData], target_model_path: str, custom_options: dict = None) -> (float, float):
+        default_options = {  
+            "epochs": 80,
+        }
+        options = set_options(default_options, custom_options)
         processed_images = []
         etiquettes = []
         for data in learning_data:
@@ -117,7 +120,7 @@ class MurthyJadon(BaseAlgorithm):
             loss='sparse_categorical_crossentropy',
             metrics=['accuracy']
         )
-        model.fit(X_train, y_train, epochs=epochs, validation_data=(X_val, y_val), verbose=0)
+        model.fit(X_train, y_train, epochs=options["epochs"], validation_data=(X_val, y_val), verbose=0)
         test_loss, test_acc = model.evaluate(X_val, y_val, verbose=0)
         keras.models.save_model(model, os.path.join(target_model_path, 'murthy_jadon.keras'))
 

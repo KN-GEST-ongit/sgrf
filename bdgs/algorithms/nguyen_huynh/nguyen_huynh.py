@@ -14,7 +14,7 @@ from bdgs.common.crop_image import crop_image
 from bdgs.data.gesture import GESTURE
 from bdgs.data.processing_method import PROCESSING_METHOD
 from definitions import ROOT_DIR
-
+from bdgs.common.set_options import set_options
 
 class NguyenHuynh(BaseAlgorithm):
 
@@ -184,7 +184,12 @@ class NguyenHuynh(BaseAlgorithm):
 
         return np.array(features, dtype=np.float32)
 
-    def learn(self, learning_data: list, target_model_path: str) -> (float, float):
+    def learn(self, learning_data: list, target_model_path: str, custom_options: dict = None) -> (float, float):
+        default_options = {
+            "max_iter": 500
+        }
+        options = set_options(default_options, custom_options)
+        
         X, y = [], []
 
         for data in learning_data:
@@ -202,7 +207,7 @@ class NguyenHuynh(BaseAlgorithm):
         X, y = np.array(X), np.array(y)
 
         mlp = MLPClassifier(hidden_layer_sizes=(64,), activation='tanh',
-                            solver='adam', max_iter=500, random_state=42)
+                            solver='adam', max_iter=options["max_iter"], random_state=42)
         pipeline = make_pipeline(StandardScaler(), mlp)
         pipeline.fit(X, y)
 

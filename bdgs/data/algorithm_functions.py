@@ -12,6 +12,7 @@ from bdgs.algorithms.chang_chen.chang_chen import ChangChen
 from bdgs.algorithms.naidoo_omlin.naidoo_omlin import NaidooOmlin
 from bdgs.algorithms.joshi_kumar.joshi_kumar import JoshiKumar
 from bdgs.algorithms.nguyen_huynh.nguyen_huynh import NguyenHuynh
+from bdgs.algorithms.oyedotun_khashman.oyedotun_khashman import OyedotunKhashman
 from bdgs.data.algorithm import ALGORITHM
 
 ALGORITHM_FUNCTIONS = {
@@ -29,4 +30,5 @@ ALGORITHM_FUNCTIONS = {
     ALGORITHM.NAIDOO_OMLIN: NaidooOmlin(),
     ALGORITHM.JOSHI_KUMAR: JoshiKumar(),
     ALGORITHM.NGUYEN_HUYNH: NguyenHuynh(),
+    ALGORITHM.OYEDOTUN_KHASHMAN: OyedotunKhashman(),
 }

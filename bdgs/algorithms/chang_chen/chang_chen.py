@@ -11,6 +11,7 @@ from bdgs.common.crop_image import crop_image
 from bdgs.data.gesture import GESTURE
 from bdgs.data.processing_method import PROCESSING_METHOD
 from definitions import ROOT_DIR
+from bdgs.common.set_options import set_options
 
 
 def extract_features(image: np.ndarray) -> np.ndarray:
@@ -77,7 +78,11 @@ class ChangChen(BaseAlgorithm):
 
         return GESTURE(prediction[0] + 1), confidence
 
-    def learn(self, learning_data: list[ChangChenLearningData], target_model_path: str) -> (float, float):
+    def learn(self, learning_data: list[ChangChenLearningData], target_model_path: str, custom_options: dict = None) -> (float, float):
+        default_options = {
+            "n_neighbors": 1
+        }
+        options = set_options(default_options, custom_options)
         X, y = [], []
 
         for data in learning_data:
@@ -91,7 +96,7 @@ class ChangChen(BaseAlgorithm):
                 y.append(data.label.value - 1)
 
         X, y = np.array(X), np.array(y)
-        model = KNeighborsClassifier(n_neighbors=1)
+        model = KNeighborsClassifier(n_neighbors=options["n_neighbors"])
         model.fit(X, y)
         accuracy = model.score(X, y)
 

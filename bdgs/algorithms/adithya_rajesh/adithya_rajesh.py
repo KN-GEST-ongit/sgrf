@@ -16,9 +16,10 @@ from bdgs.common.crop_image import crop_image
 from bdgs.data.gesture import GESTURE
 from bdgs.data.processing_method import PROCESSING_METHOD
 from definitions import ROOT_DIR, NUM_CLASSES
+from bdgs.common.set_options import set_options
 
 
-def create_model(num_classes):
+def create_model(num_classes, learning_rate, momentum):
     model = Sequential()
     model.add(Rescaling(1.0 / 255))
     # 1st layer
@@ -33,7 +34,7 @@ def create_model(num_classes):
     model.add(Flatten())
     model.add(Dense(num_classes, activation="softmax"))
     model.compile(
-        optimizer=SGD(learning_rate=0.001, momentum=0.9),
+        optimizer=SGD(learning_rate=learning_rate, momentum=momentum),
         loss=SparseCategoricalCrossentropy(from_logits=False),
         metrics=["accuracy"],
     )
@@ -101,7 +102,15 @@ class AdithyaRajesh(BaseAlgorithm):
 
         return GESTURE(predicted_class), certainty
 
-    def learn(self, learning_data: list[AdithyaRajeshLearningData], target_model_path: str) -> (float, float):
+    def learn(self, learning_data: list[AdithyaRajeshLearningData], target_model_path: str, custom_options: dict = None) -> (float, float):
+        default_options = {
+            "batch_size": 32,    
+            "epochs": 20,
+            "learning_rate": 0.001,
+            "momentum": 0.9
+        }
+        options = set_options(default_options, custom_options)
+
         processed_images = []
         labels = []
         for data in learning_data:
@@ -115,7 +124,7 @@ class AdithyaRajesh(BaseAlgorithm):
         processed_images = np.array(processed_images)
         labels = np.array(labels)
 
-        model = create_model(NUM_CLASSES)
+        model = create_model(NUM_CLASSES, options['learning_rate'], options['momentum'])
 
         x_train, x_val, y_train, y_val = train_test_split(processed_images, labels, test_size=0.2,
                                                           random_state=42)
@@ -123,8 +132,8 @@ class AdithyaRajesh(BaseAlgorithm):
         # reduced the epochs from 20 to 3 to reduce overfitting for now.
         history = model.fit(x_train, y_train,
                             validation_data=(x_val, y_val),
-                            batch_size=32,
-                            epochs=3,
+                            batch_size=options['batch_size'],
+                            epochs=options['epochs'],
                             verbose="auto")
 
         keras.models.save_model(

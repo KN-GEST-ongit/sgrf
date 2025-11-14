@@ -17,7 +17,7 @@ from bdgs.algorithms.mohanty_rambhatla.mohanty_rambhatla_payload import MohantyR
 from bdgs.models.learning_data import LearningData
 from bdgs.common.crop_image import crop_image
 from definitions import ROOT_DIR, NUM_CLASSES
-
+from bdgs.common.set_options import set_options
 
 def augment(image: ndarray, repeat_num: int, target_size: tuple[int, int] = (32, 32)):
     images = []
@@ -90,7 +90,7 @@ class MohantyRambhatla(BaseAlgorithm):
             return GESTURE(predicted_class), certainty
 
     def learn(self, learning_data: list[LearningData], target_model_path: str
-              )-> (float, float):
+              , custom_options: dict = None)-> (float, float):
         
         # Note: The paper mentioned these parameters to achieve the best results:
         # enable_augmentation = False
@@ -100,13 +100,17 @@ class MohantyRambhatla(BaseAlgorithm):
         # use_relu = True
         # dropout_rate = 0.5
         #
-        # However, based on test these parameters seem to have better performance on BDSG dataset:
-        enable_augmentation = False
-        learning_rate = 0.01
-        epochs = 120
-        batch_size = 10
-        use_relu = True
-        dropout_rate = 0.5
+        # However, based on test found parameters specified 
+        # in default_options to have better performance on BDSG dataset:
+        default_options = {
+            "batch_size": 32,    
+            "epochs": 120,
+            "learning_rate": 0.01,
+            "enable_augmentation": False,
+            "dropout_rate": 0.5,
+            "use_relu": True
+        }
+        options = set_options(default_options, custom_options)
 
         processed_images = []
         labels = []
@@ -116,7 +120,7 @@ class MohantyRambhatla(BaseAlgorithm):
             processed_image = self.process_image(
                 payload=MohantyRambhatlaPayload(image=hand_image, coords=data.coords))
 
-            if enable_augmentation:
+            if options["enable_augmentation"]:
                 augmented_images = augment(processed_image, 5)
                 for augmented_image in augmented_images:
                     processed_images.append(augmented_image)
@@ -128,9 +132,9 @@ class MohantyRambhatla(BaseAlgorithm):
         processed_images = np.array(processed_images)
         labels = np.array(labels)
 
-        model = create_model(learning_rate=learning_rate, 
-                             use_relu=use_relu, num_classes=NUM_CLASSES,
-                             dropout_rate=dropout_rate)
+        model = create_model(learning_rate=options["learning_rate"], 
+                             use_relu=options["use_relu"], num_classes=NUM_CLASSES,
+                             dropout_rate=options["dropout_rate"])
 
         x_train, x_val, y_train, y_val = train_test_split(processed_images, labels, test_size=0.2,
                                                           random_state=42)
@@ -140,8 +144,8 @@ class MohantyRambhatla(BaseAlgorithm):
 
         history = model.fit(x_train, y_train,
                             validation_data=(x_val, y_val),
-                            batch_size=batch_size,
-                            epochs=epochs,
+                            batch_size=options["batch_size"],
+                            epochs=options["epochs"],
                             verbose=0)
 
         keras.models.save_model(

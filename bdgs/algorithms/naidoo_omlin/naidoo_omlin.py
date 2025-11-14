@@ -68,7 +68,7 @@ class NaidooOmlin(BaseAlgorithm):
     
         return GESTURE(prediction + 1), certainty
 
-    def learn(self, learning_data: list[LearningData], target_model_path: str) -> (float, float):
+    def learn(self, learning_data: list[LearningData], target_model_path: str, custom_options: dict = None) -> (float, float):
         labels = []
         features = []
         for data in learning_data:

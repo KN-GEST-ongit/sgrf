@@ -23,6 +23,6 @@ class BaseAlgorithm(ABC):
         raise NotImplementedError("Method classify not implemented")
 
     @abstractmethod
-    def learn(self, learning_data: list[LearningData], target_model_path: str) -> (float, float):
+    def learn(self, learning_data: list[LearningData], target_model_path: str, custom_options:dict = None) -> (float, float):
         """Learn from static images"""
         raise NotImplementedError("Method learn not implemented")

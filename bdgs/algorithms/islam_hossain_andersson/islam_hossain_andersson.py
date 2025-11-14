@@ -17,9 +17,9 @@ from bdgs.common.crop_image import crop_image
 from bdgs.data.gesture import GESTURE
 from bdgs.data.processing_method import PROCESSING_METHOD
 from definitions import ROOT_DIR, NUM_CLASSES
+from bdgs.common.set_options import set_options
 
-
-def create_model(num_classes, enable_augmentation=True):
+def create_model(num_classes, learning_rate, enable_augmentation=True):
     model = Sequential()
 
     # augmentation parameter values were not specified, so they were found with experiments.
@@ -48,7 +48,7 @@ def create_model(num_classes, enable_augmentation=True):
     model.add(layers.Dropout(0.25))
     model.add(layers.Dense(num_classes, activation='softmax'))
     model.compile(
-        optimizer=SGD(learning_rate=0.001),
+        optimizer=SGD(learning_rate=learning_rate),
         loss=CategoricalCrossentropy(),
         metrics=['accuracy']
     )
@@ -108,7 +108,14 @@ class IslamHossainAndersson(BaseAlgorithm):
 
         return GESTURE(predicted_class), certainty
 
-    def learn(self, learning_data: list[IslamHossainAnderssonLearningData], target_model_path: str) -> (float, float):
+    def learn(self, learning_data: list[IslamHossainAnderssonLearningData], target_model_path: str, custom_options: dict = None) -> (float, float):
+        default_options = {
+            "batch_size": 32,    
+            "epochs": 60,
+            "learning_rate": 0.001,
+            "enable_augmentation": False
+        }
+        options = set_options(default_options, custom_options)
         processed_images = []
         labels = []
         for data in learning_data:
@@ -123,7 +130,9 @@ class IslamHossainAndersson(BaseAlgorithm):
         processed_images = np.array(processed_images)
         labels = np.array(labels)
 
-        model = create_model(NUM_CLASSES, enable_augmentation=False)
+        model = create_model(NUM_CLASSES,
+                              learning_rate=options["learning_rate"],
+                              enable_augmentation=options["enable_augmentation"])
 
         x_train, x_val, y_train, y_val = train_test_split(processed_images, labels, test_size=0.2,
                                                           random_state=42)
@@ -132,8 +141,8 @@ class IslamHossainAndersson(BaseAlgorithm):
 
         history = model.fit(x_train, y_train_one_hot,
                             validation_data=(x_val, y_val_one_hot),
-                            batch_size=32,
-                            epochs=60,
+                            batch_size=options["batch_size"],
+                            epochs=options["epochs"],
                             verbose="auto")
 
         keras.models.save_model(
