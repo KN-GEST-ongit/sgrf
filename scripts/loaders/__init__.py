@@ -5,3 +5,4 @@ from .nus_ii_loader import NUSIIDatasetLoader
 from .jochen_triesch_loader import JochenTrieschDatasetLoader
 from .jochen_triesch_ii_loader import JochenTrieschIIDatasetLoader
 from .sebastien_marcel_loader import SebasteinMarcelDatasetLoader
+from .thomas_moeslund_loader import ThomasMoeslundDatasetLoader
