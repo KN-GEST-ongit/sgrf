@@ -107,7 +107,8 @@ class AdithyaRajesh(BaseAlgorithm):
             "batch_size": 32,    
             "epochs": 20,
             "learning_rate": 0.001,
-            "momentum": 0.9
+            "momentum": 0.9,
+            "num_classes": NUM_CLASSES
         }
         options = set_options(default_options, custom_options)
 
@@ -124,7 +125,7 @@ class AdithyaRajesh(BaseAlgorithm):
         processed_images = np.array(processed_images)
         labels = np.array(labels)
 
-        model = create_model(NUM_CLASSES, options['learning_rate'], options['momentum'])
+        model = create_model(options['num_classes'], options['learning_rate'], options['momentum'])
 
         x_train, x_val, y_train, y_val = train_test_split(processed_images, labels, test_size=0.2,
                                                           random_state=42)

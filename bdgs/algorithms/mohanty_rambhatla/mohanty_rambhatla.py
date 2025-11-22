@@ -108,7 +108,8 @@ class MohantyRambhatla(BaseAlgorithm):
             "learning_rate": 0.01,
             "enable_augmentation": False,
             "dropout_rate": 0.5,
-            "use_relu": True
+            "use_relu": True,
+            "num_classes": NUM_CLASSES
         }
         options = set_options(default_options, custom_options)
 
@@ -133,14 +134,14 @@ class MohantyRambhatla(BaseAlgorithm):
         labels = np.array(labels)
 
         model = create_model(learning_rate=options["learning_rate"], 
-                             use_relu=options["use_relu"], num_classes=NUM_CLASSES,
+                             use_relu=options["use_relu"], num_classes=options["num_classes"],
                              dropout_rate=options["dropout_rate"])
 
         x_train, x_val, y_train, y_val = train_test_split(processed_images, labels, test_size=0.2,
                                                           random_state=42)
 
-        y_train = to_categorical(y_train, num_classes=NUM_CLASSES)
-        y_val = to_categorical(y_val, num_classes=NUM_CLASSES)
+        y_train = to_categorical(y_train, num_classes=options["num_classes"])
+        y_val = to_categorical(y_val, num_classes=options["num_classes"])
 
         history = model.fit(x_train, y_train,
                             validation_data=(x_val, y_val),

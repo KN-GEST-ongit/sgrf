@@ -113,7 +113,8 @@ class IslamHossainAndersson(BaseAlgorithm):
             "batch_size": 32,    
             "epochs": 60,
             "learning_rate": 0.001,
-            "enable_augmentation": False
+            "enable_augmentation": False,
+            "num_classes": NUM_CLASSES
         }
         options = set_options(default_options, custom_options)
         processed_images = []
@@ -130,7 +131,7 @@ class IslamHossainAndersson(BaseAlgorithm):
         processed_images = np.array(processed_images)
         labels = np.array(labels)
 
-        model = create_model(NUM_CLASSES,
+        model = create_model(options["num_classes"],
                               learning_rate=options["learning_rate"],
                               enable_augmentation=options["enable_augmentation"])
 

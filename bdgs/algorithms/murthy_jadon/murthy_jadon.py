@@ -92,6 +92,7 @@ class MurthyJadon(BaseAlgorithm):
     def learn(self, learning_data: list[MurthyJadonLearningData], target_model_path: str, custom_options: dict = None) -> (float, float):
         default_options = {  
             "epochs": 80,
+            "num_classes": NUM_CLASSES
         }
         options = set_options(default_options, custom_options)
         processed_images = []
@@ -113,7 +114,7 @@ class MurthyJadon(BaseAlgorithm):
         model = keras.Sequential([
             keras.layers.InputLayer(input_shape=(900,)),
             keras.layers.Dense(14, activation='relu'),
-            keras.layers.Dense(NUM_CLASSES, activation='softmax')
+            keras.layers.Dense(options["num_classes"], activation='softmax')
         ])
         model.compile(
             optimizer='adam',

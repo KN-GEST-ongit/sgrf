@@ -60,7 +60,8 @@ class EidSchwenker(BaseAlgorithm):
     def learn(self, learning_data: list[LearningData], target_model_path: str, custom_options: dict = None) -> (float, float):
         default_options = {
             "epochs": 100,
-            "batch_size": 8
+            "batch_size": 8,
+            "num_classes": NUM_CLASSES
         }
         options = set_options(default_options, custom_options)
         processed_images = []
@@ -88,7 +89,7 @@ class EidSchwenker(BaseAlgorithm):
             layers.Flatten(),
             layers.Dropout(0.5),
             layers.Dense(64, activation='relu'),
-            layers.Dense(NUM_CLASSES, activation='softmax')
+            layers.Dense(options['num_classes'], activation='softmax')
         ])
 
         model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])

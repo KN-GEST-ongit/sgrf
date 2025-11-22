@@ -91,7 +91,8 @@ class PintoBorges(BaseAlgorithm):
     def learn(self, learning_data: list[PintoBorgesLearningData], target_model_path: str, custom_options: dict = None) -> (float, float):
         default_options = {
             "batch_size": 8,    
-            "epochs": 10
+            "epochs": 10,
+            "num_classes": NUM_CLASSES
         }
         options = set_options(default_options, custom_options)
         processed_images = []
@@ -120,7 +121,7 @@ class PintoBorges(BaseAlgorithm):
             layers.Flatten(),
             layers.Dense(400, activation='relu'),
             layers.Dense(800, activation='relu'),
-            layers.Dense(NUM_CLASSES, activation='softmax')
+            layers.Dense(options["num_classes"], activation='softmax')
         ])
 
         model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
