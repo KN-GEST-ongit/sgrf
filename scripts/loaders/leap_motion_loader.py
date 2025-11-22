@@ -6,6 +6,7 @@ from enum import Enum
 import cv2
 
 from scripts.loaders.base_loader import BaseDatasetLoader
+from scripts.vars import LEAP_MOTION_IMAGES_PATH
 
 class LeapMotionEnum(Enum):
     PALM = 1
@@ -20,7 +21,7 @@ class LeapMotionEnum(Enum):
     DOWN = 10
 
 class LeapMotionDatasetLoader(BaseDatasetLoader):
-    def get_learning_files(base_path = "../bdgs_third_party_datasets/leapGestRecog", limit = None, shuffle = True):
+    def get_learning_files(base_path = LEAP_MOTION_IMAGES_PATH , limit = None, shuffle = True):
         image_files = []
         for root, _, files in os.walk(base_path):
             root = Path(root).resolve()

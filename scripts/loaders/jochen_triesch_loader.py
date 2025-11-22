@@ -5,10 +5,10 @@ from pathlib import Path
 import cv2
 
 from scripts.loaders.base_loader import BaseDatasetLoader
-
+from scripts.vars import JOCHEN_TRIESCH_IMAGES_PATH
 
 class JochenTrieschDatasetLoader(BaseDatasetLoader):
-    def get_learning_files(base_path, limit = None, shuffle = True):
+    def get_learning_files(base_path = JOCHEN_TRIESCH_IMAGES_PATH, limit = None, shuffle = True):
         image_files = []
         for root, _, files in os.walk(base_path):
             root = Path(root).resolve()
