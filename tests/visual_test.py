@@ -53,4 +53,4 @@ def classification_visual_test(algorithm: ALGORITHM, images_amount: int):
 
 if __name__ == "__main__":
     # image_processing_visual_test(ALGORITHM.NGUYEN_HUYNH, 5)
-    classification_visual_test(ALGORITHM.MURTHY_JADON, 5)
+    classification_visual_test(ALGORITHM.OYEDOTUN_KHASHMAN, 5)
