@@ -1,8 +1,12 @@
 from setuptools import setup, find_packages
+import pathlib
+
+HERE = pathlib.Path(__file__).parent
+README = (HERE / "README.md").read_text(encoding="utf-8")
 
 setup(
     name="bdgs",
-    version="1.0.0",
+    version="2.0.1",
     packages=find_packages(),
     install_requires=[
         'opencv-python~=4.11.0.86',
@@ -18,13 +22,14 @@ setup(
         'bdgs_trained_models': ['*'],
     },
     py_modules=['definitions'],
-    author="GEST science club, Rzeszów University of Technology",
-    author_email="kn.gest@kia.prz.edu.pl",
+    author="marcinbator",
+    author_email="marcinbator.ofc@gmail.com",
     description="Static gestures recognition tool",
+    long_description=README,
     long_description_content_type="text/markdown",
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License",
+        "License :: OSI Approved :: GNU Affero General Public License v3",
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.11',

@@ -25,8 +25,7 @@ in `./validation/results` directory
 
 ### Import library
 
-To use library in external project, clone this repository and use `pip install --ignore-installed ../bdgs`
-(pointing to local repository instance)
+To use library in external project, use `pip install bdgs`.
 
 ### Sample use cases
 
