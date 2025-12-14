@@ -8,12 +8,12 @@ from keras.src.layers import Rescaling, Conv2D, MaxPooling2D, Flatten, Dense, Dr
 from keras.src.optimizers import SGD
 from keras.src.utils import to_categorical
 from numpy import ndarray
-from sklearn.model_selection import train_test_split
 
 from bdgs.algorithms.bdgs_algorithm import BaseAlgorithm
 from bdgs.algorithms.mohanty_rambhatla.mohanty_rambhatla_payload import MohantyRambhatlaPayload
 from bdgs.common.crop_image import crop_image
 from bdgs.common.set_options import set_options
+from bdgs.common.dataset_spliter import split_dataset, choose_fit_kwargs
 from bdgs.data.gesture import GESTURE
 from bdgs.data.processing_method import PROCESSING_METHOD
 from bdgs.models.learning_data import LearningData
@@ -118,7 +118,8 @@ class MohantyRambhatla(BaseAlgorithm):
             "enable_augmentation": False,
             "dropout_rate": 0.5,
             "use_relu": True,
-            "num_classes": NUM_CLASSES
+            "num_classes": NUM_CLASSES,
+            "test_subset_size": 0.2
         }
         options = set_options(default_options, custom_options)
 
@@ -146,22 +147,27 @@ class MohantyRambhatla(BaseAlgorithm):
                              use_relu=options["use_relu"], num_classes=options["num_classes"],
                              dropout_rate=options["dropout_rate"])
 
-        x_train, x_val, y_train, y_val = train_test_split(processed_images, labels, test_size=0.2,
+        x_train, x_val, y_train, y_val = split_dataset(processed_images, labels, test_size=options["test_subset_size"],
                                                           random_state=42)
 
         y_train = to_categorical(y_train, num_classes=options["num_classes"])
-        y_val = to_categorical(y_val, num_classes=options["num_classes"])
+        if y_val is not None:
+            y_val = to_categorical(y_val, num_classes=options["num_classes"])
 
-        history = model.fit(x_train, y_train,
+        history = model.fit(**choose_fit_kwargs(x_train, y_train,
                             validation_data=(x_val, y_val),
                             batch_size=options["batch_size"],
                             epochs=options["epochs"],
-                            verbose=0)
+                            verbose=0))
 
         keras.models.save_model(
             model=model,
             filepath=os.path.join(target_model_path, "mohanty_rambhatla.keras")
         )
-        test_loss, test_acc = model.evaluate(x_val, y_val, verbose=0)
+        
+        if x_val is not None and y_val is not None:
+            test_loss, test_acc = model.evaluate(x_val, y_val, verbose=0)
+        else:
+            test_loss, test_acc = model.evaluate(x_train, y_train, verbose=0)
 
         return test_acc, test_loss

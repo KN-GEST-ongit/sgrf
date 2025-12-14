@@ -7,7 +7,6 @@ import numpy as np
 from skimage.filters import gabor
 from sklearn.decomposition import PCA
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
-from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
 
 from bdgs.algorithms.bdgs_algorithm import BaseAlgorithm
@@ -15,6 +14,7 @@ from bdgs.algorithms.gupta_jaafar.gupta_jaafar_learning_data import GuptaJaafarL
 from bdgs.algorithms.gupta_jaafar.gupta_jaafar_payload import GuptaJaafarPayload
 from bdgs.common.crop_image import crop_image
 from bdgs.common.set_options import set_options
+from bdgs.common.dataset_spliter import split_dataset
 from bdgs.data.gesture import GESTURE
 from bdgs.data.processing_method import PROCESSING_METHOD
 from definitions import ROOT_DIR
@@ -93,7 +93,8 @@ class GuptaJaafar(BaseAlgorithm):
               custom_options: dict = None) -> (float, float):
         default_options = {
             "pca_n_components": 50,
-            "lda_n_components": 5
+            "lda_n_components": 5,
+            "test_subset_size": 0.2
         }
         options = set_options(default_options, custom_options)
 
@@ -106,17 +107,22 @@ class GuptaJaafar(BaseAlgorithm):
             etiquettes.append(data.label.value - 1)
         X = np.array(processed_features)
         y = np.array(etiquettes)
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        X_train, X_test, y_train, y_test = split_dataset(X, y, test_size=options["test_subset_size"], random_state=42)
         pca = PCA(n_components=options["pca_n_components"])
         pca_data_train = pca.fit_transform(X_train)
-        pca_data_test = pca.transform(X_test)
+        if X_test is not None:
+            pca_data_test = pca.transform(X_test)
         lda = LDA(n_components=options["lda_n_components"])
         lda_data_train = lda.fit_transform(pca_data_train, y_train)
-        lda_data_test = lda.transform(pca_data_test)
+        if X_test is not None:
+            lda_data_test = lda.transform(pca_data_test)
         svm = SVC(kernel='rbf', decision_function_shape='ovo', probability=True)
         svm.fit(lda_data_train, y_train)
         # train_accuracy = svm.score(lda_data_train, y_train)
-        test_accuracy = svm.score(lda_data_test, y_test)
+        if X_test is not None:
+            test_accuracy = svm.score(lda_data_test, y_test)
+        else:
+            test_accuracy = svm.score(lda_data_train, y_train)
         model_path = os.path.join(target_model_path, 'gupta_jaafar_pca.pkl')
         with open(model_path, 'wb') as f:
             pickle.dump(pca, f)

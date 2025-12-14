@@ -4,12 +4,12 @@ from enum import Enum
 import cv2
 import keras
 import numpy as np
-from sklearn.model_selection import train_test_split
 
 from bdgs.algorithms.bdgs_algorithm import BaseAlgorithm
 from bdgs.algorithms.murthy_jadon.murthy_jadon_learning_data import MurthyJadonLearningData
 from bdgs.algorithms.murthy_jadon.murthy_jadon_payload import MurthyJadonPayload
 from bdgs.common.set_options import set_options
+from bdgs.common.dataset_spliter import split_dataset, choose_fit_kwargs
 from bdgs.data.gesture import GESTURE
 from bdgs.data.processing_method import PROCESSING_METHOD
 from definitions import ROOT_DIR, NUM_CLASSES
@@ -102,7 +102,8 @@ class MurthyJadon(BaseAlgorithm):
               custom_options: dict = None) -> (float, float):
         default_options = {
             "epochs": 80,
-            "num_classes": NUM_CLASSES
+            "num_classes": NUM_CLASSES,
+            "test_subset_size": 0.2
         }
         options = set_options(default_options, custom_options)
         processed_images = []
@@ -117,8 +118,8 @@ class MurthyJadon(BaseAlgorithm):
             processed_images.append(processed_image)
             etiquettes.append(data.label.value - 1)
 
-        X_train, X_val, y_train, y_val = train_test_split(np.array(processed_images), np.array(etiquettes),
-                                                          test_size=0.2,
+        X_train, X_val, y_train, y_val = split_dataset(np.array(processed_images), np.array(etiquettes),
+                                                          test_size=options["test_subset_size"],
                                                           random_state=42)
 
         model = keras.Sequential([
@@ -131,8 +132,12 @@ class MurthyJadon(BaseAlgorithm):
             loss='sparse_categorical_crossentropy',
             metrics=['accuracy']
         )
-        model.fit(X_train, y_train, epochs=options["epochs"], validation_data=(X_val, y_val), verbose=0)
-        test_loss, test_acc = model.evaluate(X_val, y_val, verbose=0)
+        model.fit(**choose_fit_kwargs(X_train, y_train, epochs=options["epochs"], validation_data=(X_val, y_val), verbose=0))
         keras.models.save_model(model, os.path.join(target_model_path, 'murthy_jadon.keras'))
+
+        if X_val is not None and y_val is not None:
+            test_loss, test_acc = model.evaluate(X_val, y_val, verbose=0)
+        else:
+            test_loss, test_acc = model.evaluate(X_train, y_train, verbose=0)
 
         return test_acc, test_loss

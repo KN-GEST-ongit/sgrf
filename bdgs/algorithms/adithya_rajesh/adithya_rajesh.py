@@ -8,13 +8,13 @@ from keras import Sequential
 from keras.src.layers import Rescaling, Conv2D, MaxPooling2D, Flatten, Dense
 from keras.src.losses import SparseCategoricalCrossentropy
 from keras.src.optimizers import SGD
-from sklearn.model_selection import train_test_split
 
 from bdgs.algorithms.adithya_rajesh.adithya_rajesh_learning_data import AdithyaRajeshLearningData
 from bdgs.algorithms.adithya_rajesh.adithya_rajesh_payload import AdithyaRajeshPayload
 from bdgs.algorithms.bdgs_algorithm import BaseAlgorithm
 from bdgs.common.crop_image import crop_image
 from bdgs.common.set_options import set_options
+from bdgs.common.dataset_spliter import split_dataset, choose_fit_kwargs
 from bdgs.data.gesture import GESTURE
 from bdgs.data.processing_method import PROCESSING_METHOD
 from definitions import ROOT_DIR, NUM_CLASSES
@@ -117,6 +117,7 @@ class AdithyaRajesh(BaseAlgorithm):
             "learning_rate": 0.001,
             "momentum": 0.9,
             "num_classes": NUM_CLASSES,
+            "test_subset_size": 0.2
         }
         options = set_options(default_options, custom_options)
 
@@ -135,20 +136,19 @@ class AdithyaRajesh(BaseAlgorithm):
 
         model = create_model(options['num_classes'], options['learning_rate'], options['momentum'])
 
-        x_train, x_val, y_train, y_val = train_test_split(processed_images, labels, test_size=0.2,
-                                                          random_state=42)
+        x_train, x_val, y_train, y_val = split_dataset(processed_images, labels,
+                                                        test_size=options["test_subset_size"],
+                                                        random_state=42)
 
-        # reduced the epochs from 20 to 3 to reduce overfitting for now.
-        history = model.fit(x_train, y_train,
-                            validation_data=(x_val, y_val),
-                            batch_size=options['batch_size'],
-                            epochs=options['epochs'],
-                            verbose="auto")
+        history = model.fit(**choose_fit_kwargs(x_train=x_train, y_train=y_train, validation_data=(x_val, y_val), batch_size=options["batch_size"], epochs=options["epochs"]))
 
         keras.models.save_model(
             model=model,
             filepath=os.path.join(target_model_path, "adithya_rajesh.keras")
         )
-        test_loss, test_acc = model.evaluate(x_val, y_val, verbose=0)
+        if x_val is not None and y_val is not None:
+            test_loss, test_acc = model.evaluate(x_val, y_val, verbose=0)
+        else:
+            test_loss, test_acc = model.evaluate(x_train, y_train, verbose=0)
 
         return test_acc, test_loss

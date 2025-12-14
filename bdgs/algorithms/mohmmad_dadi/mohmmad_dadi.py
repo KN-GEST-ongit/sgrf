@@ -5,11 +5,11 @@ from enum import Enum
 import cv2
 import numpy as np
 from sklearn.decomposition import PCA
-from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
 
 from bdgs.algorithms.bdgs_algorithm import BaseAlgorithm
 from bdgs.common.set_options import set_options
+from bdgs.common.dataset_spliter import split_dataset
 from bdgs.data.gesture import GESTURE
 from bdgs.data.processing_method import PROCESSING_METHOD
 from bdgs.models.image_payload import ImagePayload
@@ -74,6 +74,7 @@ class MohmmadDadi(BaseAlgorithm):
                                                                                                                 float):
         default_options = {
             "n_components": 50,
+            "test_subset_size": 0.2
         }
         options = set_options(default_options, custom_options)
 
@@ -90,11 +91,12 @@ class MohmmadDadi(BaseAlgorithm):
         X = np.array(processed_images)
         y = np.array(etiquettes)
 
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        X_train, X_test, y_train, y_test = split_dataset(X, y, test_size=options["test_subset_size"], random_state=42)
 
         pca = PCA(n_components=options["n_components"])  # PCA can be replaced by LDA
         X_train_pca = pca.fit_transform(X_train)
-        X_test_pca = pca.transform(X_test)
+        if X_test is not None:
+            X_test_pca = pca.transform(X_test)
 
         # # KNN is alternative for SVM
         # knn = KNeighborsClassifier(n_neighbors=5)
@@ -104,7 +106,10 @@ class MohmmadDadi(BaseAlgorithm):
 
         svm = SVC(kernel='linear', probability=True)
         svm.fit(X_train_pca, y_train)
-        svm_accuracy = svm.score(X_test_pca, y_test)
+        if X_test is not None:
+            svm_accuracy = svm.score(X_test_pca, y_test)
+        else:
+            svm_accuracy = svm.score(X_train_pca, y_train)
         # print(f"SVM Accuracy: {svm_accuracy * 100:.2f}%")
 
         model_path = os.path.join(target_model_path, 'mohmmad_dadi_pca.pkl')

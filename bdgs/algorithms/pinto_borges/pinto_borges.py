@@ -5,13 +5,13 @@ import cv2
 import keras
 import numpy as np
 from keras import models, layers
-from sklearn.model_selection import train_test_split
 
 from bdgs.algorithms.bdgs_algorithm import BaseAlgorithm
 from bdgs.algorithms.pinto_borges.pinto_borges_learning_data import PintoBorgesLearningData
 from bdgs.algorithms.pinto_borges.pinto_borges_payload import PintoBorgesPayload
 from bdgs.common.crop_image import crop_image
 from bdgs.common.set_options import set_options
+from bdgs.common.dataset_spliter import split_dataset, choose_fit_kwargs
 from bdgs.data.gesture import GESTURE
 from bdgs.data.processing_method import PROCESSING_METHOD
 from definitions import ROOT_DIR, NUM_CLASSES
@@ -101,7 +101,8 @@ class PintoBorges(BaseAlgorithm):
         default_options = {
             "batch_size": 8,
             "epochs": 10,
-            "num_classes": NUM_CLASSES
+            "num_classes": NUM_CLASSES,
+            "test_subset_size": 0.2
         }
         options = set_options(default_options, custom_options)
         processed_images = []
@@ -118,7 +119,7 @@ class PintoBorges(BaseAlgorithm):
         X = np.array(processed_images).reshape(-1, 100, 100, 1) / 255.0
         y = np.array(etiquettes)
 
-        X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
+        X_train, X_val, y_train, y_val = split_dataset(X, y, test_size=options["test_subset_size"], random_state=42)
 
         model = models.Sequential([
             layers.Conv2D(32, (3, 3), activation='relu', input_shape=(100, 100, 1)),
@@ -134,10 +135,13 @@ class PintoBorges(BaseAlgorithm):
         ])
 
         model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
-        model.fit(X_train, y_train, epochs=options["epochs"], validation_data=(X_val, y_val), verbose=0,
-                  batch_size=options["batch_size"])
+        model.fit(**choose_fit_kwargs(X_train, y_train, epochs=options["epochs"], validation_data=(X_val, y_val), verbose=0,
+                  batch_size=options["batch_size"]))
 
         keras.models.save_model(model, os.path.join(target_model_path, 'pinto_borges.keras'))
-        test_loss, test_acc = model.evaluate(X_val, y_val, verbose=0)
+        if X_val is not None and y_val is not None:
+            test_loss, test_acc = model.evaluate(X_val, y_val, verbose=0)
+        else:
+            test_loss, test_acc = model.evaluate(X_train, y_train, verbose=0)
 
         return test_acc, test_loss

@@ -4,13 +4,13 @@ from enum import Enum
 
 import cv2
 import numpy as np
-from sklearn.model_selection import train_test_split
 
 from bdgs.algorithms.bdgs_algorithm import BaseAlgorithm
 from bdgs.algorithms.zhuang_yang.zhuang_yang_learning_data import ZhuangYangLearningData
 from bdgs.algorithms.zhuang_yang.zhuang_yang_payload import ZhuangYangPayload
 from bdgs.common.crop_image import crop_image
 from bdgs.common.set_options import set_options
+from bdgs.common.dataset_spliter import split_dataset
 from bdgs.data.gesture import GESTURE
 from bdgs.data.processing_method import PROCESSING_METHOD
 from definitions import ROOT_DIR
@@ -66,7 +66,8 @@ class ZhuangYang(BaseAlgorithm):
         default_options = {
             "r": 60,
             "max_iter": 100,
-            "d": 50
+            "d": 50,
+            "test_subset_size": 0.2
         }
         options = set_options(default_options, custom_options)
 
@@ -87,11 +88,13 @@ class ZhuangYang(BaseAlgorithm):
         labels = np.array(labels)
 
         processed_images = processed_images.reshape(processed_images.shape[0], -1)
-        x_train, x_test, labels_train, labels_test = train_test_split(processed_images, labels, test_size=0.2,
+        x_train, x_test, labels_train, labels_test = split_dataset(processed_images, labels, test_size=options["test_subset_size"],
                                                                       random_state=42, stratify=labels)
-
         V_train = x_train.T
-        V_test = x_test.T  # x training images
+        if x_test is not None:
+            V_test = x_test.T  # x training images
+        else:
+            V_test = x_train.T
 
         r = options["r"]
         max_iter = options["max_iter"]

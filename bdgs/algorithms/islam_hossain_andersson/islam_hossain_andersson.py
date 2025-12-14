@@ -8,7 +8,6 @@ from keras import Sequential
 from keras.src import layers
 from keras.src.losses import CategoricalCrossentropy
 from keras.src.optimizers import SGD
-from sklearn.model_selection import train_test_split
 
 from bdgs.algorithms.bdgs_algorithm import BaseAlgorithm
 from bdgs.algorithms.islam_hossain_andersson.islam_hossain_andersson_learning_data import \
@@ -16,6 +15,7 @@ from bdgs.algorithms.islam_hossain_andersson.islam_hossain_andersson_learning_da
 from bdgs.algorithms.islam_hossain_andersson.islam_hossain_andersson_payload import IslamHossainAnderssonPayload
 from bdgs.common.crop_image import crop_image
 from bdgs.common.set_options import set_options
+from bdgs.common.dataset_spliter import split_dataset, choose_fit_kwargs
 from bdgs.data.gesture import GESTURE
 from bdgs.data.processing_method import PROCESSING_METHOD
 from definitions import ROOT_DIR, NUM_CLASSES
@@ -122,7 +122,8 @@ class IslamHossainAndersson(BaseAlgorithm):
             "epochs": 60,
             "learning_rate": 0.001,
             "enable_augmentation": False,
-            "num_classes": NUM_CLASSES
+            "num_classes": NUM_CLASSES,
+            "test_subset_size": 0.2
         }
         options = set_options(default_options, custom_options)
         processed_images = []
@@ -143,21 +144,27 @@ class IslamHossainAndersson(BaseAlgorithm):
                              learning_rate=options["learning_rate"],
                              enable_augmentation=options["enable_augmentation"])
 
-        x_train, x_val, y_train, y_val = train_test_split(processed_images, labels, test_size=0.2,
+        x_train, x_val, y_train, y_val = split_dataset(processed_images, labels, test_size=options["test_subset_size"],
                                                           random_state=42)
         y_train_one_hot = keras.utils.to_categorical(y_train, num_classes=NUM_CLASSES)
-        y_val_one_hot = keras.utils.to_categorical(y_val, num_classes=NUM_CLASSES)
+        if y_val is not None:
+            y_val_one_hot = keras.utils.to_categorical(y_val, num_classes=NUM_CLASSES)
+        else:
+            y_val_one_hot = None
 
-        history = model.fit(x_train, y_train_one_hot,
+        history = model.fit(**choose_fit_kwargs(x_train, y_train_one_hot,
                             validation_data=(x_val, y_val_one_hot),
                             batch_size=options["batch_size"],
                             epochs=options["epochs"],
-                            verbose="auto")
+                            verbose="auto"))
 
         keras.models.save_model(
             model=model,
             filepath=os.path.join(target_model_path, "islam_hossain_andersson.keras")
         )
+        if x_val is not None and y_val is not None:
+            test_loss, test_acc = model.evaluate(x_val, y_val_one_hot, verbose=0)
+        else:
+            test_loss, test_acc = model.evaluate(x_train, y_train_one_hot, verbose=0)
 
-        test_loss, test_acc = model.evaluate(x_val, y_val_one_hot, verbose=0)
         return test_acc, test_loss

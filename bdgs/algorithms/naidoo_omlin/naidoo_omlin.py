@@ -7,10 +7,10 @@ import numpy as np
 from numpy import ndarray
 from sklearn import svm
 from sklearn.metrics import accuracy_score
-from sklearn.model_selection import train_test_split
 
 from bdgs.algorithms.bdgs_algorithm import BaseAlgorithm
-from bdgs.common import set_options
+from bdgs.common.set_options import set_options
+from bdgs.common.dataset_spliter import split_dataset
 from bdgs.data.gesture import GESTURE
 from bdgs.data.processing_method import PROCESSING_METHOD
 from bdgs.models.image_payload import ImagePayload
@@ -78,6 +78,11 @@ class NaidooOmlin(BaseAlgorithm):
 
     def learn(self, learning_data: list[LearningData], target_model_path: str, custom_options: dict = None) -> (float,
                                                                                                                 float):
+        default_options = {
+            "gesture_enum": GESTURE,
+            "test_subset_size": 0.2
+        }
+        options = set_options(default_options, custom_options)
         labels = []
         features = []
         for data in learning_data:
@@ -88,14 +93,17 @@ class NaidooOmlin(BaseAlgorithm):
         X = np.array(features)
         y = np.array(labels)
 
-        X_train, X_test, y_train, y_test = train_test_split(
-            X, y, test_size=0.2, random_state=42)
+        X_train, X_test, y_train, y_test = split_dataset(
+            X, y, test_size=options["test_subset_size"], random_state=42)
 
         model = svm.SVC(kernel='rbf', C=1.0, gamma='scale', probability=True)
         model.fit(X_train, y_train)
-
-        y_pred = model.predict(X_test)
-        acc = accuracy_score(y_test, y_pred)
+        if X_test is not None:
+            y_pred = model.predict(X_test)
+            acc = accuracy_score(y_test, y_pred)
+        else:
+            y_pred = model.predict(X_train)
+            acc = accuracy_score(y_train, y_pred)
 
         model_path = os.path.join(target_model_path, 'naidoo_omlin.pkl')
         with open(model_path, 'wb') as f:

@@ -11,12 +11,12 @@ from keras.src.losses import MeanSquaredError
 from keras.src.optimizers import SGD
 from keras.src.utils import to_categorical
 from numpy import ndarray
-from sklearn.model_selection import train_test_split
 
 from bdgs.algorithms.bdgs_algorithm import BaseAlgorithm
 from bdgs.algorithms.oyedotun_khashman.oyedotun_khashman_payload import OyedotunKhashmanPayload
 from bdgs.common.crop_image import crop_image
 from bdgs.common.set_options import set_options
+from bdgs.common.dataset_spliter import split_dataset, choose_fit_kwargs
 from bdgs.data.gesture import GESTURE
 from bdgs.data.processing_method import PROCESSING_METHOD
 from bdgs.models.learning_data import LearningData
@@ -282,7 +282,8 @@ class OyedotunKhashman(BaseAlgorithm):
             "batch_size": 5,
             "epochs": 400,
             "learning_rate": 0.8,
-            "num_classes": NUM_CLASSES
+            "num_classes": NUM_CLASSES,
+            "test_subset_size": 0.2
         }
         options = set_options(default_options, custom_options)
         processed_images = []
@@ -298,33 +299,37 @@ class OyedotunKhashman(BaseAlgorithm):
         processed_images = np.array(processed_images)
         labels = np.array(labels)
 
-        x_train, x_val, y_train, y_val = train_test_split(processed_images, labels, test_size=0.2,
+        x_train, x_val, y_train, y_val = split_dataset(processed_images, labels, test_size=options["test_subset_size"],
                                                           random_state=42)
 
         x_train = np.expand_dims(x_train, axis=-1)
-        x_val = np.expand_dims(x_val, axis=-1)
-
         y_train = to_categorical(y_train, options["num_classes"])
-        y_val = to_categorical(y_val, options["num_classes"])
+
+        if x_val is not None and y_val is not None:
+            y_val = to_categorical(y_val, options["num_classes"])
+            x_val = np.expand_dims(x_val, axis=-1)
 
         # For CNNs training:
         model = create_model_cnn2(options["num_classes"], options["learning_rate"])
-        history = model.fit(x_train, y_train,
+        history = model.fit(**choose_fit_kwargs(x_train, y_train,
                             validation_data=(x_val, y_val),
                             batch_size=options["batch_size"],
                             epochs=options["epochs"],
-                            verbose="auto")
-        test_loss, test_acc = model.evaluate(x_val, y_val, verbose=0)
+                            verbose="auto"))
+        if x_val is not None and y_val is not None:
+            test_loss, test_acc = model.evaluate(x_val, y_val, verbose=0)
+        else:
+            test_loss, test_acc = model.evaluate(x_train, y_train, verbose=0)
 
         # FOR SDAES:
 
         # reshape img to vector, for example 32x32 -> 1024 x 1
-        x_train = x_train.reshape(x_train.shape[0], -1)
-        x_val = x_val.reshape(x_val.shape[0], -1)
+        # x_train = x_train.reshape(x_train.shape[0], -1)
+        # x_val = x_val.reshape(x_val.shape[0], -1)
 
         # normalize
-        x_train = x_train.astype("float32") / 255.0
-        x_val = x_val.astype("float32") / 255.0
+        # x_train = x_train.astype("float32") / 255.0
+        # x_val = x_val.astype("float32") / 255.0
 
         # y_train = to_categorical(y_train, NUM_CLASSES)
         # y_val = to_categorical(y_val, NUM_CLASSES)

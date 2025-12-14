@@ -5,13 +5,13 @@ from enum import Enum
 import cv2
 import numpy as np
 from sklearn.linear_model import Perceptron
-from sklearn.model_selection import train_test_split
 
 from bdgs.algorithms.bdgs_algorithm import BaseAlgorithm
 from bdgs.algorithms.maung.maung_learning_data import MaungLearningData
 from bdgs.algorithms.maung.maung_payload import MaungPayload
 from bdgs.common.crop_image import crop_image
 from bdgs.common.set_options import set_options
+from bdgs.common.dataset_spliter import split_dataset
 from bdgs.data.gesture import GESTURE
 from bdgs.data.processing_method import PROCESSING_METHOD
 from definitions import ROOT_DIR
@@ -73,7 +73,8 @@ class Maung(BaseAlgorithm):
             float, float):
         default_options = {
             "max_iter": 1000,
-            "tol": 1e-3
+            "tol": 1e-3,
+            "test_subset_size": 0.2
         }
         options = set_options(default_options, custom_options)
         processed_images = []
@@ -89,10 +90,13 @@ class Maung(BaseAlgorithm):
 
         X = np.array(processed_images)
         y = np.array(etiquettes)
-        X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
+        X_train, X_val, y_train, y_val = split_dataset(X, y, test_size=options["test_subset_size"], random_state=42)
         perceptron = Perceptron(max_iter=options["max_iter"], tol=options["tol"])
         perceptron.fit(X_train, y_train)
-        accuracy = perceptron.score(X_val, y_val)
+        if X_val is not None and y_val is not None:
+            accuracy = perceptron.score(X_val, y_val)
+        else:
+            accuracy = perceptron.score(X_train, y_train)
         # print(f"Accuracy on validation set: {accuracy * 100:.2f}%")
         model_path = os.path.join(target_model_path, 'maung.pkl')
         with open(model_path, 'wb') as f:
