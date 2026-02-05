@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 
-from bdgs.data.algorithm import ALGORITHM
+from sgrf.data.algorithm import ALGORITHM
 
 
 def load_all_data(base_dir, algorithms=set(ALGORITHM), series_list=None):

@@ -5,8 +5,8 @@ HERE = pathlib.Path(__file__).parent
 README = (HERE / "README.md").read_text(encoding="utf-8")
 
 setup(
-    name="bdgs",
-    version="2.1.0",
+    name="sgrf",
+    version="3.0.0",
     packages=find_packages(),
     install_requires=[
         'opencv-python~=4.11.0.86',
@@ -19,12 +19,12 @@ setup(
     ],
     include_package_data=True,
     package_data={
-        'bdgs_trained_models': ['*'],
+        'sgrf_trained_models': ['*'],
     },
     py_modules=['definitions'],
     author="marcinbator",
     author_email="marcinbator.ofc@gmail.com",
-    description="Static gestures recognition tool",
+    description="Static Gestures Recognition Framework",
     long_description=README,
     long_description_content_type="text/markdown",
     classifiers=[

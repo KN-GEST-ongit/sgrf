@@ -2,18 +2,18 @@ import os
 
 import cv2
 
-from bdgs import classify
-from bdgs.classifier import process_image
-from bdgs.data.algorithm import ALGORITHM
-from bdgs.data.gesture import GESTURE
-from bdgs.data.processing_method import PROCESSING_METHOD
+from sgrf import classify
+from sgrf.classifier import process_image
+from sgrf.data.algorithm import ALGORITHM
+from sgrf.data.gesture import GESTURE
+from sgrf.data.processing_method import PROCESSING_METHOD
 from scripts.choose_payload import choose_payload
 from scripts.file_coords_parser import parse_file_coords, parse_etiquette
-from scripts.loaders import BDGSDatasetLoader
+from scripts.loaders import SGRFDatasetLoader
 
 
 def image_processing_visual_test(algorithm: ALGORITHM, images_amount: int):
-    files = BDGSDatasetLoader.get_learning_files(shuffle=True, limit=images_amount,
+    files = SGRFDatasetLoader.get_learning_files(shuffle=True, limit=images_amount,
                                                  limit_images_in_single_person_single_recording=1,
                                                  base_path=os.path.abspath("../../bdgs_photos"))
     for image_file in files:
@@ -36,7 +36,7 @@ def image_processing_visual_test(algorithm: ALGORITHM, images_amount: int):
 
 
 def classification_visual_test(algorithm: ALGORITHM, images_amount: int):
-    files = BDGSDatasetLoader.get_learning_files(shuffle=True, limit=images_amount,
+    files = SGRFDatasetLoader.get_learning_files(shuffle=True, limit=images_amount,
                                                  base_path=os.path.abspath("../../bdgs_photos"))
     for image_file in files:
         image = cv2.imread(image_file[0])
@@ -45,7 +45,7 @@ def classification_visual_test(algorithm: ALGORITHM, images_amount: int):
         payload = choose_payload(algorithm, background, coords, image)
 
         result, certainty = classify(algorithm=algorithm, payload=payload,
-                                     custom_model_dir=os.path.abspath('../bdgs_trained_models'))
+                                     custom_model_dir=os.path.abspath('../sgrf_trained_models'))
 
         cv2.imshow(f"Gesture: {result} ({certainty}%, should be: {GESTURE(parse_etiquette(image_file[1]))})", image)
         cv2.waitKey(0)

@@ -1,17 +1,17 @@
-from bdgs.algorithms.adithya_rajesh.adithya_rajesh_payload import AdithyaRajeshPayload
-from bdgs.algorithms.chang_chen.chang_chen_payload import ChangChenPayload
-from bdgs.algorithms.gupta_jaafar.gupta_jaafar_payload import GuptaJaafarPayload
-from bdgs.algorithms.islam_hossain_andersson.islam_hossain_andersson_payload import IslamHossainAnderssonPayload
-from bdgs.algorithms.joshi_kumar.joshi_kumar_payload import JoshiKumarPayload
-from bdgs.algorithms.maung.maung_payload import MaungPayload
-from bdgs.algorithms.mohanty_rambhatla.mohanty_rambhatla_payload import MohantyRambhatlaPayload
-from bdgs.algorithms.murthy_jadon.murthy_jadon_payload import MurthyJadonPayload
-from bdgs.algorithms.nguyen_huynh.nguyen_huynh_payload import NguyenHuynhPayload
-from bdgs.algorithms.oyedotun_khashman.oyedotun_khashman_payload import OyedotunKhashmanPayload
-from bdgs.algorithms.pinto_borges.pinto_borges_payload import PintoBorgesPayload
-from bdgs.algorithms.zhuang_yang.zhuang_yang_payload import ZhuangYangPayload
-from bdgs.data.algorithm import ALGORITHM
-from bdgs.models.image_payload import ImagePayload
+from sgrf.algorithms.adithya_rajesh.adithya_rajesh_payload import AdithyaRajeshPayload
+from sgrf.algorithms.chang_chen.chang_chen_payload import ChangChenPayload
+from sgrf.algorithms.gupta_jaafar.gupta_jaafar_payload import GuptaJaafarPayload
+from sgrf.algorithms.islam_hossain_andersson.islam_hossain_andersson_payload import IslamHossainAnderssonPayload
+from sgrf.algorithms.joshi_kumar.joshi_kumar_payload import JoshiKumarPayload
+from sgrf.algorithms.maung.maung_payload import MaungPayload
+from sgrf.algorithms.mohanty_rambhatla.mohanty_rambhatla_payload import MohantyRambhatlaPayload
+from sgrf.algorithms.murthy_jadon.murthy_jadon_payload import MurthyJadonPayload
+from sgrf.algorithms.nguyen_huynh.nguyen_huynh_payload import NguyenHuynhPayload
+from sgrf.algorithms.oyedotun_khashman.oyedotun_khashman_payload import OyedotunKhashmanPayload
+from sgrf.algorithms.pinto_borges.pinto_borges_payload import PintoBorgesPayload
+from sgrf.algorithms.zhuang_yang.zhuang_yang_payload import ZhuangYangPayload
+from sgrf.data.algorithm import ALGORITHM
+from sgrf.models.image_payload import ImagePayload
 
 
 def choose_payload(algorithm, background, coords, image):

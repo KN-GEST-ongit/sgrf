@@ -5,7 +5,7 @@ from scripts.vars import ALGORITHMS_CONFIG_DATA_PATH
 ALGORITHM_FILENAME = "algorithm.py"
 ALGORITHM_FUNCTIONS_FILENAME = "algorithm_functions.py"
 PROCESSING_METHOD_FILENAME = "processing_method.py"
-ALGORITHM_BASE_PATH = "../bdgs/algorithms"
+ALGORITHM_BASE_PATH = "../sgrf/algorithms"
 PAYLOAD_SCRIPTS_FILE = "choose_payload.py"
 LEARNING_DATA_SCRIPTS_FILE \
     = "choose_learning_data.py"
@@ -65,12 +65,12 @@ def modify_functions(algorithm_name, class_name, module_name):
         content = file.read()
         if algorithm_name in content:
             raise Exception("Algorithm already defined in functions.")
-    import_line = f"from bdgs.algorithms.{module_name}.{module_name} import {class_name}"
+    import_line = f"from sgrf.algorithms.{module_name}.{module_name} import {class_name}"
     map_line = f"ALGORITHM.{algorithm_name}: {class_name}(),"
     with open(algorithm_functions_path, "r") as file:
         lines = file.readlines()
     for i, line in enumerate(lines):
-        if "from bdgs.data.algorithm import ALGORITHM" in line:
+        if "from sgrf.data.algorithm import ALGORITHM" in line:
             lines.insert(i, import_line + "\n")
             break
     start_index = 0
@@ -93,11 +93,11 @@ def create_algorithm_skeleton(module_name, class_name):
     file_path = os.path.join(directory_path, f"{module_name}.py")
 
     skeleton_code = f"""from numpy import ndarray
-from bdgs.algorithms.bdgs_algorithm import BaseAlgorithm
-from bdgs.data.gesture import GESTURE
-from bdgs.data.processing_method import PROCESSING_METHOD
-from bdgs.models.image_payload import ImagePayload
-from bdgs.models.learning_data import LearningData
+from sgrf.algorithms.sgrf_algorithm import BaseAlgorithm
+from sgrf.data.gesture import GESTURE
+from sgrf.data.processing_method import PROCESSING_METHOD
+from sgrf.models.image_payload import ImagePayload
+from sgrf.models.learning_data import LearningData
 
 
 class {class_name}(BaseAlgorithm):
@@ -128,7 +128,7 @@ def add_custom_payload(module_name, class_name):
 
     skeleton_code = f"""import numpy as np
 
-from bdgs.models.image_payload import ImagePayload
+from sgrf.models.image_payload import ImagePayload
 
 
 class {class_name}Payload(ImagePayload):
@@ -146,8 +146,8 @@ def add_custom_learning_data(module_name, class_name):
 
     file_path = os.path.join(directory_path, f"{module_name}_learning_data.py")
 
-    skeleton_code = f"""from bdgs.data.gesture import GESTURE
-from bdgs.models.learning_data import LearningData
+    skeleton_code = f"""from sgrf.data.gesture import GESTURE
+from sgrf.models.learning_data import LearningData
 
 
 class {class_name}LearningData(LearningData):
@@ -160,7 +160,7 @@ class {class_name}LearningData(LearningData):
 
 
 def modify_payload_script(module_name, class_name, algorithm_name):
-    payload_import = f"from bdgs.algorithms.{module_name}.{module_name}_payload import {class_name}Payload"
+    payload_import = f"from sgrf.algorithms.{module_name}.{module_name}_payload import {class_name}Payload"
     payload_condition = f"""    elif algorithm == ALGORITHM.{algorithm_name.upper()}:
         payload = {class_name}Payload(image=image)"""
 
@@ -169,7 +169,7 @@ def modify_payload_script(module_name, class_name, algorithm_name):
 
     if payload_import + "\n" not in lines:
         for i, line in enumerate(lines):
-            if line.startswith("from bdgs.data.algorithm import ALGORITHM"):
+            if line.startswith("from sgrf.data.algorithm import ALGORITHM"):
                 lines.insert(i, payload_import + "\n")
                 break
 
@@ -183,7 +183,7 @@ def modify_payload_script(module_name, class_name, algorithm_name):
 
 
 def modify_learning_data_script(module_name, class_name, algorithm_name):
-    learning_import = f"from bdgs.algorithms.{module_name}.{module_name}_learning_data import {class_name}LearningData"
+    learning_import = f"from sgrf.algorithms.{module_name}.{module_name}_learning_data import {class_name}LearningData"
     learning_condition = f"""    elif algorithm == ALGORITHM.{algorithm_name.upper()}:
             return {class_name}LearningData(image_path=image_path, label=label)"""
 
@@ -192,7 +192,7 @@ def modify_learning_data_script(module_name, class_name, algorithm_name):
 
     if learning_import + "\n" not in lines:
         for i, line in enumerate(lines):
-            if line.startswith("from bdgs.data.algorithm import ALGORITHM"):
+            if line.startswith("from sgrf.data.algorithm import ALGORITHM"):
                 lines.insert(i, learning_import + "\n")
                 break
 

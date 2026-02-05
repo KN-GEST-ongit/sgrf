@@ -1,13 +1,13 @@
 import os
 
-from bdgs.classifier import learn
-from bdgs.data.algorithm import ALGORITHM
+from sgrf.classifier import learn
+from sgrf.data.algorithm import ALGORITHM
 from scripts.choose_learning_data import choose_learning_data
-from scripts.loaders import BDGSDatasetLoader
+from scripts.loaders import SGRFDatasetLoader
 
 
 def learn_test(algorithm: ALGORITHM, images_amount: int, people_amount: int):
-    files = BDGSDatasetLoader.get_learning_files(shuffle=True, limit=images_amount,
+    files = SGRFDatasetLoader.get_learning_files(shuffle=True, limit=images_amount,
                                                  limit_images_in_single_person_single_recording=1,
                                                  limit_people=people_amount,
                                                  base_path=os.path.abspath("../bdgs_photos"))

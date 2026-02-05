@@ -1,6 +1,6 @@
 from .albarcza_loader import AlbarczaDatasetLoader
 from .base_loader import BaseDatasetLoader
-from .bdgs_loader import BDGSDatasetLoader
+from .sgrf_loader import SGRFDatasetLoader
 from .jochen_triesch_ii_loader import JochenTrieschIIDatasetLoader
 from .jochen_triesch_loader import JochenTrieschDatasetLoader
 from .leap_motion_loader import LeapMotionDatasetLoader

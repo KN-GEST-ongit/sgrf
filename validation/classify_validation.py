@@ -4,16 +4,16 @@ from datetime import datetime
 
 import cv2
 
-from bdgs import classify
-from bdgs.data.algorithm import ALGORITHM
+from sgrf import classify
+from sgrf.data.algorithm import ALGORITHM
 from scripts.choose_payload import choose_payload
 from scripts.file_coords_parser import parse_file_coords, parse_etiquette
-from scripts.loaders import BDGSDatasetLoader
+from scripts.loaders import SGRFDatasetLoader
 
 
 def classify_validation(scenario_name: str, algorithms: set[ALGORITHM], images_amount: int, repeat_amount: int = 1,
                         people_amount: int = None):
-    files = BDGSDatasetLoader.get_learning_files(shuffle=True, limit=images_amount,
+    files = SGRFDatasetLoader.get_learning_files(shuffle=True, limit=images_amount,
                                                  limit_images_in_single_person_single_recording=5,
                                                  limit_people=people_amount,
                                                  base_path=os.path.abspath("../../bdgs_photos"))

@@ -1,21 +1,21 @@
 from enum import Enum
 
-from bdgs.algorithms.adithya_rajesh.adithya_rajesh_learning_data import AdithyaRajeshLearningData
-from bdgs.algorithms.chang_chen.chang_chen_learning_data import ChangChenLearningData
-from bdgs.algorithms.gupta_jaafar.gupta_jaafar_learning_data import GuptaJaafarLearningData
-from bdgs.algorithms.islam_hossain_andersson.islam_hossain_andersson_learning_data import \
+from sgrf.algorithms.adithya_rajesh.adithya_rajesh_learning_data import AdithyaRajeshLearningData
+from sgrf.algorithms.chang_chen.chang_chen_learning_data import ChangChenLearningData
+from sgrf.algorithms.gupta_jaafar.gupta_jaafar_learning_data import GuptaJaafarLearningData
+from sgrf.algorithms.islam_hossain_andersson.islam_hossain_andersson_learning_data import \
     IslamHossainAnderssonLearningData
-from bdgs.algorithms.joshi_kumar.joshi_kumar_learning_data import JoshiKumarLearningData
-from bdgs.algorithms.maung.maung_learning_data import MaungLearningData
-from bdgs.algorithms.mohanty_rambhatla.mohanty_rambhatla_learning_data import MohantyRambhatlaLearningData
-from bdgs.algorithms.murthy_jadon.murthy_jadon_learning_data import MurthyJadonLearningData
-from bdgs.algorithms.nguyen_huynh.nguyen_huynh_learning_data import NguyenHuynhLearningData
-from bdgs.algorithms.oyedotun_khashman.oyedotun_khashman_learning_data import OyedotunKhashmanLearningData
-from bdgs.algorithms.pinto_borges.pinto_borges_learning_data import PintoBorgesLearningData
-from bdgs.algorithms.zhuang_yang.zhuang_yang_learning_data import ZhuangYangLearningData
-from bdgs.data.algorithm import ALGORITHM
-from bdgs.data.gesture import GESTURE
-from bdgs.models.learning_data import LearningData
+from sgrf.algorithms.joshi_kumar.joshi_kumar_learning_data import JoshiKumarLearningData
+from sgrf.algorithms.maung.maung_learning_data import MaungLearningData
+from sgrf.algorithms.mohanty_rambhatla.mohanty_rambhatla_learning_data import MohantyRambhatlaLearningData
+from sgrf.algorithms.murthy_jadon.murthy_jadon_learning_data import MurthyJadonLearningData
+from sgrf.algorithms.nguyen_huynh.nguyen_huynh_learning_data import NguyenHuynhLearningData
+from sgrf.algorithms.oyedotun_khashman.oyedotun_khashman_learning_data import OyedotunKhashmanLearningData
+from sgrf.algorithms.pinto_borges.pinto_borges_learning_data import PintoBorgesLearningData
+from sgrf.algorithms.zhuang_yang.zhuang_yang_learning_data import ZhuangYangLearningData
+from sgrf.data.algorithm import ALGORITHM
+from sgrf.data.gesture import GESTURE
+from sgrf.models.learning_data import LearningData
 from scripts.file_coords_parser import parse_etiquette, parse_file_coords
 
 

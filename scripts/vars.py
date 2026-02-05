@@ -1,7 +1,7 @@
 import os
 
 TRAINING_IMAGES_PATH = os.path.abspath("../../bdgs_photos")
-ALGORITHMS_CONFIG_DATA_PATH = os.path.abspath("../bdgs/data")
+ALGORITHMS_CONFIG_DATA_PATH = os.path.abspath("../sgrf/data")
 
 NUS_IMAGES_PATH = os.path.abspath("../bdgs_third_party_datasets/NUS-Hand-Posture-Dataset/Color")
 NUS_II_IMAGES_PATH = os.path.abspath("../bdgs_third_party_datasets/NUS-Hand-Posture-Dataset-II/Hand Postures")
