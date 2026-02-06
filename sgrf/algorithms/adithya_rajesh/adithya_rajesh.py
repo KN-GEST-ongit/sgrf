@@ -17,7 +17,7 @@ from sgrf.common.set_options import set_options
 from sgrf.common.dataset_spliter import split_dataset, choose_fit_kwargs
 from sgrf.data.gesture import GESTURE
 from sgrf.data.processing_method import PROCESSING_METHOD
-from definitions import ROOT_DIR, NUM_CLASSES
+from definitions import ROOT_DIR
 
 
 def create_model(num_classes, learning_rate, momentum):
@@ -116,7 +116,7 @@ class AdithyaRajesh(BaseAlgorithm):
             "epochs": 20,
             "learning_rate": 0.001,
             "momentum": 0.9,
-            "num_classes": NUM_CLASSES,
+            "gesture_enum": GESTURE,
             "test_subset_size": 0.2
         }
         options = set_options(default_options, custom_options)
@@ -134,7 +134,7 @@ class AdithyaRajesh(BaseAlgorithm):
         processed_images = np.array(processed_images)
         labels = np.array(labels)
 
-        model = create_model(options['num_classes'], options['learning_rate'], options['momentum'])
+        model = create_model(len(options['gesture_enum']), options['learning_rate'], options['momentum'])
 
         x_train, x_val, y_train, y_val = split_dataset(processed_images, labels,
                                                         test_size=options["test_subset_size"],

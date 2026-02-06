@@ -12,7 +12,7 @@ from sgrf.common.set_options import set_options
 from sgrf.common.dataset_spliter import split_dataset, choose_fit_kwargs
 from sgrf.data.gesture import GESTURE
 from sgrf.data.processing_method import PROCESSING_METHOD
-from definitions import ROOT_DIR, NUM_CLASSES
+from definitions import ROOT_DIR
 
 
 def subtract_background(background, image):
@@ -102,7 +102,7 @@ class MurthyJadon(BaseAlgorithm):
               custom_options: dict = None) -> (float, float):
         default_options = {
             "epochs": 80,
-            "num_classes": NUM_CLASSES,
+            "gesture_enum": GESTURE,
             "test_subset_size": 0.2
         }
         options = set_options(default_options, custom_options)
@@ -125,7 +125,7 @@ class MurthyJadon(BaseAlgorithm):
         model = keras.Sequential([
             keras.layers.InputLayer(input_shape=(900,)),
             keras.layers.Dense(14, activation='relu'),
-            keras.layers.Dense(options["num_classes"], activation='softmax')
+            keras.layers.Dense(len(options["gesture_enum"]), activation='softmax')
         ])
         model.compile(
             optimizer='adam',

@@ -20,7 +20,7 @@ from sgrf.common.dataset_spliter import split_dataset, choose_fit_kwargs
 from sgrf.data.gesture import GESTURE
 from sgrf.data.processing_method import PROCESSING_METHOD
 from sgrf.models.learning_data import LearningData
-from definitions import NUM_CLASSES, ROOT_DIR
+from definitions import ROOT_DIR
 
 
 def extract_hand(image: ndarray):
@@ -282,10 +282,11 @@ class OyedotunKhashman(BaseAlgorithm):
             "batch_size": 5,
             "epochs": 400,
             "learning_rate": 0.8,
-            "num_classes": NUM_CLASSES,
+            "gesture_enum": GESTURE,
             "test_subset_size": 0.2
         }
         options = set_options(default_options, custom_options)
+        num_classes = len(options["gesture_enum"])
         processed_images = []
         labels = []
         for data in learning_data:
@@ -303,14 +304,14 @@ class OyedotunKhashman(BaseAlgorithm):
                                                           random_state=42)
 
         x_train = np.expand_dims(x_train, axis=-1)
-        y_train = to_categorical(y_train, options["num_classes"])
+        y_train = to_categorical(y_train, num_classes)
 
         if x_val is not None and y_val is not None:
-            y_val = to_categorical(y_val, options["num_classes"])
+            y_val = to_categorical(y_val, num_classes)
             x_val = np.expand_dims(x_val, axis=-1)
 
         # For CNNs training:
-        model = create_model_cnn2(options["num_classes"], options["learning_rate"])
+        model = create_model_cnn2(num_classes, options["learning_rate"])
         history = model.fit(**choose_fit_kwargs(x_train, y_train,
                             validation_data=(x_val, y_val),
                             batch_size=options["batch_size"],
@@ -331,11 +332,11 @@ class OyedotunKhashman(BaseAlgorithm):
         # x_train = x_train.astype("float32") / 255.0
         # x_val = x_val.astype("float32") / 255.0
 
-        # y_train = to_categorical(y_train, NUM_CLASSES)
-        # y_val = to_categorical(y_val, NUM_CLASSES)
+        # y_train = to_categorical(y_train, num_classes)
+        # y_val = to_categorical(y_val, num_classes)
 
         # model = sdae_fine_tuning(
-        #    num_classes=options["num_classes"]
+        #    num_classes=num_classes
         #    x_train=x_train,
         #    y_train=y_train,
         #    x_val=x_val,

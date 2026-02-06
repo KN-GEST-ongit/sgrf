@@ -18,7 +18,7 @@ from sgrf.common.set_options import set_options
 from sgrf.common.dataset_spliter import split_dataset, choose_fit_kwargs
 from sgrf.data.gesture import GESTURE
 from sgrf.data.processing_method import PROCESSING_METHOD
-from definitions import ROOT_DIR, NUM_CLASSES
+from definitions import ROOT_DIR
 
 
 def create_model(num_classes, learning_rate, enable_augmentation=True):
@@ -122,10 +122,11 @@ class IslamHossainAndersson(BaseAlgorithm):
             "epochs": 60,
             "learning_rate": 0.001,
             "enable_augmentation": False,
-            "num_classes": NUM_CLASSES,
+            "gesture_enum": GESTURE,
             "test_subset_size": 0.2
         }
         options = set_options(default_options, custom_options)
+        num_classes = len(options["gesture_enum"])
         processed_images = []
         labels = []
         for data in learning_data:
@@ -146,9 +147,9 @@ class IslamHossainAndersson(BaseAlgorithm):
 
         x_train, x_val, y_train, y_val = split_dataset(processed_images, labels, test_size=options["test_subset_size"],
                                                           random_state=42)
-        y_train_one_hot = keras.utils.to_categorical(y_train, num_classes=NUM_CLASSES)
+        y_train_one_hot = keras.utils.to_categorical(y_train, num_classes=num_classes)
         if y_val is not None:
-            y_val_one_hot = keras.utils.to_categorical(y_val, num_classes=NUM_CLASSES)
+            y_val_one_hot = keras.utils.to_categorical(y_val, num_classes=num_classes)
         else:
             y_val_one_hot = None
 

@@ -14,7 +14,7 @@ from sgrf.common.set_options import set_options
 from sgrf.common.dataset_spliter import split_dataset, choose_fit_kwargs
 from sgrf.data.gesture import GESTURE
 from sgrf.data.processing_method import PROCESSING_METHOD
-from definitions import ROOT_DIR, NUM_CLASSES
+from definitions import ROOT_DIR
 
 
 def skin_segmentation(image: np.ndarray) -> np.ndarray:
@@ -101,10 +101,11 @@ class PintoBorges(BaseAlgorithm):
         default_options = {
             "batch_size": 8,
             "epochs": 10,
-            "num_classes": NUM_CLASSES,
+            "gesture_enum": GESTURE,
             "test_subset_size": 0.2
         }
         options = set_options(default_options, custom_options)
+        gesture_enum = options["gesture_enum"]
         processed_images = []
         etiquettes = []
         for data in learning_data:
@@ -131,7 +132,7 @@ class PintoBorges(BaseAlgorithm):
             layers.Flatten(),
             layers.Dense(400, activation='relu'),
             layers.Dense(800, activation='relu'),
-            layers.Dense(options["num_classes"], activation='softmax')
+            layers.Dense(len(gesture_enum), activation='softmax')
         ])
 
         model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])

@@ -17,7 +17,7 @@ from sgrf.common.dataset_spliter import split_dataset, choose_fit_kwargs
 from sgrf.data.gesture import GESTURE
 from sgrf.data.processing_method import PROCESSING_METHOD
 from sgrf.models.learning_data import LearningData
-from definitions import ROOT_DIR, NUM_CLASSES
+from definitions import ROOT_DIR
 
 
 def augment(image: ndarray, repeat_num: int, target_size: tuple[int, int] = (32, 32)):
@@ -118,7 +118,7 @@ class MohantyRambhatla(BaseAlgorithm):
             "enable_augmentation": False,
             "dropout_rate": 0.5,
             "use_relu": True,
-            "num_classes": NUM_CLASSES,
+            "gesture_enum": GESTURE,
             "test_subset_size": 0.2
         }
         options = set_options(default_options, custom_options)
@@ -143,16 +143,18 @@ class MohantyRambhatla(BaseAlgorithm):
         processed_images = np.array(processed_images)
         labels = np.array(labels)
 
+        num_classes = len(options["gesture_enum"])
+
         model = create_model(learning_rate=options["learning_rate"],
-                             use_relu=options["use_relu"], num_classes=options["num_classes"],
+                             use_relu=options["use_relu"], num_classes=num_classes,
                              dropout_rate=options["dropout_rate"])
 
         x_train, x_val, y_train, y_val = split_dataset(processed_images, labels, test_size=options["test_subset_size"],
                                                           random_state=42)
 
-        y_train = to_categorical(y_train, num_classes=options["num_classes"])
+        y_train = to_categorical(y_train, num_classes=num_classes)
         if y_val is not None:
-            y_val = to_categorical(y_val, num_classes=options["num_classes"])
+            y_val = to_categorical(y_val, num_classes=num_classes)
 
         history = model.fit(**choose_fit_kwargs(x_train, y_train,
                             validation_data=(x_val, y_val),

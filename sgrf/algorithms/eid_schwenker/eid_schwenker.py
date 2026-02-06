@@ -13,7 +13,7 @@ from sgrf.data.gesture import GESTURE
 from sgrf.data.processing_method import PROCESSING_METHOD
 from sgrf.models.image_payload import ImagePayload
 from sgrf.models.learning_data import LearningData
-from definitions import ROOT_DIR, NUM_CLASSES
+from definitions import ROOT_DIR
 
 
 def segment_skin(image: np.ndarray) -> np.ndarray:
@@ -71,12 +71,13 @@ class EidSchwenker(BaseAlgorithm):
         default_options = {
             "epochs": 100,
             "batch_size": 8,
-            "num_classes": NUM_CLASSES,
-            "test_subset_size": 0.2
+            "test_subset_size": 0.2,
+            "gesture_enum": GESTURE
         }
         options = set_options(default_options, custom_options)
         processed_images = []
         etiquettes = []
+        gesture_enum = options["gesture_enum"]
 
         for data in learning_data:
             hand_image = cv2.imread(data.image_path)
@@ -100,7 +101,7 @@ class EidSchwenker(BaseAlgorithm):
             layers.Flatten(),
             layers.Dropout(0.5),
             layers.Dense(64, activation='relu'),
-            layers.Dense(options['num_classes'], activation='softmax')
+            layers.Dense(len(gesture_enum), activation='softmax')
         ])
 
         model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
