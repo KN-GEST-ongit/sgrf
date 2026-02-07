@@ -65,10 +65,18 @@ class GuptaJaafar(BaseAlgorithm):
         model_path = os.path.join(custom_model_dir, model_filename) if custom_model_dir is not None else os.path.join(
             ROOT_DIR, "sgrf_trained_models",
             model_filename)
+        pca_filename = "gupta_jaafar_pca.pkl"
+        pca_path = os.path.join(custom_model_dir, pca_filename) if custom_model_dir is not None else os.path.join(
+            ROOT_DIR, "sgrf_trained_models",
+            pca_filename)
+        lda_filename = "gupta_jaafar_lda.pkl"
+        lda_path = os.path.join(custom_model_dir, lda_filename) if custom_model_dir is not None else os.path.join(
+            ROOT_DIR, "sgrf_trained_models",
+            lda_filename)
 
-        with open(os.path.join(ROOT_DIR, "sgrf_trained_models", 'gupta_jaafar_pca.pkl'), 'rb') as f:
+        with open(pca_path, 'rb') as f:
             pca = pickle.load(f)
-        with open(os.path.join(ROOT_DIR, "sgrf_trained_models", 'gupta_jaafar_lda.pkl'), 'rb') as f:
+        with open(lda_path, 'rb') as f:
             lda = pickle.load(f)
         with open(model_path, 'rb') as f:
             model = pickle.load(f)
