@@ -6,7 +6,7 @@ README = (HERE / "README.md").read_text(encoding="utf-8")
 
 setup(
     name="sgrf",
-    version="3.0.0",
+    version="3.1.0",
     packages=find_packages(),
     install_requires=[
         'opencv-python~=4.11.0.86',
