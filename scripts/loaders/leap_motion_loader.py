@@ -27,9 +27,19 @@ class LeapMotionDatasetLoader(BaseDatasetLoader):
         image_files = []
         for root, _, files in os.walk(base_path):
             root = Path(root).resolve()
+
+            files = list(files)
+            random.shuffle(files)
+            session_count = 0
+
             for file in files:
                 if not file.lower().endswith((".png")):
                     continue
+
+                # Limit to 50 images per recording session
+                if session_count >= 50:
+                    break
+
                 parent_dir_name = root.name.upper()
                 parent_dir_name = parent_dir_name[3:]
 
@@ -43,6 +53,7 @@ class LeapMotionDatasetLoader(BaseDatasetLoader):
                 image_files.append(
                     (img_path, f"{label_int} (0 0) ({img_w} {img_h}) ({img_w} {img_h})", None)
                 )
+                session_count += 1
 
         if shuffle: random.shuffle(image_files)
         return image_files[:limit]
