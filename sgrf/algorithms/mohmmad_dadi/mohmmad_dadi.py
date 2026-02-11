@@ -5,7 +5,7 @@ from enum import Enum
 import cv2
 import numpy as np
 from sklearn.decomposition import PCA
-from sklearn.svm import SVC
+from sklearn.svm import LinearSVC
 
 from sgrf.algorithms.sgrf_algorithm import BaseAlgorithm
 from sgrf.common.set_options import set_options
@@ -108,7 +108,8 @@ class MohmmadDadi(BaseAlgorithm):
         # knn_accuracy = knn.score(X_test_pca, y_test)
         # print(f"KNN Accuracy: {knn_accuracy * 100:.2f}%")
 
-        svm = SVC(kernel='linear', probability=True)
+        svm = LinearSVC()
+        #svm = SVC(probability=True, kernel='linear')
         svm.fit(X_train_pca, y_train)
         if X_test is not None:
             svm_accuracy = svm.score(X_test_pca, y_test)
