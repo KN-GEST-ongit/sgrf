@@ -17,9 +17,6 @@ class SGRFDatasetLoader(BaseDatasetLoader):
                            limit_recordings_of_single_person_single_gesture=None,
                            limit_images_in_single_person_single_recording=None,
                            limit_people=None, base_path=TRAINING_IMAGES_PATH, source="local"):
-        """source="local" reads base_path from disk (default). source="nextcloud"
-        reads the same dataset layout from Nextcloud instead (credentials from
-        .env / the environment) - see get_learning_files_nextcloud below."""
         if source == "nextcloud":
             if base_path == TRAINING_IMAGES_PATH:
                 base_path = NEXTCLOUD_TRAINING_IMAGES_PATH
@@ -89,24 +86,6 @@ class SGRFDatasetLoader(BaseDatasetLoader):
                                      limit_recordings_of_single_person_single_gesture=None,
                                      limit_images_in_single_person_single_recording=None,
                                      limit_people=None, base_path=NEXTCLOUD_TRAINING_IMAGES_PATH):
-        """Twin of get_learning_files that walks the dataset over Nextcloud's WebDAV
-        API instead of the local filesystem.
-
-        The directory walk and filtering logic mirrors get_learning_files exactly, so
-        results are the same either way (traversal order can differ - see
-        walk_parallel's docstring). Actual images are downloaded, on demand, only
-        for the final (post shuffle/offset/limit) selection - since every algorithm in
-        this codebase reads images via cv2.imread(path), which needs a real local
-        file. Downloads go through a size-bounded local cache (see nextcloud_cache.py)
-        rather than straight to a throwaway temp dir, so repeated runs / epochs over
-        the same file list don't re-download files that are still cached.
-
-        This dataset is wide (many people x gestures x recordings), so both the
-        directory walk and the classification-file reads are done concurrently
-        (see nextcloud_client.walk_parallel / read_text_many) - one request per
-        directory/file, issued one at a time, would otherwise dominate runtime
-        before a single image is even downloaded.
-        """
         client = get_nextcloud_client()
         cache = get_nextcloud_cache()
 
@@ -116,7 +95,7 @@ class SGRFDatasetLoader(BaseDatasetLoader):
         classify_file = None
         visited_paths = {}
         visited_people = {}
-        pending = []  # (root, entry_by_name, classify_file)
+        pending = []
 
         for root, dir_entries, file_entries in walk_results:
             if ".git" in root:
@@ -146,7 +125,7 @@ class SGRFDatasetLoader(BaseDatasetLoader):
         with tqdm(desc="Nextcloud: reading classification files", total=len(unique_classify_files)) as bar:
             classify_contents = client.read_text_many(unique_classify_files, on_progress=bar.update)
 
-        image_files = []  # (remote_image_path, classify_row, remote_bg_path)
+        image_files = []
         known_sizes = {}
 
         for root, entry_by_name, classify_file in pending:
