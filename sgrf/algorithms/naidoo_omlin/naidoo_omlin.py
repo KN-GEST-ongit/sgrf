@@ -15,6 +15,7 @@ from sgrf.data.gesture import GESTURE
 from sgrf.data.processing_method import PROCESSING_METHOD
 from sgrf.models.image_payload import ImagePayload
 from sgrf.models.learning_data import LearningData
+from tqdm import tqdm
 from definitions import ROOT_DIR
 
 
@@ -80,12 +81,13 @@ class NaidooOmlin(BaseAlgorithm):
                                                                                                                 float):
         default_options = {
             "gesture_enum": GESTURE,
-            "test_subset_size": 0.2
+            "test_subset_size": 0.2,
+            "verbose": 0
         }
         options = set_options(default_options, custom_options)
         labels = []
         features = []
-        for data in learning_data:
+        for data in tqdm(learning_data, desc="NaidooOmlin: preprocessing images"):
             hand_image = cv2.imread(data.image_path)
             labels.append(data.label.value - 1)
             features.append(extract_features(hand_image))
@@ -96,7 +98,7 @@ class NaidooOmlin(BaseAlgorithm):
         X_train, X_test, y_train, y_test = split_dataset(
             X, y, test_size=options["test_subset_size"], random_state=42)
 
-        model = svm.SVC(kernel='rbf', C=1.0, gamma='scale', probability=True)
+        model = svm.SVC(kernel='rbf', C=1.0, gamma='scale', probability=True, verbose=bool(options["verbose"]))
         model.fit(X_train, y_train)
         if X_test is not None:
             y_pred = model.predict(X_test)
@@ -104,6 +106,8 @@ class NaidooOmlin(BaseAlgorithm):
         else:
             y_pred = model.predict(X_train)
             acc = accuracy_score(y_train, y_pred)
+        if options["verbose"]:
+            print(f"NaidooOmlin accuracy: {acc * 100:.2f}%")
 
         model_path = os.path.join(target_model_path, 'naidoo_omlin.pkl')
         with open(model_path, 'wb') as f:

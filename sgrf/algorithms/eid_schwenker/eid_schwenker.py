@@ -13,6 +13,7 @@ from sgrf.data.gesture import GESTURE
 from sgrf.data.processing_method import PROCESSING_METHOD
 from sgrf.models.image_payload import ImagePayload
 from sgrf.models.learning_data import LearningData
+from tqdm import tqdm
 from definitions import ROOT_DIR
 
 
@@ -72,14 +73,15 @@ class EidSchwenker(BaseAlgorithm):
             "epochs": 100,
             "batch_size": 8,
             "test_subset_size": 0.2,
-            "gesture_enum": GESTURE
+            "gesture_enum": GESTURE,
+            "verbose": 0
         }
         options = set_options(default_options, custom_options)
         processed_images = []
         etiquettes = []
         gesture_enum = options["gesture_enum"]
 
-        for data in learning_data:
+        for data in tqdm(learning_data, desc="EidSchwenker: preprocessing images"):
             hand_image = cv2.imread(data.image_path)
             processed_image = self.process_image(
                 payload=ImagePayload(image=hand_image)
@@ -105,12 +107,12 @@ class EidSchwenker(BaseAlgorithm):
         ])
 
         model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
-        model.fit(**choose_fit_kwargs(X_train, y_train, epochs=options["epochs"], validation_data=(X_val, y_val), verbose=0,
-                  batch_size=options["batch_size"]))
+        model.fit(**choose_fit_kwargs(X_train, y_train, epochs=options["epochs"], validation_data=(X_val, y_val),
+                  verbose=options["verbose"], batch_size=options["batch_size"]))
         keras.models.save_model(model, os.path.join(target_model_path, 'eid_schwenker.keras'))
         if X_val is not None and y_val is not None:
-            test_loss, test_acc = model.evaluate(X_val, y_val, verbose=0)
+            test_loss, test_acc = model.evaluate(X_val, y_val, verbose=options["verbose"])
         else:
-            test_loss, test_acc = model.evaluate(X_train, y_train, verbose=0)
+            test_loss, test_acc = model.evaluate(X_train, y_train, verbose=options["verbose"])
 
         return test_acc, test_loss

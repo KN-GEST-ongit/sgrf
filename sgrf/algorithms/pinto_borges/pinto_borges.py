@@ -14,6 +14,7 @@ from sgrf.common.set_options import set_options
 from sgrf.common.dataset_spliter import split_dataset, choose_fit_kwargs
 from sgrf.data.gesture import GESTURE
 from sgrf.data.processing_method import PROCESSING_METHOD
+from tqdm import tqdm
 from definitions import ROOT_DIR
 
 
@@ -102,13 +103,14 @@ class PintoBorges(BaseAlgorithm):
             "batch_size": 8,
             "epochs": 10,
             "gesture_enum": GESTURE,
-            "test_subset_size": 0.2
+            "test_subset_size": 0.2,
+            "verbose": 0
         }
         options = set_options(default_options, custom_options)
         gesture_enum = options["gesture_enum"]
         processed_images = []
         etiquettes = []
-        for data in learning_data:
+        for data in tqdm(learning_data, desc="PintoBorges: preprocessing images"):
             hand_image = cv2.imread(data.image_path)
             image = self.process_image(
                 payload=PintoBorgesPayload(image=hand_image, coords=data.coords)
@@ -136,13 +138,13 @@ class PintoBorges(BaseAlgorithm):
         ])
 
         model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
-        model.fit(**choose_fit_kwargs(X_train, y_train, epochs=options["epochs"], validation_data=(X_val, y_val), verbose=0,
-                  batch_size=options["batch_size"]))
+        model.fit(**choose_fit_kwargs(X_train, y_train, epochs=options["epochs"], validation_data=(X_val, y_val),
+                  verbose=options["verbose"], batch_size=options["batch_size"]))
 
         keras.models.save_model(model, os.path.join(target_model_path, 'pinto_borges.keras'))
         if X_val is not None and y_val is not None:
-            test_loss, test_acc = model.evaluate(X_val, y_val, verbose=0)
+            test_loss, test_acc = model.evaluate(X_val, y_val, verbose=options["verbose"])
         else:
-            test_loss, test_acc = model.evaluate(X_train, y_train, verbose=0)
+            test_loss, test_acc = model.evaluate(X_train, y_train, verbose=options["verbose"])
 
         return test_acc, test_loss

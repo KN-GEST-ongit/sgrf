@@ -15,6 +15,7 @@ from sgrf.common.crop_image import crop_image
 from sgrf.common.set_options import set_options
 from sgrf.data.gesture import GESTURE
 from sgrf.data.processing_method import PROCESSING_METHOD
+from tqdm import tqdm
 from definitions import ROOT_DIR
 
 
@@ -188,13 +189,14 @@ class NguyenHuynh(BaseAlgorithm):
 
     def learn(self, learning_data: list, target_model_path: str, custom_options: dict = None) -> (float, float):
         default_options = {
-            "max_iter": 500
+            "max_iter": 500,
+            "verbose": 0
         }
         options = set_options(default_options, custom_options)
 
         X, y = [], []
 
-        for data in learning_data:
+        for data in tqdm(learning_data, desc="NguyenHuynh: preprocessing images"):
             image = cv2.imread(data.image_path)
             if image is None:
                 continue
@@ -209,12 +211,15 @@ class NguyenHuynh(BaseAlgorithm):
         X, y = np.array(X), np.array(y)
 
         mlp = MLPClassifier(hidden_layer_sizes=(64,), activation='tanh',
-                            solver='adam', max_iter=options["max_iter"], random_state=42)
+                            solver='adam', max_iter=options["max_iter"], random_state=42,
+                            verbose=bool(options["verbose"]))
         pipeline = make_pipeline(StandardScaler(), mlp)
         pipeline.fit(X, y)
 
         y_pred = pipeline.predict(X)
         accuracy = accuracy_score(y, y_pred)
+        if options["verbose"]:
+            print(f"NguyenHuynh accuracy: {accuracy * 100:.2f}%")
 
         os.makedirs(target_model_path, exist_ok=True)
         model_path = os.path.join(target_model_path, "nguyen_huynh.pkl")

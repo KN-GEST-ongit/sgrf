@@ -17,6 +17,7 @@ from sgrf.common.set_options import set_options
 from sgrf.common.dataset_spliter import split_dataset
 from sgrf.data.gesture import GESTURE
 from sgrf.data.processing_method import PROCESSING_METHOD
+from tqdm import tqdm
 from definitions import ROOT_DIR
 
 
@@ -102,13 +103,14 @@ class GuptaJaafar(BaseAlgorithm):
         default_options = {
             "pca_n_components": 50,
             "lda_n_components": 5,
-            "test_subset_size": 0.2
+            "test_subset_size": 0.2,
+            "verbose": 0
         }
         options = set_options(default_options, custom_options)
 
         processed_features = []
         etiquettes = []
-        for data in learning_data:
+        for data in tqdm(learning_data, desc="GuptaJaafar: preprocessing images"):
             hand_image = cv2.imread(data.image_path)
             self.process_image(payload=GuptaJaafarPayload(image=hand_image, coords=data.coords))
             processed_features.append(self.feature_vector)
@@ -124,13 +126,15 @@ class GuptaJaafar(BaseAlgorithm):
         lda_data_train = lda.fit_transform(pca_data_train, y_train)
         if X_test is not None:
             lda_data_test = lda.transform(pca_data_test)
-        svm = SVC(kernel='rbf', decision_function_shape='ovo', probability=True)
+        svm = SVC(kernel='rbf', decision_function_shape='ovo', probability=True, verbose=bool(options["verbose"]))
         svm.fit(lda_data_train, y_train)
         # train_accuracy = svm.score(lda_data_train, y_train)
         if X_test is not None:
             test_accuracy = svm.score(lda_data_test, y_test)
         else:
             test_accuracy = svm.score(lda_data_train, y_train)
+        if options["verbose"]:
+            print(f"GuptaJaafar accuracy: {test_accuracy * 100:.2f}%")
         model_path = os.path.join(target_model_path, 'gupta_jaafar_pca.pkl')
         with open(model_path, 'wb') as f:
             pickle.dump(pca, f)

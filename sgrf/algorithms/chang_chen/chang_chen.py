@@ -13,6 +13,7 @@ from sgrf.common.crop_image import crop_image
 from sgrf.common.set_options import set_options
 from sgrf.data.gesture import GESTURE
 from sgrf.data.processing_method import PROCESSING_METHOD
+from tqdm import tqdm
 from definitions import ROOT_DIR
 
 
@@ -90,12 +91,13 @@ class ChangChen(BaseAlgorithm):
     def learn(self, learning_data: list[ChangChenLearningData], target_model_path: str,
               custom_options: dict = None) -> (float, float):
         default_options = {
-            "n_neighbors": 1
+            "n_neighbors": 1,
+            "verbose": 0
         }
         options = set_options(default_options, custom_options)
         X, y = [], []
 
-        for data in learning_data:
+        for data in tqdm(learning_data, desc="ChangChen: preprocessing images"):
             image = cv2.imread(data.image_path)
             processed = self.process_image(ChangChenPayload(image, data.coords))
             gray = cv2.cvtColor(processed, cv2.COLOR_BGR2GRAY)
@@ -109,6 +111,8 @@ class ChangChen(BaseAlgorithm):
         model = KNeighborsClassifier(n_neighbors=options["n_neighbors"])
         model.fit(X, y)
         accuracy = model.score(X, y)
+        if options["verbose"]:
+            print(f"ChangChen accuracy: {accuracy * 100:.2f}%")
 
         model_path = os.path.join(target_model_path, "chang_chen.pkl")
         with open(model_path, "wb") as f:

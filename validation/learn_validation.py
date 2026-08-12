@@ -12,11 +12,16 @@ def learn_validation(scenario_name: str, algorithms: set[ALGORITHM], people_amou
                      images_amount: int = None,
                      limit_images_in_single_person_single_recording=None,
                      limit_recordings_of_single_person_single_gesture=None):
-    files = SGRFDatasetLoader.get_learning_files(shuffle=True, limit=images_amount,
+    # files = SGRFDatasetLoader.get_learning_files(shuffle=True, limit=images_amount,
+    #                                              limit_images_in_single_person_single_recording=limit_images_in_single_person_single_recording,
+    #                                              limit_recordings_of_single_person_single_gesture=limit_recordings_of_single_person_single_gesture,
+    #                                              limit_people=people_amount,
+    #                                              base_path=os.path.abspath("../../bdgs_photos"))
+
+    files = SGRFDatasetLoader.get_learning_files_nextcloud(shuffle=True, limit=images_amount,
                                                  limit_images_in_single_person_single_recording=limit_images_in_single_person_single_recording,
                                                  limit_recordings_of_single_person_single_gesture=limit_recordings_of_single_person_single_gesture,
-                                                 limit_people=people_amount,
-                                                 base_path=os.path.abspath("../../bdgs_photos"))
+                                                 limit_people=people_amount,)
 
     print(f"{len(files)} choosen for learning")
 
@@ -57,7 +62,7 @@ if __name__ == "__main__":
                   ALGORITHM.MAUNG, ALGORITHM.MOHMMAD_DADI, ALGORITHM.MURTHY_JADON, ALGORITHM.NGUYEN_HUYNH,
                   ALGORITHM.PINTO_BORGES}
 
-    learn_validation("sc1", algorithms=algorithms)  # scenario 1
+    # learn_validation("sc1", algorithms=algorithms)  # scenario 1
     # learn_validation("sc2", algorithms=algorithms, limit_recordings_of_single_person_single_gesture=2) #scenario 2
     # learn_validation("sc3", algorithms=algorithms, limit_images_in_single_person_single_recording=10)  # scenario 3
-    # learn_validation("sc4", algorithms=algorithms, people_amount=2)  # scenario 4
+    learn_validation("sc4", algorithms=algorithms, people_amount=2)  # scenario 4

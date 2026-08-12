@@ -13,6 +13,7 @@ from sgrf.common.set_options import set_options
 from sgrf.common.dataset_spliter import split_dataset
 from sgrf.data.gesture import GESTURE
 from sgrf.data.processing_method import PROCESSING_METHOD
+from tqdm import tqdm
 from definitions import ROOT_DIR
 
 
@@ -67,13 +68,14 @@ class ZhuangYang(BaseAlgorithm):
             "r": 60,
             "max_iter": 100,
             "d": 50,
-            "test_subset_size": 0.2
+            "test_subset_size": 0.2,
+            "verbose": 0
         }
         options = set_options(default_options, custom_options)
 
         processed_images = []
         labels = []
-        for data in learning_data:
+        for data in tqdm(learning_data, desc="ZhuangYang: preprocessing images"):
             hand_image = cv2.imread(data.image_path)
             processed_image = self.process_image(
                 payload=ZhuangYangPayload(image=hand_image, coords=data.coords))
@@ -102,7 +104,7 @@ class ZhuangYang(BaseAlgorithm):
         W = np.random.rand(6400, r)
         H = np.random.rand(r, len(x_train))
 
-        W, H = nmf_update(V_train, W, H, max_iter)
+        W, H = nmf_update(V_train, W, H, max_iter, verbose=bool(options["verbose"]))
 
         W_pinv = np.linalg.pinv(W)
 
@@ -131,6 +133,8 @@ class ZhuangYang(BaseAlgorithm):
 
         accuracy = float(np.mean(np.array(predictions) == labels_test))
         loss = 1 - accuracy
+        if options["verbose"]:
+            print(f"ZhuangYang accuracy: {accuracy * 100:.2f}%")
 
         return accuracy, loss
 
@@ -139,14 +143,18 @@ def image_to_vector(image):
     return image.flatten().reshape(-1, 1)  # flatten to 6400x1 column vector
 
 
-def nmf_update(v, w, h, max_iter=100, epsilon=1e-10):
-    for _ in range(max_iter):
+def nmf_update(v, w, h, max_iter=100, epsilon=1e-10, verbose=False):
+    for i in range(max_iter):
         WH = np.dot(w, h) + epsilon
 
         w *= (np.dot(v, h.T)) / (np.dot(WH, h.T) + epsilon)  # nominator_W / denominator_W
         h *= (np.dot(w.T, v)) / (np.dot(w.T, WH) + epsilon)  # nominator_H / denominator_H
         norms = np.linalg.norm(w, axis=0) + epsilon
         w /= norms
+
+        if verbose and (i % 10 == 0 or i == max_iter - 1):
+            reconstruction_error = np.linalg.norm(v - np.dot(w, h))
+            print(f"ZhuangYang NMF iteration {i + 1}/{max_iter}, reconstruction error: {reconstruction_error:.4f}")
 
     return w, h
 

@@ -12,6 +12,7 @@ from sgrf.common.set_options import set_options
 from sgrf.common.dataset_spliter import split_dataset, choose_fit_kwargs
 from sgrf.data.gesture import GESTURE
 from sgrf.data.processing_method import PROCESSING_METHOD
+from tqdm import tqdm
 from definitions import ROOT_DIR
 
 
@@ -103,12 +104,13 @@ class MurthyJadon(BaseAlgorithm):
         default_options = {
             "epochs": 80,
             "gesture_enum": GESTURE,
-            "test_subset_size": 0.2
+            "test_subset_size": 0.2,
+            "verbose": 0
         }
         options = set_options(default_options, custom_options)
         processed_images = []
         etiquettes = []
-        for data in learning_data:
+        for data in tqdm(learning_data, desc="MurthyJadon: preprocessing images"):
             hand_image = cv2.imread(data.image_path)
             background_image = cv2.imread(data.bg_image_path)
             processed_image = (self.process_image(
@@ -132,12 +134,12 @@ class MurthyJadon(BaseAlgorithm):
             loss='sparse_categorical_crossentropy',
             metrics=['accuracy']
         )
-        model.fit(**choose_fit_kwargs(X_train, y_train, epochs=options["epochs"], validation_data=(X_val, y_val), verbose=0))
+        model.fit(**choose_fit_kwargs(X_train, y_train, epochs=options["epochs"], validation_data=(X_val, y_val), verbose=options["verbose"]))
         keras.models.save_model(model, os.path.join(target_model_path, 'murthy_jadon.keras'))
 
         if X_val is not None and y_val is not None:
-            test_loss, test_acc = model.evaluate(X_val, y_val, verbose=0)
+            test_loss, test_acc = model.evaluate(X_val, y_val, verbose=options["verbose"])
         else:
-            test_loss, test_acc = model.evaluate(X_train, y_train, verbose=0)
+            test_loss, test_acc = model.evaluate(X_train, y_train, verbose=options["verbose"])
 
         return test_acc, test_loss

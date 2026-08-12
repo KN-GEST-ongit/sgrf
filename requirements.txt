@@ -5,3 +5,6 @@ scikit-learn~=1.6.1
 keras~=3.9.2
 scikit-image~=0.25.2
 silence-tensorflow~=1.2.3
+requests~=2.34.2
+python-dotenv~=1.2.2
+tqdm~=4.70.0

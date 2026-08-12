@@ -36,8 +36,9 @@ def image_processing_visual_test(algorithm: ALGORITHM, images_amount: int):
 
 
 def classification_visual_test(algorithm: ALGORITHM, images_amount: int):
-    files = SGRFDatasetLoader.get_learning_files(shuffle=True, limit=images_amount,
-                                                 base_path=os.path.abspath("../../bdgs_photos"))
+    # files = SGRFDatasetLoader.get_learning_files(shuffle=True, limit=images_amount)
+    files = SGRFDatasetLoader.get_learning_files_nextcloud(shuffle=True, limit=images_amount)
+
     for image_file in files:
         image = cv2.imread(image_file[0])
         background = cv2.imread(image_file[2])
@@ -53,5 +54,4 @@ def classification_visual_test(algorithm: ALGORITHM, images_amount: int):
 
 
 if __name__ == "__main__":
-    # image_processing_visual_test(ALGORITHM.NGUYEN_HUYNH, 5)
-    classification_visual_test(ALGORITHM.OYEDOTUN_KHASHMAN, 5)
+    classification_visual_test(ALGORITHM.MAUNG, 5)

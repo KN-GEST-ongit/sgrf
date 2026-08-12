@@ -14,6 +14,7 @@ from sgrf.data.gesture import GESTURE
 from sgrf.data.processing_method import PROCESSING_METHOD
 from sgrf.models.image_payload import ImagePayload
 from sgrf.models.learning_data import LearningData
+from tqdm import tqdm
 from definitions import ROOT_DIR
 
 
@@ -78,13 +79,14 @@ class MohmmadDadi(BaseAlgorithm):
                                                                                                                 float):
         default_options = {
             "n_components": 50,
-            "test_subset_size": 0.2
+            "test_subset_size": 0.2,
+            "verbose": 0
         }
         options = set_options(default_options, custom_options)
 
         processed_images = []
         etiquettes = []
-        for data in learning_data:
+        for data in tqdm(learning_data, desc="MohmmadDadi: preprocessing images"):
             hand_image = cv2.imread(data.image_path)
             processed_image = (self.process_image(
                 payload=ImagePayload(image=hand_image)
@@ -108,14 +110,15 @@ class MohmmadDadi(BaseAlgorithm):
         # knn_accuracy = knn.score(X_test_pca, y_test)
         # print(f"KNN Accuracy: {knn_accuracy * 100:.2f}%")
 
-        svm = LinearSVC()
+        svm = LinearSVC(verbose=options["verbose"])
         #svm = SVC(probability=True, kernel='linear')
         svm.fit(X_train_pca, y_train)
         if X_test is not None:
             svm_accuracy = svm.score(X_test_pca, y_test)
         else:
             svm_accuracy = svm.score(X_train_pca, y_train)
-        # print(f"SVM Accuracy: {svm_accuracy * 100:.2f}%")
+        if options["verbose"]:
+            print(f"MohmmadDadi SVM accuracy: {svm_accuracy * 100:.2f}%")
 
         model_path = os.path.join(target_model_path, 'mohmmad_dadi_pca.pkl')
         with open(model_path, 'wb') as f:

@@ -17,6 +17,7 @@ from sgrf.common.crop_image import crop_image
 from sgrf.common.set_options import set_options
 from sgrf.data.gesture import GESTURE
 from sgrf.data.processing_method import PROCESSING_METHOD
+from tqdm import tqdm
 from definitions import ROOT_DIR
 
 
@@ -91,12 +92,13 @@ class JoshiKumar(BaseAlgorithm):
 
     def learn(self, learning_data: list, target_model_path: str, custom_options: dict = None) -> (float, float):
         default_options = {
-            "n_components": 0.95
+            "n_components": 0.95,
+            "verbose": 0
         }
         options = set_options(default_options, custom_options)
         X, y = [], []
 
-        for data in learning_data:
+        for data in tqdm(learning_data, desc="JoshiKumar: preprocessing images"):
             image = cv2.imread(data.image_path)
             processed = self.process_image(JoshiKumarPayload(image, data.coords))
             features = processed.flatten()
@@ -107,13 +109,15 @@ class JoshiKumar(BaseAlgorithm):
         X, y = np.array(X), np.array(y)
         pca = PCA(n_components=options["n_components"], svd_solver='full')
 
-        svm = SVC(kernel='rbf', probability=True)
+        svm = SVC(kernel='rbf', probability=True, verbose=bool(options["verbose"]))
         pipeline = make_pipeline(StandardScaler(), pca, svm)
 
         pipeline.fit(X, y)
 
         y_pred = pipeline.predict(X)
         accuracy = accuracy_score(y, y_pred)
+        if options["verbose"]:
+            print(f"JoshiKumar accuracy: {accuracy * 100:.2f}%")
 
         os.makedirs(target_model_path, exist_ok=True)
         model_path = os.path.join(target_model_path, "joshi_kumar.pkl")

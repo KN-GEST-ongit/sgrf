@@ -11,7 +11,6 @@
 
 1. Create/activate virtual environment
 2. Install required packages with `pip install -r requirements.txt`
-
 ### Create new algorithm
 
 To create a new algorithm, use algorithm creation script: `./scripts/generate_algorithm.py`
@@ -29,9 +28,9 @@ To use library in external project, use `pip install sgrf`.
 
 ### Sample use cases
 
-To predict gesture on selected image, run the code below. You can select desired algorithm by using values
-on `ALGORITHM` enum. Some algorithms require their own payload (e.g. hand coordinates or background image
-without hand). You can import specific payload from `sgrf.algorithms.<alg>.<alg>_payload`.
+To predict gesture on selected image, run the code below. You can select desired algorithm by using values on
+`ALGORITHM` enum. Some algorithms require their own payload (e.g. hand coordinates or background image without hand).
+You can import specific payload from `sgrf.algorithms.<alg>.<alg>_payload`.
 
 ```python
 import cv2
@@ -75,4 +74,25 @@ acc, loss = learn(algorithm=ALGORITHM.EID_SCHWENKER, target_model_path="models",
                   learning_data=[LearningData(image_path="resources/image.jpg", label=GESTURE.FIVE)] * 10)
 
 print(acc, loss)
+```
+
+### Usage with Nextcloud
+
+To use SGRF with Nextcloud BDGS, complete following steps:
+
+1. Create `./env` file.
+2. Copy `./example.env` contents to `./env` file. Adjust settings with credentials to Nextcloud.
+3. Place `./env` file in same directory as the script you want to run, or edit running configuration to use `.env` file
+   as environmental variables source (sample configurations for PyCharm are located in `./.idea\runConfigurations`).
+4. Use `SGRFDatasetLoader.get_learning_files_nextcloud()` function to load images from Nextcloud.
+
+Sample usage:
+```python
+import cv2
+from scripts.loaders import SGRFDatasetLoader
+
+# files = SGRFDatasetLoader.get_learning_files(limit=images_amount, limit_people=people_amount)
+files = SGRFDatasetLoader.get_learning_files_nextcloud(limit_people=2, limit=100)
+for image_file in files:
+  image = cv2.imread(image_file[0])
 ```

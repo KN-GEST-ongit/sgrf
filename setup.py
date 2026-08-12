@@ -6,7 +6,7 @@ README = (HERE / "README.md").read_text(encoding="utf-8")
 
 setup(
     name="sgrf",
-    version="3.1.0",
+    version="3.2.0",
     packages=find_packages(),
     install_requires=[
         'opencv-python~=4.11.0.86',
@@ -15,7 +15,8 @@ setup(
         'scikit-learn~=1.6.1',
         "keras~=3.9.2",
         'scikit-image~=0.25.2',
-        'silence-tensorflow~=1.2.3'
+        'silence-tensorflow~=1.2.3',
+        'tqdm~=4.70.0'
     ],
     include_package_data=True,
     package_data={

@@ -18,6 +18,7 @@ from sgrf.common.set_options import set_options
 from sgrf.common.dataset_spliter import split_dataset, choose_fit_kwargs
 from sgrf.data.gesture import GESTURE
 from sgrf.data.processing_method import PROCESSING_METHOD
+from tqdm import tqdm
 from definitions import ROOT_DIR
 
 
@@ -123,13 +124,14 @@ class IslamHossainAndersson(BaseAlgorithm):
             "learning_rate": 0.001,
             "enable_augmentation": False,
             "gesture_enum": GESTURE,
-            "test_subset_size": 0.2
+            "test_subset_size": 0.2,
+            "verbose": "auto"
         }
         options = set_options(default_options, custom_options)
         num_classes = len(options["gesture_enum"])
         processed_images = []
         labels = []
-        for data in learning_data:
+        for data in tqdm(learning_data, desc="IslamHossainAndersson: preprocessing images"):
             hand_image = cv2.imread(data.image_path)
             background_image = cv2.imread(data.bg_image_path)
             processed_image = self.process_image(
@@ -157,15 +159,15 @@ class IslamHossainAndersson(BaseAlgorithm):
                             validation_data=(x_val, y_val_one_hot),
                             batch_size=options["batch_size"],
                             epochs=options["epochs"],
-                            verbose="auto"))
+                            verbose=options["verbose"]))
 
         keras.models.save_model(
             model=model,
             filepath=os.path.join(target_model_path, "islam_hossain_andersson.keras")
         )
         if x_val is not None and y_val is not None:
-            test_loss, test_acc = model.evaluate(x_val, y_val_one_hot, verbose=0)
+            test_loss, test_acc = model.evaluate(x_val, y_val_one_hot, verbose=options["verbose"])
         else:
-            test_loss, test_acc = model.evaluate(x_train, y_train_one_hot, verbose=0)
+            test_loss, test_acc = model.evaluate(x_train, y_train_one_hot, verbose=options["verbose"])
 
         return test_acc, test_loss

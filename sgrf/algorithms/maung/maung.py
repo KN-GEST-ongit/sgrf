@@ -14,6 +14,7 @@ from sgrf.common.set_options import set_options
 from sgrf.common.dataset_spliter import split_dataset
 from sgrf.data.gesture import GESTURE
 from sgrf.data.processing_method import PROCESSING_METHOD
+from tqdm import tqdm
 from definitions import ROOT_DIR
 
 
@@ -74,13 +75,14 @@ class Maung(BaseAlgorithm):
         default_options = {
             "max_iter": 1000,
             "tol": 1e-3,
-            "test_subset_size": 0.2
+            "test_subset_size": 0.2,
+            "verbose": 0
         }
         options = set_options(default_options, custom_options)
         processed_images = []
         etiquettes = []
 
-        for data in learning_data:
+        for data in tqdm(learning_data, desc="Maung: preprocessing images"):
             hand_image = cv2.imread(data.image_path)
             processed_image = (self.process_image(
                 payload=MaungPayload(image=hand_image, coords=data.coords)
@@ -91,13 +93,14 @@ class Maung(BaseAlgorithm):
         X = np.array(processed_images)
         y = np.array(etiquettes)
         X_train, X_val, y_train, y_val = split_dataset(X, y, test_size=options["test_subset_size"], random_state=42)
-        perceptron = Perceptron(max_iter=options["max_iter"], tol=options["tol"])
+        perceptron = Perceptron(max_iter=options["max_iter"], tol=options["tol"], verbose=options["verbose"])
         perceptron.fit(X_train, y_train)
         if X_val is not None and y_val is not None:
             accuracy = perceptron.score(X_val, y_val)
         else:
             accuracy = perceptron.score(X_train, y_train)
-        # print(f"Accuracy on validation set: {accuracy * 100:.2f}%")
+        if options["verbose"]:
+            print(f"Maung accuracy: {accuracy * 100:.2f}%")
         model_path = os.path.join(target_model_path, 'maung.pkl')
         with open(model_path, 'wb') as f:
             pickle.dump(perceptron, f)

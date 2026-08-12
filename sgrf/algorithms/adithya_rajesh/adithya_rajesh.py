@@ -17,6 +17,7 @@ from sgrf.common.set_options import set_options
 from sgrf.common.dataset_spliter import split_dataset, choose_fit_kwargs
 from sgrf.data.gesture import GESTURE
 from sgrf.data.processing_method import PROCESSING_METHOD
+from tqdm import tqdm
 from definitions import ROOT_DIR
 
 
@@ -117,13 +118,14 @@ class AdithyaRajesh(BaseAlgorithm):
             "learning_rate": 0.001,
             "momentum": 0.9,
             "gesture_enum": GESTURE,
-            "test_subset_size": 0.2
+            "test_subset_size": 0.2,
+            "verbose": "auto"
         }
         options = set_options(default_options, custom_options)
 
         processed_images = []
         labels = []
-        for data in learning_data:
+        for data in tqdm(learning_data, desc="AdithyaRajesh: preprocessing images"):
             hand_image = cv2.imread(data.image_path)
             processed_image = self.process_image(
                 payload=AdithyaRajeshPayload(image=hand_image, coords=data.coords))
@@ -140,15 +142,17 @@ class AdithyaRajesh(BaseAlgorithm):
                                                         test_size=options["test_subset_size"],
                                                         random_state=42)
 
-        history = model.fit(**choose_fit_kwargs(x_train=x_train, y_train=y_train, validation_data=(x_val, y_val), batch_size=options["batch_size"], epochs=options["epochs"]))
+        model.fit(**choose_fit_kwargs(x_train=x_train, y_train=y_train, validation_data=(x_val, y_val),
+                                      batch_size=options["batch_size"], epochs=options["epochs"],
+                                      verbose=options["verbose"]))
 
         keras.models.save_model(
             model=model,
             filepath=os.path.join(target_model_path, "adithya_rajesh.keras")
         )
         if x_val is not None and y_val is not None:
-            test_loss, test_acc = model.evaluate(x_val, y_val, verbose=0)
+            test_loss, test_acc = model.evaluate(x_val, y_val, verbose=options["verbose"])
         else:
-            test_loss, test_acc = model.evaluate(x_train, y_train, verbose=0)
+            test_loss, test_acc = model.evaluate(x_train, y_train, verbose=options["verbose"])
 
         return test_acc, test_loss
