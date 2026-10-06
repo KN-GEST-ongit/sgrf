@@ -7,10 +7,13 @@
 
 ## Development
 
+PYTHONPATH=.. uv run visual_test.py
+
 ### Installation
 
 1. Create/activate virtual environment
 2. Install required packages with `pip install -r requirements.txt`
+
 ### Create new algorithm
 
 To create a new algorithm, use algorithm creation script: `./scripts/generate_algorithm.py`
@@ -87,6 +90,7 @@ To use SGRF with Nextcloud BDGS, complete following steps:
 4. Use `SGRFDatasetLoader.get_learning_files_nextcloud()` function to load images from Nextcloud.
 
 Sample usage:
+
 ```python
 import cv2
 from scripts.loaders import SGRFDatasetLoader
